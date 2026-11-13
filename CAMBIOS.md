@@ -1,5 +1,12 @@
 # Cambios de Prevsoul Core
 
+## 2.7.0
+- Nueva pantalla Prevsoul → Marketing: Google Analytics 4, Microsoft Clarity, Meta Pixel, Google Tag Manager opcional, verificación de dominio de Meta y redes sociales.
+- Banner de consentimiento de cookies (Aceptar todas / Solo necesarias / Configurar por medición y marketing), recordado 6 meses y reabrible desde «Preferencias de cookies» en el pie. Nada se carga antes de aceptar.
+- Clarity y Pixel no se cargan en precita, consulta online, resultados del buscador, carro (Clarity) ni cuentas; la frase del buscador se borra de la dirección antes de medir. A Meta solo llega el monto de la compra.
+- Eventos: ver plan, agregar al carro, iniciar pago, compra, precita, buscador usado, clic en WhatsApp/correo/teléfono y lectura completa de artículos.
+- Íconos de Instagram, Facebook y correo en el pie y schema sameAs. Etiqueta de verificación de Meta también en la página «en construcción».
+
 ## 2.6.0
 - SEO del blog: título (máx. 60) y descripción (máx. 155) con palabra clave por artículo, resumen «En pocas palabras», enlace interno contextual, 3 preguntas frecuentes por artículo, firma «Revisado por Dr. Felipe Alarcón Villarroel, Cirujano Dentista» con fecha de actualización.
 - Open Graph y Twitter Card con imagen propia 1200×630 por artículo y para la portada del blog.

@@ -93,6 +93,7 @@ $ps_icon = function ( $d, $size = 22 ) {
 		<div>
 			<strong class="ps-foot-brand"><?php echo function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'full', '#fff', '#0B2545' ) : ''; // phpcs:ignore ?>prevsoul</strong>
 			<p>Planes dentales preventivos con odontólogo de cabecera.</p>
+			<?php echo function_exists( 'ps_mk_social_html' ) ? ps_mk_social_html() : ''; // phpcs:ignore ?>
 		</div>
 		<nav aria-label="Pie de página">
 			<?php
@@ -108,7 +109,7 @@ $ps_icon = function ( $d, $size = 22 ) {
 			?>
 		</nav>
 		<?php echo function_exists( 'ps_blog_footer' ) ? ps_blog_footer() : ''; // phpcs:ignore ?>
-		<p class="ps-foot-note">Las precitas entregan orientación informativa y no reemplazan la consulta odontológica presencial.<?php if ( get_privacy_policy_url() ) : ?> · <a href="<?php echo esc_url( get_privacy_policy_url() ); ?>">Política de privacidad</a><?php endif; ?><br>© <?php echo esc_html( wp_date( 'Y' ) ); ?> Prevsoul</p>
+		<p class="ps-foot-note">Las precitas entregan orientación informativa y no reemplazan la consulta odontológica presencial.<?php if ( get_privacy_policy_url() ) : ?> · <a href="<?php echo esc_url( get_privacy_policy_url() ); ?>">Política de privacidad</a><?php endif; ?> · <a href="#ps-cookies" data-ps-ck-open>Preferencias de cookies</a><br>© <?php echo esc_html( wp_date( 'Y' ) ); ?> Prevsoul</p>
 	</div>
 </footer>
 

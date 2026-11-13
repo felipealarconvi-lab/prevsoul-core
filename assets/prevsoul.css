@@ -574,3 +574,9 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-blog-link a{color:var(--ps-accent);font-weight:800}
 .ps-blog-faq{margin-top:28px}.ps-blog-faq details{border-top:1px solid var(--ps-line);padding:14px 0}.ps-blog-faq details:last-child{border-bottom:1px solid var(--ps-line)}
 .ps-blog-faq summary{font-weight:800;cursor:pointer;color:var(--ps-ink);font-size:17px}.ps-blog-faq details p{margin:8px 0 0}
+
+/* 2.7.0 · redes en el pie */
+.ps-foot-soc{display:flex;gap:8px;margin-top:12px}
+.ps-foot-soc a{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:inline-flex;align-items:center;justify-content:center;transition:background .15s}
+.ps-foot-soc a:hover{background:rgba(255,255,255,.22)}
+.ps-foot-soc svg{width:18px;height:18px;fill:#fff}

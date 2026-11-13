@@ -18,6 +18,7 @@ if ( '56912345678' === $ps_wa ) {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
+<?php echo function_exists( 'ps_mk_verif_tag' ) ? ps_mk_verif_tag() : ''; // phpcs:ignore ?>
 <title>Estamos restaurando · Prevsoul</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap">

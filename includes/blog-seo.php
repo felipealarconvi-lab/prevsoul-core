@@ -125,6 +125,9 @@ function ps_blog_schema( $s, $id, $url, $title, $desc, $img ) {
 		'url'   => $home,
 		'logo'  => array( '@type' => 'ImageObject', 'url' => ps_og_img( 'blog' ) ),
 	);
+	if ( function_exists( 'ps_mk_same_as' ) && ps_mk_same_as() ) {
+		$org['sameAs'] = ps_mk_same_as();
+	}
 	$rev  = array(
 		'@type'    => 'Person',
 		'@id'      => $home . '#revisor',

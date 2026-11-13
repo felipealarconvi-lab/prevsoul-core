@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           1.5.0
+ * Version:           1.5.1
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,11 +14,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '1.5.0' );
+define( 'PS_VERSION', '1.5.1' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
 require_once __DIR__ . '/includes/prestadores.php';
+require_once __DIR__ . '/includes/demo.php';
 
 const PS_RANKS = array(
 	0 => 'Asociado',
@@ -1026,6 +1027,7 @@ function ps_settings_page() {
 	<div class="wrap">
 		<h1>Prevsoul</h1>
 		<div style="display:flex;gap:16px;flex-wrap:wrap;margin:16px 0">
+			<?php ps_demo_card(); ?>
 			<div class="card" style="margin:0;min-width:240px"><h2 style="margin-top:0">Actualizaciones</h2><p>Versión instalada: <strong><?php echo esc_html( PS_VERSION ); ?></strong><?php $ps_l = ps_gh_latest(); if ( $ps_l && version_compare( $ps_l['version'], PS_VERSION, '>' ) ) { echo '<br>Disponible: <strong>' . esc_html( $ps_l['version'] ) . '</strong>'; } ?></p><p>Las versiones nuevas se instalan solas. Si quieres traerla ya:</p><p><a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ps_check_updates' ), 'ps_check_updates' ) ); ?>">Buscar actualizaciones ahora</a></p><p><a href="https://github.com/felipealarconvi-lab/prevsoul-core/releases" target="_blank" rel="noopener">Ver qué cambió en cada versión</a></p></div>
 			<div class="card" style="margin:0;min-width:260px;border-left:4px solid <?php echo ps_construccion_on() ? '#d63638' : '#00a32a'; ?>"><h2 style="margin-top:0">Visibilidad del sitio</h2>
 				<?php if ( ps_construccion_on() ) : ?>

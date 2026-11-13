@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 1.5.1
+- Botón «Crear datos de prueba» en la página Prevsoul (odontóloga, clínica, productos asignados, cuenta de clínica y cupón PRUEBA100) y botón para borrarlos.
+
 ## 1.5.0
 - Nuevo botón «Sala de espera» con concepto de puerta abierta: punto verde que late cuando hay odontólogos disponibles y «Deja tu consulta» cuando no.
 - El carro ahora es un ícono con el número de productos.

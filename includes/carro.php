@@ -49,19 +49,21 @@ add_filter(
 	20
 );
 
-/* Quién realiza el tratamiento, en el carro y en el pago. */
-add_filter(
-	'woocommerce_get_item_data',
-	function ( $data, $item ) {
-		$pid  = $item['product_id'] ?? 0;
-		$prov = $pid && function_exists( 'ps_product_prestador' ) ? ps_product_prestador( $pid ) : 0;
-		if ( $prov ) {
-			$data[] = array( 'key' => 'Realiza', 'value' => get_the_title( $prov ) );
+/* Pesos chilenos con punto de miles y sin decimales (una vez). */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'ps_precio_cl' ) || ! function_exists( 'get_woocommerce_currency' ) ) {
+			return;
 		}
-		return $data;
+		update_option( 'ps_precio_cl', 1 );
+		if ( '' === (string) get_option( 'woocommerce_price_thousand_sep' ) ) {
+			update_option( 'woocommerce_price_thousand_sep', '.' );
+			update_option( 'woocommerce_price_decimal_sep', ',' );
+			update_option( 'woocommerce_price_num_decimals', 0 );
+		}
 	},
-	10,
-	2
+	80
 );
 
 /* -------------------------------------------------------------------------

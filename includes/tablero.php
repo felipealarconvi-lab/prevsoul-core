@@ -161,6 +161,9 @@ function ps_tablero_page() {
 		}
 	}
 	$svg .= '</svg>';
+	if ( ! array_filter( $bars ) ) {
+		$svg = '<p class="ps-ad-empty">Sin ventas pagadas en este periodo.</p>';
+	}
 
 	$delta = $vprev > 0 ? round( 100 * ( $ventas - $vprev ) / $vprev ) : null;
 	$fmax  = max( 1, $busq, count( $prec ), count( $orders ), $realiz );
@@ -171,7 +174,7 @@ function ps_tablero_page() {
 	echo ps_admin_css(); // phpcs:ignore
 	echo '<div class="wrap ps-ad"><div class="ps-ad-top"><h1>Tablero</h1>' . ps_periodo_pills( 'ps-tablero' ) . '</div>'; // phpcs:ignore
 	echo '<div class="ps-ad-k">';
-	echo '<div><span>Ventas</span><b>' . esc_html( ps_clp_short( $ventas ) ) . '</b>' . ( null === $delta ? '<em>' . count( $orders ) . ' pedidos</em>' : '<em class="' . ( $delta < 0 ? 'bad' : '' ) . '">' . ( $delta >= 0 ? '▲ ' : '▼ ' ) . abs( $delta ) . '% vs periodo anterior</em>' ) . '</div>';
+	echo '<div><span>Ventas</span><b>' . esc_html( ps_clp_short( $ventas ) ) . '</b>' . ( null === $delta ? '<em>' . count( $orders ) . ( 1 === count( $orders ) ? ' pedido' : ' pedidos' ) . '</em>' : '<em class="' . ( $delta < 0 ? 'bad' : '' ) . '">' . ( $delta >= 0 ? '▲ ' : '▼ ' ) . abs( $delta ) . '% vs periodo anterior</em>' ) . '</div>';
 	echo '<div><span>Ingreso Prevsoul</span><b>' . esc_html( ps_clp_short( $ingreso ) ) . '</b><em>ventas menos pago a clínicas</em></div>';
 	echo '<div><span>Consultas online</span><b>' . count( $prec ) . '</b><em>' . (int) $prec_buy . ' terminaron en compra</em></div>';
 	echo '<div><span>Órdenes por agendar</span><b style="color:' . ( $pend ? '#8A5300' : '#0B2347' ) . '">' . (int) $pend . '</b><em class="' . ( $pend_old ? 'warn' : '' ) . '">' . ( $pend_old ? (int) $pend_old . ' con más de 48 h' : 'al día' ) . '</em></div>';

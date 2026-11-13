@@ -493,3 +493,6 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-panel-login{max-width:520px;padding:24px}
 .ps-wrap .ps-panel-login{padding:24px}
 @media (max-width:600px){.ps-panel,.ps-panel-login{margin:16px auto;padding-left:16px;padding-right:16px}}
+.ps-carro .wc-block-components-product-name{font-weight:800 !important;color:var(--ps-accent) !important}
+.ps-carro .wp-block-woocommerce-empty-cart-block .wp-block-button__link{background:var(--ps-accent) !important;color:#fff !important;border-radius:10px;font-weight:800}
+.ps-carro .wc-block-components-product-details__name{font-weight:700}

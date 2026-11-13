@@ -171,3 +171,31 @@ button.ps-btn-ghost[type]{background:#fff;color:var(--ps-accent) !important;bord
 .ps-panel-login form p{display:flex;flex-direction:column;gap:4px;margin:0 0 12px}
 .ps-panel-login input[type=text],.ps-panel-login input[type=password]{min-height:44px;border:1px solid var(--ps-line);border-radius:10px;padding:8px 12px}
 .ps-panel-login input[type=submit]{background:var(--ps-accent);color:#fff;border:0;border-radius:10px;min-height:46px;padding:10px 20px;font-weight:800;cursor:pointer}
+
+/* 1.5 · cabecera: carro ícono y botón Sala «puerta abierta» */
+.ps-head-in{gap:12px}
+.ps-spacer{min-width:8px}
+.ps-logo{flex:none}
+.ps-cart{position:relative;width:44px;height:44px;min-height:44px;padding:0;justify-content:center;flex:none;border-radius:10px}
+.ps-cart-label{display:none}
+.ps-cart-n{position:absolute;top:-7px;right:-7px;min-width:20px;height:20px;padding:0 5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;border:2px solid #fff;box-sizing:border-box}
+.ps-head-cta{display:inline-flex;align-items:center;gap:9px;padding:6px 16px;flex:none;white-space:nowrap}
+.ps-cta-txt{display:flex;flex-direction:column;line-height:1.15;text-align:left}
+.ps-cta-main{font-weight:800;font-size:15px}
+.ps-cta-st{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:#D7E5FB}
+.ps-cta-short{display:none;align-items:center;gap:7px}
+.ps-sala-dot{position:relative;display:inline-block;width:8px;height:8px;border-radius:50%;background:#2ECC71;flex:none}
+.ps-sala-dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:#2ECC71}
+.ps-sala-dot.off{background:#9FB3D1}.ps-sala-dot.off::after{display:none}
+@media (prefers-reduced-motion:no-preference){.ps-sala-dot::after{animation:ps-pulse 1.6s ease-out infinite}}
+@keyframes ps-pulse{0%{transform:scale(1);opacity:.75}100%{transform:scale(2.6);opacity:0}}
+.ps-chip-live.is-closed{color:var(--ps-muted)}
+@media (max-width:860px){
+  .ps-cta-txt{display:none}
+  .ps-cta-short{display:inline-flex}
+  .ps-head-cta{padding:0 12px;min-height:44px;height:44px;font-size:14px}
+}
+@media (max-width:340px){
+  .ps-logo span{display:none}
+  .ps-head-in{gap:8px}
+}

@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           1.4.1
+ * Version:           1.5.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '1.4.1' );
+define( 'PS_VERSION', '1.5.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -1267,7 +1267,7 @@ add_shortcode(
 		$n  = ps_online_count();
 		$u1 = $a['boton_url'] ? $a['boton_url'] : ps_get( 'sala_url' );
 		$o  = '<section class="ps-sec ps-bg-oscuro ps-hero"><div class="ps-wrap">';
-		$o .= '<span class="ps-chip ps-chip-live"><i class="ps-dot"></i>Sala de espera abierta' . ( $n ? ' · ' . (int) $n . ' odontólogos conectados' : '' ) . '</span>';
+		$o .= $n ? '<span class="ps-chip ps-chip-live"><i class="ps-sala-dot"></i>Sala de espera abierta · ' . (int) $n . ( 1 === $n ? ' odontólogo disponible' : ' odontólogos disponibles' ) . '</span>' : '<span class="ps-chip ps-chip-live is-closed"><i class="ps-sala-dot off"></i>Deja tu consulta · te respondemos pronto</span>';
 		$o .= '<h1>' . esc_html( $a['titulo'] ) . '</h1>' . ( $a['bajada'] ? '<p class="ps-hero-sub">' . esc_html( $a['bajada'] ) . '</p>' : '' );
 		$o .= '<div class="ps-actions"><a class="ps-btn ps-btn-lg" href="' . esc_url( $u1 ) . '">' . esc_html( $a['boton'] ) . '</a>';
 		$o .= $a['boton2'] ? '<a class="ps-btn ps-btn-outline-light ps-btn-lg" href="' . esc_url( $a['boton2_url'] ) . '">' . esc_html( $a['boton2'] ) . '</a>' : '';

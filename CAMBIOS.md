@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 1.5.0
+- Nuevo botón «Sala de espera» con concepto de puerta abierta: punto verde que late cuando hay odontólogos disponibles y «Deja tu consulta» cuando no.
+- El carro ahora es un ícono con el número de productos.
+- El aviso de la portada sigue el mismo estado de la sala.
+- En el celular la cabecera cabe en una línea y el logo nunca se junta con los botones.
+
 ## 1.4.1
 - Columna «Realiza» más legible en la lista de productos.
 

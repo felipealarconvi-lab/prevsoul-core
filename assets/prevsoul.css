@@ -434,3 +434,6 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
   .ps-cd b{font-size:26px}
 }
 @media (max-width:560px){.ps-bus-form{flex-direction:column}.ps-bus-form .ps-btn{min-height:48px}}
+/* 2.0.1 */
+.ps-bg-oscuro .ps-initials,.ps-sala2-now .ps-initials,.ps-cine .ps-initials{background:var(--ps-accent);color:#fff}
+.ps-sala2-docs .ps-initials{border:3px solid var(--ps-ink)}

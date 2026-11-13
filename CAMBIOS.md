@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.0.1
+- Arreglo: la cuenta regresiva de Live y las flechas de los carruseles ahora funcionan.
+- Arreglo: las iniciales de los odontólogos se ven sobre los fondos azul oscuro.
+
 ## 2.0.0
 - Nuevo orden del inicio: slider, buscador, atención dental, sala de espera, packs, Prevsoul Live, planes; al final ahorro, odontólogos y llamado a prevenir. Se guarda una copia del contenido anterior de la página.
 - Buscador más humano, con saludo de una odontóloga y dos líneas de tags (Lo que sientes / Tratamientos) editables en Prevsoul → Tags del buscador. Si no reconoce la necesidad, busca por nombre de tratamiento.

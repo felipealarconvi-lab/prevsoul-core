@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 1.7.0
+- Prevsoul Live con interruptor de visibilidad (parte oculto): si está oculto se quita del menú, la barra del celular, la portada y el carrusel, y su página lleva al inicio. Administradores y dentistas lo siguen viendo.
+- Página Live renovada: video con estado (próxima, EN VIVO, grabación), caja de preguntas con votos, «Recordarme» por correo y enlace a la sala de espera al terminar.
+- Cuentas de dentista y Panel del dentista (prevsoul.cl/wp/panel-dentista): programar transmisiones, pegar el enlace de YouTube, iniciar y terminar, y responder u ocultar preguntas.
+- Al iniciar una transmisión se avisa a los inscritos (solo si Live está visible).
+
 ## 1.6.0
 - La caja azul de la portada ahora es un carrusel de anuncios: avanza solo cada 6 segundos, flechas, puntos y deslizar con el dedo en el celular.
 - Nueva sección «Anuncios» en el panel: título, texto, etiqueta con color, imagen, producto vinculado, hasta dos botones, fechas desde/hasta y orden, con vista previa en vivo.

@@ -16,6 +16,9 @@ $ps_tabs       = array(
 	'planes-dentales' => array( 'Planes', 'M12 2l8 4v6c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6zM9 12l2 2 4-4' ),
 	'prevsoul-live'   => array( 'Live', 'M2 7h20v12H2zM7 3l5 4 5-4' ),
 );
+if ( function_exists( 'ps_live_visible' ) && ! ps_live_visible() ) {
+	unset( $ps_tabs['prevsoul-live'] );
+}
 $ps_current    = get_post_field( 'post_name', get_queried_object_id() );
 if ( (int) get_option( 'page_on_front' ) === get_queried_object_id() ) {
 	$ps_current = 'inicio';

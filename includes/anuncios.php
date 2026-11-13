@@ -92,7 +92,7 @@ function ps_anuncio_estado( $id ) {
 }
 function ps_anuncios_visibles() {
 	$ids = get_posts( array( 'post_type' => 'ps_anuncio', 'post_status' => 'publish', 'numberposts' => 30, 'fields' => 'ids' ) );
-	$ids = array_values( array_filter( $ids, function ( $id ) { return 'visible' === ps_anuncio_estado( $id ); } ) );
+	$ids = array_values( array_filter( $ids, function ( $id ) { return 'visible' === ps_anuncio_estado( $id ) && ! ( function_exists( 'ps_live_visible' ) && ! ps_live_visible() && ps_is_live_url( ps_anuncio_meta( $id, 'b1_url' ) ) ); } ) );
 	usort(
 		$ids,
 		function ( $a, $b ) {
@@ -143,7 +143,7 @@ function ps_slider_html( $ids ) {
 		if ( $m( 'b1' ) && $b1url ) {
 			$out .= '<a class="ps-btn ps-btn-lg" href="' . esc_url( $b1url ) . '">' . esc_html( $m( 'b1' ) ) . '</a>';
 		}
-		if ( $m( 'b2' ) && $m( 'b2_url' ) ) {
+		if ( $m( 'b2' ) && $m( 'b2_url' ) && ! ( function_exists( 'ps_live_visible' ) && ps_is_live_url( $m( 'b2_url' ) ) && ! ps_live_visible() ) ) {
 			$out .= '<a class="ps-btn ps-btn-outline-light ps-btn-lg" href="' . esc_url( $m( 'b2_url' ) ) . '">' . esc_html( $m( 'b2' ) ) . '</a>';
 		}
 		$out .= '</div></div>';

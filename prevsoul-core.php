@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           1.6.0
+ * Version:           1.7.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,13 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '1.6.0' );
+define( 'PS_VERSION', '1.7.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
 require_once __DIR__ . '/includes/prestadores.php';
 require_once __DIR__ . '/includes/demo.php';
 require_once __DIR__ . '/includes/anuncios.php';
+require_once __DIR__ . '/includes/live.php';
 
 const PS_RANKS = array(
 	0 => 'Asociado',
@@ -934,7 +935,7 @@ add_action(
 		if ( ! ps_construccion_on() || is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
 			return;
 		}
-		if ( ! empty( $wp->query_vars['rest_route'] ) || isset( $_GET['wc-ajax'] ) || 'panel-prestador' === trim( (string) $wp->request, '/' ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! empty( $wp->query_vars['rest_route'] ) || isset( $_GET['wc-ajax'] ) || in_array( trim( (string) $wp->request, '/' ), array( 'panel-prestador', 'panel-dentista' ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return;
 		}
 		if ( is_user_logged_in() && ( current_user_can( 'edit_posts' ) || apply_filters( 'ps_construccion_bypass', false ) ) ) {
@@ -1029,6 +1030,7 @@ function ps_settings_page() {
 		<h1>Prevsoul</h1>
 		<div style="display:flex;gap:16px;flex-wrap:wrap;margin:16px 0">
 			<?php ps_demo_card(); ?>
+			<?php ps_live_card(); ?>
 			<div class="card" style="margin:0;min-width:240px"><h2 style="margin-top:0">Actualizaciones</h2><p>Versión instalada: <strong><?php echo esc_html( PS_VERSION ); ?></strong><?php $ps_l = ps_gh_latest(); if ( $ps_l && version_compare( $ps_l['version'], PS_VERSION, '>' ) ) { echo '<br>Disponible: <strong>' . esc_html( $ps_l['version'] ) . '</strong>'; } ?></p><p>Las versiones nuevas se instalan solas. Si quieres traerla ya:</p><p><a class="button" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=ps_check_updates' ), 'ps_check_updates' ) ); ?>">Buscar actualizaciones ahora</a></p><p><a href="https://github.com/felipealarconvi-lab/prevsoul-core/releases" target="_blank" rel="noopener">Ver qué cambió en cada versión</a></p></div>
 			<div class="card" style="margin:0;min-width:260px;border-left:4px solid <?php echo ps_construccion_on() ? '#d63638' : '#00a32a'; ?>"><h2 style="margin-top:0">Visibilidad del sitio</h2>
 				<?php if ( ps_construccion_on() ) : ?>
@@ -1279,7 +1281,7 @@ add_shortcode(
 		$o .= $n ? '<span class="ps-chip ps-chip-live"><i class="ps-sala-dot"></i>Sala de espera abierta · ' . (int) $n . ( 1 === $n ? ' odontólogo disponible' : ' odontólogos disponibles' ) . '</span>' : '<span class="ps-chip ps-chip-live is-closed"><i class="ps-sala-dot off"></i>Deja tu consulta · te respondemos pronto</span>';
 		$o .= '<h1>' . esc_html( $a['titulo'] ) . '</h1>' . ( $a['bajada'] ? '<p class="ps-hero-sub">' . esc_html( $a['bajada'] ) . '</p>' : '' );
 		$o .= '<div class="ps-actions"><a class="ps-btn ps-btn-lg" href="' . esc_url( $u1 ) . '">' . esc_html( $a['boton'] ) . '</a>';
-		$o .= $a['boton2'] ? '<a class="ps-btn ps-btn-outline-light ps-btn-lg" href="' . esc_url( $a['boton2_url'] ) . '">' . esc_html( $a['boton2'] ) . '</a>' : '';
+		$o .= ( $a['boton2'] && ! ( function_exists( 'ps_live_visible' ) && ps_is_live_url( $a['boton2_url'] ) && ! ps_live_visible() ) ) ? '<a class="ps-btn ps-btn-outline-light ps-btn-lg" href="' . esc_url( $a['boton2_url'] ) . '">' . esc_html( $a['boton2'] ) . '</a>' : '';
 		return $o . '</div></div></section>';
 	}
 );
@@ -1302,7 +1304,11 @@ add_shortcode(
 		$o  = '<section class="ps-sec ps-bg-' . esc_attr( $bg ) . '"' . ( $a['id'] ? ' id="' . esc_attr( $a['id'] ) . '"' : '' ) . '><div class="ps-wrap">';
 		$o .= $a['titulo'] ? '<h2 class="ps-sec-title">' . esc_html( $a['titulo'] ) . '</h2>' : '';
 		$o .= $a['bajada'] ? '<p class="ps-lead">' . esc_html( $a['bajada'] ) . '</p>' : '';
-		return $o . do_shortcode( shortcode_unautop( trim( $content ) ) ) . '</div></section>';
+		$inner = do_shortcode( shortcode_unautop( trim( $content ) ) );
+		if ( '' !== trim( $content ) && '' === trim( $inner ) ) {
+			return '';
+		}
+		return $o . $inner . '</div></section>';
 	}
 );
 

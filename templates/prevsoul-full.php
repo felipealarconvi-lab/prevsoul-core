@@ -118,7 +118,7 @@ $ps_icon = function ( $d, $size = 22 ) {
 		$url = $pg ? get_permalink( $pg ) : home_url( '/' );
 		$on  = ( $ps_current === $slug );
 		?>
-		<a href="<?php echo esc_url( $url ); ?>" class="<?php echo $on ? 'on' : ''; ?>"<?php echo $on ? ' aria-current="page"' : ''; ?>><?php echo $ps_icon( $t[1] ); // phpcs:ignore ?><span><?php echo esc_html( $t[0] ); ?></span></a>
+		<a href="<?php echo esc_url( $url ); ?>" class="<?php echo $on ? 'on' : ''; ?>"<?php echo $on ? ' aria-current="page"' : ''; ?>><?php echo $ps_icon( $t[1] ); // phpcs:ignore ?><span><?php echo esc_html( $t[0] ); ?></span><?php if ( 'prevsoul-live' === $slug && function_exists( 'ps_live_now' ) ) : ?><i class="ps-sala-dot ps-tab-dot<?php echo ps_live_now() ? '' : ' off'; ?>"></i><?php endif; ?></a>
 	<?php endforeach; ?>
 </nav>
 <?php wp_footer(); ?>

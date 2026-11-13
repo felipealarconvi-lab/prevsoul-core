@@ -525,3 +525,57 @@ add_shortcode(
 		return $out . '</div></div>';
 	}
 );
+
+
+/* -------------------------------------------------------------------------
+ * 1.9: botón «Prevsoul Live» del menú con punto verde (transmitiendo) o gris
+ * ---------------------------------------------------------------------- */
+function ps_live_now() {
+	static $now = null;
+	if ( null === $now ) {
+		$now = (bool) get_posts( array( 'post_type' => 'ps_transmision', 'post_status' => 'publish', 'numberposts' => 1, 'fields' => 'ids', 'meta_key' => '_ps_estado', 'meta_value' => 'en-vivo' ) );
+	}
+	return $now;
+}
+add_filter(
+	'nav_menu_item_title',
+	function ( $title, $item ) {
+		if ( ps_is_live_url( $item->url ) && false === strpos( $title, 'ps-menu-dot' ) ) {
+			$title .= '<i class="ps-sala-dot ps-menu-dot' . ( ps_live_now() ? '' : ' off' ) . '" aria-hidden="true"></i>';
+		}
+		return $title;
+	},
+	10,
+	2
+);
+add_filter(
+	'nav_menu_link_attributes',
+	function ( $atts, $item ) {
+		if ( ps_is_live_url( $item->url ) ) {
+			$atts['title']      = ps_live_now() ? 'Prevsoul Live · en vivo ahora' : 'Prevsoul Live · sin transmisión en este momento';
+			$atts['aria-label'] = $atts['title'];
+		}
+		return $atts;
+	},
+	10,
+	2
+);
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'ps_menu_live_full' ) ) {
+			return;
+		}
+		update_option( 'ps_menu_live_full', 1 );
+		$menu = wp_get_nav_menu_object( 'Menú principal Prevsoul' );
+		if ( ! $menu ) {
+			return;
+		}
+		foreach ( (array) wp_get_nav_menu_items( $menu->term_id ) as $it ) {
+			if ( 'Live' === $it->title ) {
+				wp_update_post( array( 'ID' => $it->ID, 'post_title' => 'Prevsoul Live' ) );
+			}
+		}
+	},
+	45
+);

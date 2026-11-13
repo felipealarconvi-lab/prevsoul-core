@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 1.9.0
+- El botón del menú vuelve a decir «Prevsoul Live» y lleva un punto verde que late cuando hay transmisión en vivo, o gris cuando no. La pestaña Live del celular muestra el mismo punto.
+- Tres anuncios de ejemplo en el carrusel: oferta del Pack Control + Limpieza (rebaja real hasta el 30 de noviembre), Plan Familiar y la próxima transmisión de Prevsoul Live.
+
 ## 1.8.0
 - Menú superior equilibrado: logo a la izquierda, menú centrado entre el logo y una línea divisoria, y carro y Sala de espera a la derecha.
 - Más espacio entre las opciones del menú, letra semi-negrita y la página actual marcada con fondo celeste.

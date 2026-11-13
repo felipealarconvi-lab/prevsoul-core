@@ -405,3 +405,45 @@ add_action(
 		}
 	}
 );
+
+
+/* -------------------------------------------------------------------------
+ * 1.9: anuncios de ejemplo (una sola vez). Se editan o borran en Anuncios.
+ * ---------------------------------------------------------------------- */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'ps_anuncios_ejemplo' ) || ! function_exists( 'wc_get_product_id_by_sku' ) ) {
+			return;
+		}
+		update_option( 'ps_anuncios_ejemplo', 1 );
+		$pack = (int) wc_get_product_id_by_sku( 'PACK-CONTROL' );
+		$fam  = (int) wc_get_product_id_by_sku( 'PLAN-FAM' );
+		$hoy  = wp_date( 'Y-m-d' );
+		$ads  = array(
+			array(
+				'titulo' => 'Pack Control + Limpieza',
+				'm'      => array( 'texto' => 'Evaluación completa, limpieza profesional y tu plan preventivo personalizado.', 'etiqueta' => 'Oferta de noviembre', 'color' => 'promo', 'producto' => $pack ? (string) $pack : '', 'oferta' => $pack ? '39990' : '', 'b1' => 'Comprar ahora', 'b1_url' => '', 'b2' => 'Ver detalles', 'b2_url' => $pack ? get_permalink( $pack ) : '/packs-dentales/', 'desde' => $hoy, 'hasta' => '2026-11-30', 'orden' => 2, 'activo' => '1' ),
+			),
+			array(
+				'titulo' => 'Prevención para toda la familia',
+				'm'      => array( 'texto' => 'Un odontólogo de cabecera para adultos y niños, con precitas ilimitadas.', 'etiqueta' => 'Planes dentales', 'color' => 'brand', 'producto' => $fam ? (string) $fam : '', 'b1' => 'Ver Plan Familiar', 'b1_url' => $fam ? get_permalink( $fam ) : '/planes-dentales/', 'b2' => 'Comparar planes', 'b2_url' => '/planes-dentales/', 'orden' => 3, 'activo' => '1' ),
+			),
+			array(
+				'titulo' => 'Cepillado sin miedo para niños',
+				'm'      => array( 'texto' => 'Transmisión en vivo con nuestras odontólogas. Trae tus preguntas.', 'etiqueta' => 'Prevsoul Live · viernes 20 nov, 19:00', 'color' => 'brand', 'b1' => 'Recordarme', 'b1_url' => '/prevsoul-live/', 'orden' => 4, 'activo' => '1' ),
+			),
+		);
+		foreach ( $ads as $ad ) {
+			$id = wp_insert_post( array( 'post_type' => 'ps_anuncio', 'post_status' => 'publish', 'post_title' => $ad['titulo'] ) );
+			if ( ! $id || is_wp_error( $id ) ) {
+				continue;
+			}
+			foreach ( $ad['m'] as $k => $v ) {
+				update_post_meta( $id, '_ps_' . $k, $v );
+			}
+			ps_anuncio_sync_price( $id );
+		}
+	},
+	50
+);

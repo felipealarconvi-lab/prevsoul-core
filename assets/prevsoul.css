@@ -299,3 +299,9 @@ button.ps-vote-x{color:var(--ps-muted)}
   .ps-logo{font-size:20px}
   .ps-logo svg{width:28px;height:28px}
 }
+
+/* 1.9 · punto de Prevsoul Live en el menú */
+.ps-nav-list a{gap:8px}
+.ps-menu-dot{margin-left:2px}
+.ps-tabbar a{position:relative}
+.ps-tab-dot{position:absolute;top:8px;left:calc(50% + 9px);width:7px;height:7px}

@@ -1,0 +1,26 @@
+name: Publicar versión
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Armar prevsoul-core.zip
+        run: |
+          mkdir -p build/prevsoul-core
+          rsync -a --exclude '.git' --exclude '.github' --exclude 'build' --exclude 'README.md' ./ build/prevsoul-core/
+          cd build && zip -qr prevsoul-core.zip prevsoul-core
+      - name: Publicar en GitHub
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" build/prevsoul-core.zip \
+            --title "Prevsoul Core ${GITHUB_REF_NAME#v}" \
+            --notes "$(git tag -l --format='%(contents)' "${GITHUB_REF_NAME}")"

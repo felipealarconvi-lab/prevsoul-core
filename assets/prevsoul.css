@@ -568,3 +568,9 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-foot-blog ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}.ps-foot-blog a{color:#C9D6EA;text-decoration:none}.ps-foot-blog a:hover{color:#fff}.ps-foot-all{font-weight:800;color:#fff !important}
 @media (max-width:900px){.ps-blog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:600px){.ps-blog-grid,.ps-blog-rel .ps-blog-grid{grid-template-columns:1fr}}
+/* 2.6.0 SEO del blog */
+.ps-blog-lead{background:var(--ps-soft);border-radius:14px;padding:14px 18px;font-size:16px;line-height:1.6;margin:0 0 20px}
+.ps-blog-link{font-size:16px;border-left:3px solid var(--ps-accent);padding:4px 0 4px 12px;margin:14px 0}
+.ps-blog-link a{color:var(--ps-accent);font-weight:800}
+.ps-blog-faq{margin-top:28px}.ps-blog-faq details{border-top:1px solid var(--ps-line);padding:14px 0}.ps-blog-faq details:last-child{border-bottom:1px solid var(--ps-line)}
+.ps-blog-faq summary{font-weight:800;cursor:pointer;color:var(--ps-ink);font-size:17px}.ps-blog-faq details p{margin:8px 0 0}

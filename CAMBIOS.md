@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.2.2
+- Precios con punto de miles también en el carro y el pago (el separador decimal era igual al de miles).
+
 ## 2.2.1
 - Arreglos del carro: «Realiza» ya no aparece dos veces, precios con punto de miles y botón del carro vacío legible.
 - Tablero: «1 pedido» en singular y aviso cuando no hay ventas en el periodo.

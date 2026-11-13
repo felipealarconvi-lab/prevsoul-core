@@ -70,10 +70,10 @@ $ps_icon = function ( $d, $size = 22 ) {
 			<span class="ps-cart-n"><?php echo (int) $ps_cart_count; ?></span>
 		</a>
 		<?php $ps_open = ps_online_count() > 0; ?>
-		<a class="ps-btn ps-head-cta<?php echo $ps_open ? ' is-open' : ''; ?>" href="<?php echo esc_url( $ps_sala ); ?>" aria-label="<?php echo esc_attr( $ps_open ? 'Sala de espera, abierta ahora' : 'Sala de espera, deja tu consulta' ); ?>">
-			<?php echo $ps_icon( $ps_open ? 'M3 21h18M6 21V5a2 2 0 0 1 2-2h7M17 13v8M13 12h.01M14 7h7M18 4l3 3-3 3' : 'M3 21h18M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16M14 12h.01', 20 ); // phpcs:ignore ?>
-			<span class="ps-cta-txt"><span class="ps-cta-main">Sala de espera</span><span class="ps-cta-st"><i class="ps-sala-dot<?php echo $ps_open ? '' : ' off'; ?>"></i><?php echo $ps_open ? 'Abierta ahora' : 'Deja tu consulta'; ?></span></span>
-			<span class="ps-cta-short">Sala<i class="ps-sala-dot<?php echo $ps_open ? '' : ' off'; ?>"></i></span>
+		<a class="ps-btn ps-head-cta<?php echo $ps_open ? ' is-open' : ''; ?>" href="<?php echo esc_url( $ps_sala ); ?>" aria-label="<?php echo esc_attr( $ps_open ? 'Consulta online, abierta ahora' : 'Consulta online, deja tu consulta' ); ?>">
+			<?php echo function_exists( 'ps_icon_video' ) ? ps_icon_video( 20 ) : ''; // phpcs:ignore ?>
+			<span class="ps-cta-txt"><span class="ps-cta-main">Consulta online</span><span class="ps-cta-st"><i class="ps-sala-dot<?php echo $ps_open ? '' : ' off'; ?>"></i><?php echo $ps_open ? 'Abierta ahora' : 'Deja tu consulta'; ?></span></span>
+			<span class="ps-cta-short">Consulta<i class="ps-sala-dot<?php echo $ps_open ? '' : ' off'; ?>"></i></span>
 		</a>
 		</div>
 	</div>

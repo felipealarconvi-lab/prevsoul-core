@@ -57,7 +57,7 @@ add_action(
 				'texto'  => 'Orientación dental gratuita y planes preventivos con odontólogo de cabecera.',
 				'color'  => 'sala',
 				'b1'     => 'Entrar a la sala de espera',
-				'b1_url' => '#sala',
+				'b1_url' => ps_get( 'sala_url' ),
 				'b2'     => 'Ver Prevsoul Live',
 				'b2_url' => '/prevsoul-live/',
 				'orden'  => 1,

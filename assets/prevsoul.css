@@ -437,3 +437,25 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 /* 2.0.1 */
 .ps-bg-oscuro .ps-initials,.ps-sala2-now .ps-initials,.ps-cine .ps-initials{background:var(--ps-accent);color:#fff}
 .ps-sala2-docs .ps-initials{border:3px solid var(--ps-ink)}
+/* 2.1.0 Consulta online */
+.ps-aviso{display:flex;align-items:center;gap:14px;flex-wrap:wrap;border:1px solid var(--ps-line);background:var(--ps-bg);border-radius:16px;padding:14px 18px;color:var(--ps-ink)}
+.ps-aviso-ic{width:44px;height:44px;border-radius:12px;background:var(--ps-accent);color:#fff;display:flex;align-items:center;justify-content:center;flex:none}
+.ps-aviso-tx{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 260px}
+.ps-aviso-tx strong{font-size:17px}
+.ps-aviso-tx span{font-size:14px;color:var(--ps-muted);display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.ps-aviso .ps-btn{margin-left:auto}
+@media (max-width:600px){.ps-aviso .ps-btn{width:100%;margin-left:0}}
+.ps-co-chip{display:inline-flex;align-items:center;gap:7px;background:#fff;color:var(--ps-good);border-radius:999px;font-size:13px;font-weight:700;padding:5px 12px;margin-bottom:12px}
+.ps-co-steps{list-style:none;margin:0 0 28px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.ps-co-steps li{border:1px solid var(--ps-line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:4px;color:var(--ps-muted);font-size:15px}
+.ps-co-steps svg{color:var(--ps-accent);margin-bottom:4px}
+.ps-co-steps strong{color:var(--ps-ink);font-size:17px}
+@media (max-width:760px){.ps-co-steps{grid-template-columns:1fr}}
+.ps-co-faq{max-width:760px}
+.ps-co-faq details{border-top:1px solid var(--ps-line);padding:14px 0}
+.ps-co-faq details:last-child{border-bottom:1px solid var(--ps-line)}
+.ps-co-faq summary{font-weight:800;cursor:pointer;color:var(--ps-ink);font-size:16px}
+.ps-co-faq p{margin:8px 0 0;color:var(--ps-muted)}
+.ps-car-bar{height:4px;border-radius:99px;background:#E3E9F2;margin-top:12px;overflow:hidden}
+.ps-car-bar i{display:block;height:100%;width:0;background:var(--ps-accent);transition:width .1s linear}
+.ps-de{flex:none}

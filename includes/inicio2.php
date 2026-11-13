@@ -14,9 +14,10 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Dienteestrella
  * ---------------------------------------------------------------------- */
 function ps_diente_svg( $on = true, $size = 16 ) {
-	$tooth = '<path d="M8 6.3c-2.1 0-3.4 1.6-3.4 3.7 0 1.7.7 2.8 1.3 4.2.6 1.6.8 3.7 1.3 5.4.3 1.2 1.5 1.3 1.9 0l.7-3c.3-.9.9-1.3 1.4-1.3s1.1.4 1.4 1.3l.7 3c.4 1.3 1.6 1.2 1.9 0 .5-1.7.7-3.8 1.3-5.4.6-1.4 1.3-2.5 1.3-4.2 0-2.1-1.3-3.7-3.4-3.7-1.5 0-2.4.8-4.1.8S9.5 6.3 8 6.3z" fill="#fff" stroke="' . ( $on ? '#F5B301' : '#C9D3E2' ) . '" stroke-width="1.6" stroke-linejoin="round"/>';
-	$spark = $on ? '<path d="M12 1.2l.9 2.3 2.3.9-2.3.9-.9 2.3-.9-2.3-2.3-.9 2.3-.9z" fill="#F5B301"/><path d="M8.2 9.2c.5-.7 1.2-1 2-.9" stroke="#FFE08A" stroke-width="1.2" stroke-linecap="round" fill="none"/>' : '';
-	return '<svg class="ps-de" width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 24 24" aria-hidden="true">' . $spark . $tooth . '</svg>';
+	$d     = 'M8 6.3c-2.1 0-3.4 1.6-3.4 3.7 0 1.7.7 2.8 1.3 4.2.6 1.6.8 3.7 1.3 5.4.3 1.2 1.5 1.3 1.9 0l.7-3c.3-.9.9-1.3 1.4-1.3s1.1.4 1.4 1.3l.7 3c.4 1.3 1.6 1.2 1.9 0 .5-1.7.7-3.8 1.3-5.4.6-1.4 1.3-2.5 1.3-4.2 0-2.1-1.3-3.7-3.4-3.7-1.5 0-2.4.8-4.1.8S9.5 6.3 8 6.3z';
+	$tooth = '<path d="' . $d . '" fill="' . ( $on ? '#F5B301' : '#DDE4EE' ) . '" stroke="' . ( $on ? '#D99A00' : '#C9D3E2' ) . '" stroke-width="1.2" stroke-linejoin="round"/>';
+	$spark = $on ? '<path d="M8.3 9.3c.5-.8 1.3-1.1 2.1-1" stroke="#FFE08A" stroke-width="1.3" stroke-linecap="round" fill="none"/><path d="M12 .8l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z" fill="#F5B301"/>' : '';
+	return '<svg class="ps-de" width="' . (int) $size . '" height="' . (int) $size . '" viewBox="0 0 24 24" aria-hidden="true">' . $tooth . $spark . '</svg>';
 }
 function ps_dientes_html( $avg, $count, $size = 16 ) {
 	if ( ! $count ) {
@@ -138,7 +139,7 @@ add_action(
 					return '<p class="ps-muted">Pronto publicaremos opciones en esta sección.</p>';
 				}
 				$id  = 'ps-car-' . wp_unique_id();
-				$out = '<div class="ps-car" data-car><div class="ps-car-nav"><button type="button" class="ps-car-btn" data-dir="-1" aria-controls="' . esc_attr( $id ) . '" aria-label="Anteriores">‹</button><button type="button" class="ps-car-btn" data-dir="1" aria-controls="' . esc_attr( $id ) . '" aria-label="Siguientes">›</button></div><div class="ps-car-track" id="' . esc_attr( $id ) . '" tabindex="0">';
+				$out = '<div class="ps-car" data-car data-auto><div class="ps-car-nav"><button type="button" class="ps-car-btn" data-dir="-1" aria-controls="' . esc_attr( $id ) . '" aria-label="Anteriores">‹</button><button type="button" class="ps-car-btn" data-dir="1" aria-controls="' . esc_attr( $id ) . '" aria-label="Siguientes">›</button></div><div class="ps-car-track" id="' . esc_attr( $id ) . '" tabindex="0">';
 				foreach ( $ps as $p ) {
 					$out .= ps_carrusel_card( $p, $a['tipo'] );
 				}
@@ -162,7 +163,7 @@ function ps_inicio_js() {
 		return '';
 	}
 	$done = true;
-	return "<script>(function(){function ps2(){document.querySelectorAll('[data-car]').forEach(function(c){var t=c.querySelector('.ps-car-track');c.querySelectorAll('.ps-car-btn').forEach(function(b){b.addEventListener('click',function(){var card=t.firstElementChild;var w=card?card.getBoundingClientRect().width+16:260;t.scrollBy({left:w*(+b.dataset.dir)*(window.innerWidth>860?2:1),behavior:'smooth'})})})});document.querySelectorAll('[data-cd]').forEach(function(el){var end=new Date(el.dataset.cd).getTime();function tk(){var r=Math.max(0,(end-Date.now())/1000),p=function(n){return String(Math.floor(n)).padStart(2,'0')};el.querySelector('[data-d]').textContent=p(r/86400);el.querySelector('[data-h]').textContent=p(r%86400/3600);el.querySelector('[data-m]').textContent=p(r%3600/60);el.querySelector('[data-s]').textContent=p(r%60)}tk();setInterval(tk,1000)});document.querySelectorAll('.ps-sala2-chips input').forEach(function(i){i.addEventListener('change',function(){var f=i.closest('form');if(f)f.classList.add('ps-step2')})})}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',ps2)}else{ps2()}})();</script>";
+	return "<script>(function(){function ps2(){document.querySelectorAll('[data-car]').forEach(function(c){var t=c.querySelector('.ps-car-track');var st=function(dir){var card=t.firstElementChild;var w=card?card.getBoundingClientRect().width+16:260;var max=t.scrollWidth-t.clientWidth;if(dir>0&&t.scrollLeft>=max-5){t.scrollTo({left:0,behavior:'smooth'});return}t.scrollBy({left:w*dir*(window.innerWidth>860?2:1),behavior:'smooth'})};c.querySelectorAll('.ps-car-btn').forEach(function(b){b.addEventListener('click',function(){st(+b.dataset.dir);t0=Date.now()})});var auto=c.hasAttribute('data-auto')&&!(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches);if(!auto)return;var bar=document.createElement('div');bar.className='ps-car-bar';bar.innerHTML='<i></i>';c.appendChild(bar);var bi=bar.firstChild,t0=Date.now(),hold=false;['mouseenter','touchstart','focusin'].forEach(function(e){c.addEventListener(e,function(){hold=true},{passive:true})});['mouseleave','touchend','focusout'].forEach(function(e){c.addEventListener(e,function(){hold=false;t0=Date.now()},{passive:true})});setInterval(function(){if(hold||document.hidden||t.scrollWidth<=t.clientWidth+5){bi.style.width='0';t0=Date.now();return}var p=Math.min(1,(Date.now()-t0)/4000);bi.style.width=(p*100)+'%';if(p>=1){t0=Date.now();st(1)}},100)});document.querySelectorAll('[data-cd]').forEach(function(el){var end=new Date(el.dataset.cd).getTime();function tk(){var r=Math.max(0,(end-Date.now())/1000),p=function(n){return String(Math.floor(n)).padStart(2,'0')};el.querySelector('[data-d]').textContent=p(r/86400);el.querySelector('[data-h]').textContent=p(r%86400/3600);el.querySelector('[data-m]').textContent=p(r%3600/60);el.querySelector('[data-s]').textContent=p(r%60)}tk();setInterval(tk,1000)});document.querySelectorAll('.ps-sala2-chips input').forEach(function(i){i.addEventListener('change',function(){var f=i.closest('form');if(f)f.classList.add('ps-step2')})})}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',ps2)}else{ps2()}})();</script>";
 }
 
 /* -------------------------------------------------------------------------
@@ -435,7 +436,7 @@ function ps_inicio2_content() {
 	return ps_sc( '[ps_hero titulo="Habla ahora con un odontólogo real" bajada="Orientación dental gratuita y planes preventivos con odontólogo de cabecera." boton="Entrar a la sala de espera" boton_url="#sala" boton2="Ver Prevsoul Live" boton2_url="/prevsoul-live/"]' )
 		. ps_sc( '[ps_seccion fondo="blanco"][ps_buscador][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="claro" titulo="Atención dental" bajada="Las mejor valoradas por nuestros pacientes."][ps_carrusel tipo="atencion" ver_todo="/atencion-dental/"][/ps_seccion]' )
-		. ps_sc( '[ps_seccion id="sala" fondo="blanco" titulo="Sala de espera" bajada="Una precita gratuita con un odontólogo real, desde donde estés."][ps_sala_espera][/ps_seccion]' )
+		. ps_sc( '[ps_seccion fondo="blanco"][ps_consulta_aviso][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="claro" titulo="Packs dentales" bajada="Todo lo que necesitas, en un solo pack."][ps_carrusel tipo="packs" ver_todo="/packs-dentales/"][/ps_seccion]' )
 		. ps_sc( '[ps_live_cine]' )
 		. ps_sc( '[ps_seccion fondo="blanco" titulo="Planes dentales" bajada="Tu odontólogo de cabecera todo el año. Elige el plan para ti."][ps_planes][/ps_seccion]' )

@@ -1,5 +1,12 @@
 # Cambios de Prevsoul Core
 
+## 2.1.0
+- El botón de la cabecera ahora dice «Consulta online» (en el celular, «Consulta»), con ícono de video y el punto verde de disponibilidad.
+- Nueva página exclusiva «Consulta online» con cómo funciona, la sala de espera y preguntas frecuentes. La dirección antigua /sala-de-espera/ redirige a la nueva.
+- En el inicio, la sala de espera completa se reemplaza por un aviso pequeño que lleva a la consulta online.
+- Dienteestrella amarillo relleno, como las clásicas 5 estrellas; los vacíos en gris claro.
+- Los carruseles de Atención dental y Packs avanzan solos cada 4 segundos, vuelven al inicio y se pausan al pasar el mouse o tocarlos.
+
 ## 2.0.1
 - Arreglo: la cuenta regresiva de Live y las flechas de los carruseles ahora funcionan.
 - Arreglo: las iniciales de los odontólogos se ven sobre los fondos azul oscuro.

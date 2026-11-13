@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.0.1
+ * Version:           2.1.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.0.1' );
+define( 'PS_VERSION', '2.1.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -23,6 +23,7 @@ require_once __DIR__ . '/includes/demo.php';
 require_once __DIR__ . '/includes/anuncios.php';
 require_once __DIR__ . '/includes/live.php';
 require_once __DIR__ . '/includes/inicio2.php';
+require_once __DIR__ . '/includes/consulta.php';
 
 /* 1.8: nombres cortos en el menú principal (una sola vez; después se editan en Apariencia → Menús). */
 add_action(
@@ -78,7 +79,7 @@ function ps_default_settings() {
 		'video_url'    => '',
 		'whatsapp'     => '',
 		'notify_email' => get_option( 'admin_email' ),
-		'sala_url'     => home_url( '/sala-de-espera/' ),
+		'sala_url'     => home_url( '/consulta-online/' ),
 		'monthly'      => 9990,
 		'years'        => 5,
 		'treatments'   => "Obturación (tapadura) | 45000 | 3\nEndodoncia | 180000 | 1\nCorona | 350000 | 1\nTratamiento periodontal | 250000 | 1\nUrgencia por dolor | 40000 | 2",

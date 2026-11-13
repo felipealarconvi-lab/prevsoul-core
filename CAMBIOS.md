@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.2.3
+- Precios del carro y el pago con punto de miles (el separador decimal estaba vacío).
+
 ## 2.2.2
 - Precios con punto de miles también en el carro y el pago (el separador decimal era igual al de miles).
 

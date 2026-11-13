@@ -53,12 +53,13 @@ add_filter(
 add_action(
 	'init',
 	function () {
-		if ( get_option( 'ps_precio_cl2' ) || ! function_exists( 'get_woocommerce_currency' ) ) {
+		if ( get_option( 'ps_precio_cl3' ) || ! function_exists( 'get_woocommerce_currency' ) ) {
 			return;
 		}
-		update_option( 'ps_precio_cl2', 1 );
+		update_option( 'ps_precio_cl3', 1 );
 		$mil = (string) get_option( 'woocommerce_price_thousand_sep' );
-		if ( '' === $mil || $mil === (string) get_option( 'woocommerce_price_decimal_sep' ) ) {
+		$dec = (string) get_option( 'woocommerce_price_decimal_sep' );
+		if ( '' === $mil || '' === $dec || $mil === $dec ) {
 			update_option( 'woocommerce_price_thousand_sep', '.' );
 			update_option( 'woocommerce_price_decimal_sep', ',' );
 			update_option( 'woocommerce_price_num_decimals', 0 );

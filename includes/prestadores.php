@@ -808,3 +808,10 @@ add_action(
 		exit;
 	}
 );
+
+add_action(
+	'admin_head',
+	function () {
+		echo '<style>.wp-list-table .column-ps_prestador{width:150px}.wp-list-table .column-ps_prest{width:160px}</style>';
+	}
+);

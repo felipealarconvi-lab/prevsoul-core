@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 1.4.1
+- Columna «Realiza» más legible en la lista de productos.
+
 ## 1.4.0
 - Cada producto indica quién realiza el tratamiento, con foto del profesional o logo de la clínica.
 - Al confirmarse el pago se crea una orden de atención por tratamiento y se avisa por correo al prestador.

@@ -87,19 +87,19 @@ function ps_logo_svg( $ctx = 'header', $color = '#1D5FD1', $bg = '#fff', $slug =
 	$t    = '<path d="' . $a['tooth'] . '" fill="' . esc_attr( $fill ) . '" stroke="' . esc_attr( $color ) . '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
 	switch ( $slug ) {
 		case 'navidad':
-			$vb  = 'full' === $ctx ? '-5 -7 31 31' : ( 'icon' === $ctx ? '-4 -6 27 27' : '-4 -6 28 28' );
+			$vb  = 'full' === $ctx ? '-5 -7 31 31' : ( 'icon' === $ctx ? '-4 -6 27 27' : '-3.4 -5 22.4 26.6' );
 			$in  = ( 'full' === $ctx ? $a['xmas_deco'] : '' ) . $t . $a['xmas_hat'] . ( 'header' === $ctx ? $a['xmas_hdr'] : '' );
 			break;
 		case 'primavera':
-			$vb  = 'full' === $ctx ? '-5 -5 31 31' : ( 'icon' === $ctx ? '-3 -3 26 26' : '-3 -4 28 28' );
+			$vb  = 'full' === $ctx ? '-5 -5 31 31' : ( 'icon' === $ctx ? '-3 -3 26 26' : '0.4 -2.4 22.6 24.4' );
 			$in  = 'full' === $ctx ? $a['sp_sky'] . $t . $a['sp_ground'] . $a['sp_crown'] : ( 'header' === $ctx ? $a['sp_hdr'] : '' ) . $t . $a['sp_crown'];
 			break;
 		case 'verano':
-			$vb  = 'full' === $ctx ? '-5 -5 31 31' : '-3 -4 28 28';
+			$vb  = 'full' === $ctx ? '-5 -5 31 31' : ( 'icon' === $ctx ? '-3 -4 28 28' : '2 -5.2 21.8 27' );
 			$in  = $a['su_back'] . $t . $a['su_glasses'] . ( 'full' === $ctx ? $a['su_waves'] : '' );
 			break;
 		default:
-			$vb = '0 0 24 24';
+			$vb = 'icon' === $ctx ? '0 0 24 24' : '2 1.4 18.2 21';
 			$in = $t;
 	}
 	return '<svg class="ps-logo-svg ps-logo-' . esc_attr( $slug ) . '" viewBox="' . $vb . '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' . $in . '</svg>';

@@ -496,13 +496,14 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-carro .wc-block-components-product-name{font-weight:800 !important;color:var(--ps-accent) !important}
 .ps-carro .wp-block-woocommerce-empty-cart-block .wp-block-button__link{background:var(--ps-accent) !important;color:#fff !important;border-radius:10px;font-weight:800}
 .ps-carro .wc-block-components-product-details__name{font-weight:700}
-/* 2.3.0 Logos de temporada */
-.ps-logo .ps-logo-svg{width:34px;height:34px;flex:none;overflow:visible}
-.ps-logo .ps-logo-svg:not(.ps-logo-base){width:48px;height:48px;margin:-8px -4px -8px -6px}
-.ps-foot-brand{display:inline-flex;align-items:center;gap:8px}
-.ps-foot-brand .ps-logo-svg{width:44px;height:44px;flex:none}
-.ps-foot-brand .ps-logo-svg:not(.ps-logo-base){width:64px;height:64px;margin:-10px -4px -10px -8px}
+/* 2.3.0 Logos de temporada · 2.3.1 más junto al texto */
+.ps-logo{gap:3px}
+.ps-logo .ps-logo-svg{height:34px;width:auto;flex:none;overflow:visible}
+.ps-logo .ps-logo-svg:not(.ps-logo-base){height:46px;margin:-6px 0}
+.ps-foot-brand{display:inline-flex;align-items:center;gap:4px}
+.ps-foot-brand .ps-logo-svg{height:40px;width:auto;flex:none}
+.ps-foot-brand .ps-logo-svg:not(.ps-logo-base){height:64px;margin:-12px -6px -12px -10px}
 @media (max-width:860px){
-  .ps-logo .ps-logo-svg{width:28px;height:28px}
-  .ps-logo .ps-logo-svg:not(.ps-logo-base){width:42px;height:42px;margin:-7px -3px -7px -5px}
+  .ps-logo .ps-logo-svg{height:28px}
+  .ps-logo .ps-logo-svg:not(.ps-logo-base){height:38px;margin:-5px 0}
 }

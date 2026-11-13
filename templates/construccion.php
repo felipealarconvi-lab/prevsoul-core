@@ -26,8 +26,8 @@ if ( '56912345678' === $ps_wa ) {
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;color:var(--navy);background:#fff;display:flex;flex-direction:column;min-height:100vh}
-.top{padding:22px 28px;display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.02em}
-.top svg{width:28px;height:28px}.top .ps-logo-svg:not(.ps-logo-base){width:42px;height:42px;margin:-7px -2px -7px -6px}
+.top{padding:22px 28px;display:flex;align-items:center;gap:4px;font-weight:800;font-size:22px;letter-spacing:-.02em}
+.top svg{width:28px;height:28px}.top .ps-logo-svg{width:auto;height:28px}.top .ps-logo-svg:not(.ps-logo-base){height:40px;margin:-6px 0}
 main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px 24px 40px}
 .art{width:min(300px,72vw);height:auto;margin-bottom:8px}
 h1{font-size:clamp(34px,6vw,54px);line-height:1.05;letter-spacing:-.03em;margin:8px 0 12px;font-weight:800}

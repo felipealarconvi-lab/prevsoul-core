@@ -44,7 +44,7 @@ $ps_icon = function ( $d, $size = 22 ) {
 			if ( has_custom_logo() ) {
 				echo wp_kses_post( wp_get_attachment_image( get_theme_mod( 'custom_logo' ), 'medium', false, array( 'class' => 'ps-logo-img', 'alt' => 'Prevsoul' ) ) );
 			} else {
-				echo '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1D5FD1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3c-2.5 0-4 2-4 4.5 0 2 .8 3.4 1.5 5 .8 2 1 4.5 1.6 6.6.4 1.5 1.9 1.6 2.3 0l.9-3.6c.3-1 1.1-1.5 1.7-1.5s1.4.5 1.7 1.5l.9 3.6c.4 1.6 1.9 1.5 2.3 0 .6-2.1.8-4.6 1.6-6.6.7-1.6 1.5-3 1.5-5C21 5 19.5 3 17 3c-1.8 0-3 1-5 1S8.8 3 7 3z"></path></svg><span>prevsoul</span>';
+				echo ( function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'header' ) : '' ) . '<span>prevsoul</span>'; // phpcs:ignore
 			}
 			?>
 		</a>
@@ -91,7 +91,7 @@ $ps_icon = function ( $d, $size = 22 ) {
 <footer class="ps-foot">
 	<div class="ps-wrap ps-foot-in">
 		<div>
-			<strong class="ps-foot-brand">prevsoul</strong>
+			<strong class="ps-foot-brand"><?php echo function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'full', '#fff', '#0B2545' ) : ''; // phpcs:ignore ?>prevsoul</strong>
 			<p>Planes dentales preventivos con odontólogo de cabecera.</p>
 		</div>
 		<nav aria-label="Pie de página">

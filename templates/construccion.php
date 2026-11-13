@@ -27,7 +27,7 @@ if ( '56912345678' === $ps_wa ) {
 html,body{margin:0;height:100%}
 body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;color:var(--navy);background:#fff;display:flex;flex-direction:column;min-height:100vh}
 .top{padding:22px 28px;display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.02em}
-.top svg{width:28px;height:28px}
+.top svg{width:28px;height:28px}.top .ps-logo-svg:not(.ps-logo-base){width:42px;height:42px;margin:-7px -2px -7px -6px}
 main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px 24px 40px}
 .art{width:min(300px,72vw);height:auto;margin-bottom:8px}
 h1{font-size:clamp(34px,6vw,54px);line-height:1.05;letter-spacing:-.03em;margin:8px 0 12px;font-weight:800}
@@ -54,7 +54,7 @@ footer{padding:20px;text-align:center;font-size:13px;color:var(--muted)}
 </head>
 <body>
 <header class="top">
-	<svg viewBox="0 0 24 24" fill="none" stroke="#1D5FD1" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3c-2.5 0-4 2-4 4.5 0 2.8 1.2 4.3 1.8 7 .6 3 1 6.5 2.7 6.5 1.6 0 1.6-4.5 4.5-4.5s2.9 4.5 4.5 4.5c1.7 0 2.1-3.5 2.7-6.5.6-2.7 1.8-4.2 1.8-7C21 5 19.5 3 17 3c-2 0-3 1-5 1S9 3 7 3z"/></svg>
+	<?php echo function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'header' ) : ''; // phpcs:ignore ?>
 	prevsoul
 </header>
 <main>

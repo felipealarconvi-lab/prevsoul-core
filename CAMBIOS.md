@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.3.0
+- Nuevo logo: diente con un trozo faltante de borde irregular en la corona, para recordar lo que la prevención evita.
+- Logos de temporada que cambian solos por fecha (Prevsoul → Logos de temporada): Verano (21 al 30 de noviembre y 7 de enero al 20 de marzo), Navidad (1 de diciembre al 6 de enero) y Primavera (21 al 30 de septiembre, desde 2027). Fechas editables, cada una se puede apagar y hay opción para fijar un logo a mano.
+- El logo se usa en la cabecera, el pie de página, la página «Estamos restaurando» y el ícono de la pestaña.
+
 ## 2.2.3
 - Precios del carro y el pago con punto de miles (el separador decimal estaba vacío).
 

@@ -162,7 +162,7 @@ add_filter(
 		$blog  = get_page_by_path( 'blog' );
 		$burl  = $blog ? get_permalink( $blog ) : home_url( '/blog/' );
 		$planes = get_page_by_path( 'planes-dentales' );
-		$head  = '<nav class="ps-blog-bc" aria-label="Migas"><a href="' . esc_url( $burl ) . '">Blog</a> › ' . esc_html( PS_BLOG_ETAPAS[ $e ][1] ) . '</nav><h1 class="ps-blog-h1">' . esc_html( get_the_title() ) . '</h1><p class="ps-blog-meta">' . ( $m ? $m . ' min de lectura · ' : '' ) . 'Equipo odontológico Prevsoul</p>';
+		$head  = '<nav class="ps-blog-bc" aria-label="Migas"><a href="' . esc_url( $burl ) . '">Blog</a> › ' . esc_html( PS_BLOG_ETAPAS[ $e ][1] ) . '</nav><h1 class="ps-blog-h1">' . esc_html( get_the_title() ) . '</h1><p class="ps-blog-meta">' . esc_html( apply_filters( 'ps_blog_meta_line', ( $m ? $m . ' min de lectura · ' : '' ) . 'Equipo odontológico Prevsoul', $id ) ) . '</p>';
 		$cta   = '<div class="ps-blog-cta"><div><strong>Corta la espiral en la fase 0</strong><span>Controles y detección temprana con tu odontólogo de cabecera.</span></div><a class="ps-btn" href="' . esc_url( $planes ? get_permalink( $planes ) : home_url( '/planes-dentales/' ) ) . '">Ver planes</a><a class="ps-btn ps-btn-ghost" href="' . esc_url( ps_get( 'sala_url' ) ) . '">Consulta online gratis</a></div><p class="ps-blog-aviso">Contenido informativo basado en evidencia. No reemplaza una evaluación odontológica personal.</p>';
 		$rel   = ps_blog_posts( array( 'numberposts' => 2, 'post__not_in' => array( $id ), 'meta_query' => array( array( 'key' => '_ps_etapa', 'value' => $e ) ) ) ); // phpcs:ignore WordPress.DB.SlowDBQuery
 		$more  = '';

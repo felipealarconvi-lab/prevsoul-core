@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.6.0
+- SEO del blog: título (máx. 60) y descripción (máx. 155) con palabra clave por artículo, resumen «En pocas palabras», enlace interno contextual, 3 preguntas frecuentes por artículo, firma «Revisado por Dr. Felipe Alarcón Villarroel, Cirujano Dentista» con fecha de actualización.
+- Open Graph y Twitter Card con imagen propia 1200×630 por artículo y para la portada del blog.
+- Datos estructurados schema.org: BlogPosting, WebPage con revisor, BreadcrumbList, FAQPage y CollectionPage en la portada.
+
 ## 2.5.0
 - Nuevo Blog Prevsoul (/blog/): 14 artículos fundamentados en el estudio «La historia de un diente», con fuentes, filtros por etapa (Entender la caries, Comparar caminos, Decidir con información), llamado a planes y consulta online, y «Sigue leyendo».
 - Columna «Blog Prevsoul» en el pie de página con 3 artículos destacados.

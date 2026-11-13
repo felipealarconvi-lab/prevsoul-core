@@ -1,5 +1,14 @@
 # Cambios de Prevsoul Core
 
+## 2.0.0
+- Nuevo orden del inicio: slider, buscador, atención dental, sala de espera, packs, Prevsoul Live, planes; al final ahorro, odontólogos y llamado a prevenir. Se guarda una copia del contenido anterior de la página.
+- Buscador más humano, con saludo de una odontóloga y dos líneas de tags (Lo que sientes / Tratamientos) editables en Prevsoul → Tags del buscador. Si no reconoce la necesidad, busca por nombre de tratamiento.
+- Atención dental y packs en carrusel con foto, ordenados por valoración, con el mejor comentario positivo y quién realiza el tratamiento.
+- Nuevo ícono «dienteestrella» para todas las valoraciones del sitio.
+- Sala de espera en formato conversación, con panel en vivo de odontólogos conectados y personas esperando.
+- Prevsoul Live en formato «cine» con cuenta regresiva, Recordarme y grabaciones anteriores.
+- Planes en tabla de comparación con «El más elegido».
+
 ## 1.9.0
 - El botón del menú vuelve a decir «Prevsoul Live» y lleva un punto verde que late cuando hay transmisión en vivo, o gris cuando no. La pestaña Live del celular muestra el mismo punto.
 - Tres anuncios de ejemplo en el carrusel: oferta del Pack Control + Limpieza (rebaja real hasta el 30 de noviembre), Plan Familiar y la próxima transmisión de Prevsoul Live.

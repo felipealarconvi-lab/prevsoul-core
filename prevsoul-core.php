@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           1.9.0
+ * Version:           2.0.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '1.9.0' );
+define( 'PS_VERSION', '2.0.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -22,6 +22,7 @@ require_once __DIR__ . '/includes/prestadores.php';
 require_once __DIR__ . '/includes/demo.php';
 require_once __DIR__ . '/includes/anuncios.php';
 require_once __DIR__ . '/includes/live.php';
+require_once __DIR__ . '/includes/inicio2.php';
 
 /* 1.8: nombres cortos en el menú principal (una sola vez; después se editan en Apariencia → Menús). */
 add_action(
@@ -493,6 +494,9 @@ function ps_rating( $post_id ) {
 	);
 }
 function ps_stars_html( $avg, $count ) {
+	if ( function_exists( 'ps_dientes_html' ) ) {
+		return ps_dientes_html( (float) $avg, (int) $count );
+	}
 	$full = (int) round( $avg );
 	$txt  = str_repeat( '★', $full ) . str_repeat( '☆', 5 - $full );
 	$lbl  = $count ? sprintf( 'Promedio %s de 5 (%d valoraciones)', number_format( $avg, 1, ',', '' ), $count ) : 'Sin valoraciones aún';
@@ -1096,6 +1100,7 @@ function ps_settings_page() {
 			</table>
 			<?php submit_button( 'Guardar ajustes' ); ?>
 		</form>
+		<?php ps_tags_card(); ?>
 		<h2>Bloques para tus páginas</h2>
 		<p>En Elementor, arrastra el widget <strong>Shortcode</strong> y pega uno de estos códigos:</p>
 		<table class="widefat striped" style="max-width:900px"><tbody>

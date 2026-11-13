@@ -1,5 +1,13 @@
 # Cambios de Prevsoul Core
 
+## 1.4.0
+- Cada producto indica quién realiza el tratamiento, con foto del profesional o logo de la clínica.
+- Al confirmarse el pago se crea una orden de atención por tratamiento y se avisa por correo al prestador.
+- El paciente recibe los pasos a seguir y los datos de contacto para agendar (página de gracias, Mi cuenta y correo).
+- Panel de prestadores en prevsoul.cl/panel-prestador: órdenes por agendar, agendadas y realizadas.
+- Comisión Prevsoul del 20% por defecto, con porcentaje o monto fijo propio por producto.
+- Liquidación: lo que se le debe a cada prestador y registro de pagos.
+
 ## 1.3.1
 - Enlace «Ver qué cambió en cada versión» en el recuadro Actualizaciones.
 - Primera actualización automática de prueba.

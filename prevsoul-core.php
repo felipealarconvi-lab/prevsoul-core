@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           1.3.1
+ * Version:           1.4.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,10 +14,11 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '1.3.1' );
+define( 'PS_VERSION', '1.4.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
+require_once __DIR__ . '/includes/prestadores.php';
 
 const PS_RANKS = array(
 	0 => 'Asociado',
@@ -161,12 +162,20 @@ function ps_fields() {
 			'clinica' => array( 'Clínica', 'clinica', '' ),
 			'rango'   => array( 'Rango dentro de Prevsoul', 'rank', '' ),
 			'activo'  => array( 'Disponible en la sala de espera', 'check', '' ),
+			'telefono' => array( 'Teléfono de contacto para pacientes', 'text', '+56 9 …' ),
+			'whatsapp' => array( 'WhatsApp', 'text', '56912345678' ),
+			'email'    => array( 'Correo (recibe los avisos de tratamientos vendidos)', 'text', 'nombre@correo.cl' ),
+			'agenda'   => array( 'Cómo agendar (se muestra al paciente después de comprar)', 'textarea', 'Ej: Escríbenos por WhatsApp con tu número de pedido y te damos hora dentro de 48 horas.' ),
 		),
 		'ps_clinica'     => array(
 			'direccion' => array( 'Dirección', 'text', 'Calle, número, comuna' ),
 			'telefono'  => array( 'Teléfono', 'text', '+56 9 …' ),
 			'horario'   => array( 'Horario', 'text', 'Ej: Lunes a viernes 9:00 a 19:00' ),
 			'mapa'      => array( 'Enlace a Google Maps', 'url', 'https://maps.google.com/…' ),
+			'logo'      => array( 'Logo de la clínica', 'image', '' ),
+			'whatsapp'  => array( 'WhatsApp', 'text', '56912345678' ),
+			'email'     => array( 'Correo (recibe los avisos de tratamientos vendidos)', 'text', 'agenda@clinica.cl' ),
+			'agenda'    => array( 'Cómo agendar (se muestra al paciente después de comprar)', 'textarea', 'Ej: Llama al +56 2 … de lunes a viernes, indica tu número de pedido Prevsoul y te agendamos.' ),
 		),
 		'ps_transmision' => array(
 			'fecha'      => array( 'Fecha y hora', 'datetime', '' ),
@@ -248,6 +257,10 @@ function ps_render_meta_box( $post ) {
 				}
 				echo '</select>';
 				break;
+			case 'image':
+				$src = $val ? wp_get_attachment_image_url( (int) $val, 'thumbnail' ) : '';
+				echo '<div class="ps-img-field"><img src="' . esc_url( (string) $src ) . '" alt="" style="width:80px;height:80px;border-radius:50%;object-fit:contain;background:#f0f0f1;border:1px solid #dcdcde;vertical-align:middle;' . ( $src ? '' : 'display:none;' ) . '"> <input type="hidden" id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" value="' . esc_attr( $val ) . '"> <button type="button" class="button ps-img-pick">Elegir imagen</button> <button type="button" class="button-link ps-img-clear"' . ( $val ? '' : ' style="display:none"' ) . '>Quitar</button><p class="description">Se muestra en un círculo junto a los productos que realiza. Ideal: cuadrado y con fondo blanco.</p></div>';
+				break;
 			case 'datetime':
 				echo '<input type="datetime-local" id="' . esc_attr( $id ) . '" name="' . esc_attr( $id ) . '" value="' . esc_attr( $val ) . '">';
 				break;
@@ -264,7 +277,7 @@ function ps_render_meta_box( $post ) {
 		echo '<p class="description">La <strong>foto profesional</strong> se sube en «Imagen destacada» (columna derecha). La <strong>descripción profesional</strong> va en el texto principal. Las valoraciones llegan como comentarios con estrellas y se aprueban en Comentarios.</p>';
 	}
 	if ( 'ps_clinica' === $post->post_type ) {
-		echo '<p class="description">La <strong>foto de la clínica</strong> se sube en «Imagen destacada».</p>';
+		echo '<p class="description">La <strong>foto de la clínica</strong> se sube en «Imagen destacada»; el <strong>logo</strong> va en el campo «Logo de la clínica».</p>';
 	}
 }
 
@@ -300,7 +313,8 @@ function ps_save_meta( $post_id, $post ) {
 			case 'clinica':
 			case 'odontologo':
 			case 'rank':
-				$v = (string) absint( $raw );
+			case 'image':
+				$v = $raw ? (string) absint( $raw ) : '';
 				break;
 			default:
 				$v = sanitize_text_field( $raw );
@@ -767,6 +781,7 @@ function ps_product_card( $p ) {
 	$price  = $p->get_price();
 	$items  = array_filter( array_map( 'trim', explode( "\n", wp_strip_all_tags( $p->get_description() ) ) ) );
 	$out    = '<article class="ps-card ps-product"><h4 class="ps-card-title"><a href="' . esc_url( $p->get_permalink() ) . '">' . esc_html( $p->get_name() ) . '</a></h4>';
+	$out   .= ps_prestador_chip( $p->get_id() );
 	$out   .= '<p class="ps-muted ps-small">' . esc_html( wp_strip_all_tags( $p->get_short_description() ) ) . '</p>';
 	if ( $items ) {
 		$out .= '<ul class="ps-checks">';
@@ -917,10 +932,10 @@ add_action(
 		if ( ! ps_construccion_on() || is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
 			return;
 		}
-		if ( ! empty( $wp->query_vars['rest_route'] ) || isset( $_GET['wc-ajax'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+		if ( ! empty( $wp->query_vars['rest_route'] ) || isset( $_GET['wc-ajax'] ) || 'panel-prestador' === trim( (string) $wp->request, '/' ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			return;
 		}
-		if ( is_user_logged_in() && current_user_can( 'edit_posts' ) ) {
+		if ( is_user_logged_in() && ( current_user_can( 'edit_posts' ) || apply_filters( 'ps_construccion_bypass', false ) ) ) {
 			return;
 		}
 		status_header( 503 );

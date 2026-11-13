@@ -147,3 +147,27 @@ body.ps-body{margin:0;background:#fff;color:var(--ps-ink);font-family:'Plus Jaka
 button.ps-btn,button.ps-btn[type],.ps-search button.ps-btn[type="submit"],form button.ps-btn[type="submit"]{background:var(--ps-accent);color:#fff !important;border:0;border-radius:10px;min-height:46px;padding:10px 20px;font-weight:800;font-size:15px;cursor:pointer;line-height:1.2;text-transform:none;box-shadow:none}
 button.ps-btn[type]:hover,button.ps-btn[type]:focus{background:var(--ps-accent-ink);color:#fff !important}
 button.ps-btn-ghost[type]{background:#fff;color:var(--ps-accent) !important;border:2px solid var(--ps-accent)}
+
+/* 1.4 · prestadores, pasos a seguir y panel */
+.ps-prest{display:flex;align-items:center;gap:10px;margin:2px 0 10px}
+.ps-prest a,.ps-prest strong{font-weight:700;color:var(--ps-ink);text-decoration:none;line-height:1.25}
+.ps-prest a:hover{color:var(--ps-accent)}
+.ps-prest-k{display:block;font-size:12px;color:var(--ps-muted);font-weight:600;line-height:1.3}
+.ps-avatar.ps-logo{background:#fff;border:1px solid var(--ps-line);object-fit:contain;padding:3px}
+.ps-pasos{margin:28px 0;display:flex;flex-direction:column;gap:14px}
+.ps-pasos h2{margin:0;font-size:24px}
+.ps-pasos-list{margin:0;padding-left:22px;line-height:1.7}
+.ps-paso .ps-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.ps-panel{display:flex;flex-direction:column;gap:16px}
+.ps-panel-head h2{margin:0;font-size:26px}
+.ps-tiles{display:flex;flex-wrap:wrap;gap:12px}
+.ps-warn{background:#FFF4E5;color:#8A4B00}
+.ps-orden-top{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.ps-orden-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:12px 0}
+.ps-orden-grid strong{display:block}
+.ps-orden-form{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;border-top:1px solid var(--ps-line);padding-top:12px}
+.ps-orden-form label{display:flex;flex-direction:column;gap:4px}
+.ps-orden-form input[type=datetime-local]{min-height:44px;border:1px solid var(--ps-line);border-radius:10px;padding:6px 10px}
+.ps-panel-login form p{display:flex;flex-direction:column;gap:4px;margin:0 0 12px}
+.ps-panel-login input[type=text],.ps-panel-login input[type=password]{min-height:44px;border:1px solid var(--ps-line);border-radius:10px;padding:8px 12px}
+.ps-panel-login input[type=submit]{background:var(--ps-accent);color:#fff;border:0;border-radius:10px;min-height:46px;padding:10px 20px;font-weight:800;cursor:pointer}

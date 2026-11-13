@@ -451,3 +451,31 @@ function ps_mk_page() {
 </div>
 	<?php
 }
+
+/* ---------- 2.7.1: una vez que el sitio usa https, corregir enlaces internos guardados en http ---------- */
+add_action(
+	'admin_init',
+	function () {
+		if ( get_option( 'ps_https_v1' ) || 'https' !== wp_parse_url( home_url(), PHP_URL_SCHEME ) || ! current_user_can( 'manage_options' ) ) {
+			return;
+		}
+		global $wpdb;
+		$host = wp_parse_url( home_url(), PHP_URL_HOST );
+		$from = 'http://' . $host . '/';
+		$to   = 'https://' . $host . '/';
+		$like = $wpdb->esc_like( $from ) . '%';
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->postmeta} SET meta_value = REPLACE(meta_value, %s, %s) WHERE meta_key LIKE %s AND meta_value LIKE %s", $from, $to, $wpdb->esc_like( '_ps_' ) . '%url', $like ) ); // phpcs:ignore
+		$wpdb->query( $wpdb->prepare( "UPDATE {$wpdb->posts} SET post_content = REPLACE(post_content, %s, %s) WHERE post_status IN ('publish','draft','private','future') AND post_content LIKE %s", $from, $to, '%' . $wpdb->esc_like( $from ) . '%' ) ); // phpcs:ignore
+		$s = get_option( 'ps_settings', array() );
+		if ( is_array( $s ) ) {
+			foreach ( $s as $k => $v ) {
+				if ( is_string( $v ) && 0 === strpos( $v, $from ) ) {
+					$s[ $k ] = $to . substr( $v, strlen( $from ) );
+				}
+			}
+			update_option( 'ps_settings', $s );
+		}
+		update_option( 'ps_https_v1', 1 );
+		wp_cache_flush();
+	}
+);

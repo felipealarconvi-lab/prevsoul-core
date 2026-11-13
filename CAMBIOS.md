@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.7.1
+- El sitio pasa a https: los enlaces internos guardados con http (anuncios del inicio, contenido y ajustes) se corrigen una sola vez.
+
 ## 2.7.0
 - Nueva pantalla Prevsoul → Marketing: Google Analytics 4, Microsoft Clarity, Meta Pixel, Google Tag Manager opcional, verificación de dominio de Meta y redes sociales.
 - Banner de consentimiento de cookies (Aceptar todas / Solo necesarias / Configurar por medición y marketing), recordado 6 meses y reabrible desde «Preferencias de cookies» en el pie. Nada se carga antes de aceptar.

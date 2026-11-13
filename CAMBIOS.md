@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.5.0
+- Nuevo Blog Prevsoul (/blog/): 14 artículos fundamentados en el estudio «La historia de un diente», con fuentes, filtros por etapa (Entender la caries, Comparar caminos, Decidir con información), llamado a planes y consulta online, y «Sigue leyendo».
+- Columna «Blog Prevsoul» en el pie de página con 3 artículos destacados.
+
 ## 2.4.0
 - Planes dentales: nueva sección «¿Para qué un plan si no me duele nada?» con la espiral de un diente en 9 fases (historia natural de la caries y ciclo restaurador), escalera de costos acumulados y cuánto ahorras según dónde se corta. Se puede ver con una muela o con un diente de adelante. Valores del arancel referencial UCO 2026.
 - Íconos nuevos del diente en corte (esmalte, dentina y nervio) para cada fase.

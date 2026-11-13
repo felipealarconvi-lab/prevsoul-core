@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.1.0
+ * Version:           2.2.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.1.0' );
+define( 'PS_VERSION', '2.2.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -24,6 +24,9 @@ require_once __DIR__ . '/includes/anuncios.php';
 require_once __DIR__ . '/includes/live.php';
 require_once __DIR__ . '/includes/inicio2.php';
 require_once __DIR__ . '/includes/consulta.php';
+require_once __DIR__ . '/includes/buscador-admin.php';
+require_once __DIR__ . '/includes/tablero.php';
+require_once __DIR__ . '/includes/carro.php';
 
 /* 1.8: nombres cortos en el menú principal (una sola vez; después se editan en Apariencia → Menús). */
 add_action(
@@ -945,8 +948,12 @@ add_shortcode(
 /** Registro de búsquedas (últimas 300) para ver necesidades sin regla. */
 function ps_log_search( $q, $need ) {
 	$log = get_option( 'ps_search_log', array() );
-	array_unshift( $log, array( 'q' => mb_substr( $q, 0, 120 ), 'need' => $need, 't' => time() ) );
-	update_option( 'ps_search_log', array_slice( $log, 0, 300 ), false );
+	$id  = substr( md5( uniqid( '', true ) ), 0, 10 );
+	$tag = isset( $_GET['ps_t'] ); // phpcs:ignore WordPress.Security.NonceVerification
+	array_unshift( $log, array( 'id' => $id, 'q' => mb_substr( $q, 0, 120 ), 'need' => $need, 't' => time(), 'tag' => $tag ? 1 : 0, 'c' => 0, 'p' => 0 ) );
+	update_option( 'ps_search_log', array_slice( $log, 0, 3000 ), false );
+	$GLOBALS['ps_bus_id'] = $id;
+	return $id;
 }
 
 /* -------------------------------------------------------------------------

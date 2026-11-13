@@ -271,7 +271,16 @@ function ps_crear_ordenes( $order_id ) {
 		}
 		$qty   = (int) $item->get_quantity();
 		$total = (float) $item->get_total() + (float) $item->get_total_tax();
-		$com   = ps_comision( $pid, $total, $qty );
+		$lista = (float) $item->get_subtotal() + (float) $item->get_subtotal_tax();
+		$regla = function_exists( 'ps_regla_cupon' ) ? ps_regla_cupon( $order ) : '';
+		if ( 'prueba' === $regla ) {
+			$pago_c = 0;
+		} elseif ( 'compartido' === $regla || '' === $regla ) {
+			$pago_c = max( 0, $total - ps_comision( $pid, $total, $qty ) );
+		} else {
+			$pago_c = max( 0, $lista - ps_comision( $pid, $lista, $qty ) );
+		}
+		$com = $total - $pago_c;
 		$oid   = wp_insert_post(
 			array(
 				'post_type'   => 'ps_orden',
@@ -295,7 +304,9 @@ function ps_crear_ordenes( $order_id ) {
 			'telefono'   => $order->get_billing_phone(),
 			'monto'      => $total,
 			'comision'   => $com,
-			'pago'       => max( 0, $total - $com ),
+			'pago'       => $pago_c,
+			'lista'      => $lista,
+			'regla'      => $regla,
 			'estado'     => 'recibida',
 			'cita'       => '',
 			'pagada'     => '',
@@ -711,7 +722,7 @@ function ps_orden_box( $post ) {
 	echo '<tr><th>Pedido</th><td>' . ( $order ? '<a href="' . esc_url( $order->get_edit_order_url() ) . '">#' . esc_html( $m( 'numero' ) ) . '</a>' : '#' . esc_html( $m( 'numero' ) ) ) . '</td></tr>';
 	echo '<tr><th>Tratamiento</th><td>' . esc_html( $m( 'producto' ) ) . ' × ' . (int) $m( 'cantidad' ) . '</td></tr>';
 	echo '<tr><th>Paciente</th><td>' . esc_html( $m( 'paciente' ) ) . '<br>' . esc_html( $m( 'telefono' ) ) . ' · ' . esc_html( $m( 'email' ) ) . '</td></tr>';
-	echo '<tr><th>Venta / comisión / a pagar</th><td>' . esc_html( ps_clp( $m( 'monto' ) ) ) . ' / ' . esc_html( ps_clp( $m( 'comision' ) ) ) . ' / <strong>' . esc_html( ps_clp( $m( 'pago' ) ) ) . '</strong>' . ( $m( 'pagada' ) ? ' · pagado el ' . esc_html( $m( 'pagada' ) ) : '' ) . '</td></tr>';
+	echo '<tr><th>Venta / comisión / a pagar</th><td>' . esc_html( ps_clp( $m( 'monto' ) ) ) . ' / ' . esc_html( ps_clp( $m( 'comision' ) ) ) . ' / <strong>' . esc_html( ps_clp( $m( 'pago' ) ) ) . '</strong>' . ( $m( 'pagada' ) ? ' · pagado el ' . esc_html( $m( 'pagada' ) ) : '' ) . ( $m( 'regla' ) ? '<br><span class="description">Con cupón · precio de lista ' . esc_html( ps_clp( $m( 'lista' ) ) ) . ' · ' . esc_html( PS_ABSORBE[ $m( 'regla' ) ] ?? '' ) . '</span>' : '' ) . '</td></tr>';
 	echo '<tr><th>Cita</th><td>' . ( $m( 'cita' ) ? esc_html( ps_fmt_date( $m( 'cita' ) ) ) : '—' ) . '</td></tr>';
 	echo '<tr><th>Estado</th><td>' . wp_nonce_field( 'ps_orden_admin', 'ps_orden_nonce', true, false ) . '<select name="ps_orden_estado">';
 	foreach ( PS_ORDEN_STATES as $k => $l ) {

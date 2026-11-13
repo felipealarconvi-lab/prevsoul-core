@@ -1,5 +1,12 @@
 # Cambios de Prevsoul Core
 
+## 2.2.0
+- Nuevo Tablero (Prevsoul → Tablero): ventas, ingreso Prevsoul, consultas online, órdenes por agendar, ventas del periodo, del interés a la compra, clínicas y actividad por perfil. Filtro Hoy / 7 / 30 / 90 días.
+- Nuevo backoffice del Buscador (Prevsoul → Buscador): necesidades más buscadas, búsquedas sin resultado con «Asignar» para enseñarle al buscador, intención de compra por necesidad, tags más tocados y exportación CSV. Registra si la búsqueda terminó en consulta o compra, sin datos personales.
+- Carro y pago con el diseño Prevsoul: cabecera del sitio, pasos de la compra, tarjetas, botones azules y quién realiza cada tratamiento.
+- Paneles de clínicas y dentistas con márgenes laterales.
+- Cupones: nueva opción «¿Quién absorbe el descuento?». Por defecto Prevsoul: la clínica recibe sobre el precio de lista. PRUEBA100 queda como cupón de prueba y no genera pago.
+
 ## 2.1.0
 - El botón de la cabecera ahora dice «Consulta online» (en el celular, «Consulta»), con ícono de video y el punto verde de disponibilidad.
 - Nueva página exclusiva «Consulta online» con cómo funciona, la sala de espera y preguntas frecuentes. La dirección antigua /sala-de-espera/ redirige a la nueva.

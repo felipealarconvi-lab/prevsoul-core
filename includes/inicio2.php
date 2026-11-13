@@ -186,7 +186,7 @@ function ps_tags( $k ) {
 }
 function ps_buscador2() {
 	$q    = isset( $_GET['ps_q'] ) ? sanitize_text_field( wp_unslash( $_GET['ps_q'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
-	$base = remove_query_arg( 'ps_q' );
+	$base = remove_query_arg( array( 'ps_q', 'ps_t' ) );
 	list( $doc, $online ) = ps_host_dentist();
 	$out  = '<div class="ps-bus" id="ps-buscador"><div class="ps-bus-hi">' . ( $doc ? '<span class="ps-bus-av' . ( $online ? ' is-on' : '' ) . '">' . ps_avatar( $doc, 48 ) . '</span>' : '' );
 	$out .= '<div class="ps-bus-bub"><strong>Hola, ¿cómo podemos ayudarte hoy?</strong>Cuéntanos qué sientes o qué estás buscando, tal como se lo dirías a tu dentista. Te orientamos al tiro.</div></div>';
@@ -198,7 +198,7 @@ function ps_buscador2() {
 		}
 		$out .= '<div class="ps-bus-tags ps-bus-' . esc_attr( $k ) . '"><span>' . esc_html( $label ) . '</span><div class="ps-bus-line">';
 		foreach ( $tags as $t ) {
-			$out .= '<a class="ps-bus-tag" href="' . esc_url( add_query_arg( 'ps_q', rawurlencode( $t ), $base ) . '#ps-buscador' ) . '">' . esc_html( $t ) . '</a>';
+			$out .= '<a class="ps-bus-tag" href="' . esc_url( add_query_arg( array( 'ps_q' => rawurlencode( $t ), 'ps_t' => 1 ), $base ) . '#ps-buscador' ) . '">' . esc_html( $t ) . '</a>';
 		}
 		$out .= '</div></div>';
 	}
@@ -251,7 +251,7 @@ function ps_buscador2() {
 		$out .= '</div></div>';
 	}
 	$out .= '<a class="ps-btn" href="' . esc_url( add_query_arg( 'ps_motivo', $best ? $best['need'] : 'Otra consulta', $sala ) ) . '">' . ( $prods ? '¿Prefieres hablar con alguien? Entra a la sala de espera' : 'Ir a la sala de espera' ) . '</a></div>';
-	return $out . '</div>' . ps_inicio_js();
+	return $out . '</div>' . ps_inicio_js() . ( function_exists( 'ps_bus_cookie_js' ) ? ps_bus_cookie_js() : '' );
 }
 
 /* -------------------------------------------------------------------------

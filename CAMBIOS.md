@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.4.0
+- Planes dentales: nueva sección «¿Para qué un plan si no me duele nada?» con la espiral de un diente en 9 fases (historia natural de la caries y ciclo restaurador), escalera de costos acumulados y cuánto ahorras según dónde se corta. Se puede ver con una muela o con un diente de adelante. Valores del arancel referencial UCO 2026.
+- Íconos nuevos del diente en corte (esmalte, dentina y nervio) para cada fase.
+
 ## 2.3.2
 - Inicio: el bloque de ahorro preventivo pasa a estar justo antes de Planes, con el enlace «Elige tu plan y empieza a ahorrar».
 

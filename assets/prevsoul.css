@@ -512,3 +512,29 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-puente a{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--ps-accent);text-decoration:none;font-size:16px;padding:8px 14px;border-radius:99px;background:var(--ps-soft)}
 .ps-puente a:hover{background:#DCE8FB}
 #planes{scroll-margin-top:80px}
+/* 2.4.0 La espiral de un diente */
+.ps-esp{color:var(--ps-ink)}
+.ps-esp-sw{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin:0 0 10px;font-size:14px;color:var(--ps-muted)}
+.ps-esp-sw button[type]{background:#fff !important;color:var(--ps-ink) !important;border:1px solid var(--ps-line) !important;border-radius:99px !important;padding:6px 14px !important;font-weight:700;font-size:14px;cursor:pointer;min-height:0;line-height:1.3;box-shadow:none}
+.ps-esp-sw button[type].is-on{background:var(--ps-ink) !important;color:#fff !important;border-color:var(--ps-ink) !important}
+.ps-esp-lead{margin:0 0 16px}
+.ps-esp-fases{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.ps-esp-fase{background:#fff;border:1px solid var(--ps-line);border-radius:14px;padding:10px 12px;display:grid;grid-template-columns:52px minmax(0,1fr);column-gap:12px;row-gap:1px;align-items:center}
+.ps-esp-fase .ps-esp-ic{grid-row:span 3}
+.ps-esp-fase.is-ok{border-color:#9FD6B5;background:#F1FAF4}
+.ps-esp-fase.is-lost{border-color:#F0C9BD}
+.ps-esp-lv{font-size:11px;font-weight:800;color:#8193AD}
+.ps-esp-fase strong{font-size:14px;line-height:1.25}
+.ps-esp-pr{font-size:14px;font-weight:800;color:var(--ps-crit)}
+.ps-esp-fase.is-ok .ps-esp-pr{color:var(--ps-good)}
+.ps-esp-two{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:12px;margin-top:14px}
+.ps-esp-card{background:#fff;border:1px solid var(--ps-line);border-radius:14px;padding:14px 16px}
+.ps-esp-card h3{margin:0 0 8px;font-size:16px;font-weight:800;color:var(--ps-ink)}
+.ps-esp-ahorro{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px 12px;margin:0;font-size:14px;align-items:center}
+.ps-esp-ahorro dt{margin:0;font-weight:400}.ps-esp-ahorro dd{margin:0;text-align:right;font-weight:800;color:var(--ps-good);font-variant-numeric:tabular-nums}
+.ps-esp-ahorro .ps-esp-h{font-size:12px;font-weight:700;color:var(--ps-muted)}
+.ps-esp-ahorro dd.is-lost{color:var(--ps-crit)}
+.ps-esp-inc{margin:14px 0 6px;background:var(--ps-soft);border-radius:12px;padding:10px 14px;font-size:14px}
+@media (max-width:900px){.ps-esp-fases{grid-template-columns:repeat(2,minmax(0,1fr))}.ps-esp-two{grid-template-columns:1fr}}
+@media (max-width:560px){.ps-esp-fases{grid-template-columns:1fr}}
+.ps-esp-panel[hidden]{display:none !important}

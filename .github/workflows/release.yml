@@ -1,8 +1,11 @@
 name: Publicar versión
 
+# Cada cambio en main revisa el número de versión del plugin.
+# Si todavía no existe una versión publicada con ese número, arma prevsoul-core.zip y la publica.
 on:
   push:
-    tags: ['v*']
+    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -12,15 +15,34 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Armar prevsoul-core.zip
+      - name: Leer versión
+        id: v
         run: |
-          mkdir -p build/prevsoul-core
-          rsync -a --exclude '.git' --exclude '.github' --exclude 'build' --exclude 'README.md' ./ build/prevsoul-core/
-          cd build && zip -qr prevsoul-core.zip prevsoul-core
-      - name: Publicar en GitHub
+          VER=$(grep -m1 -E '^\s*\*\s*Version:' prevsoul-core.php | sed -E 's/.*Version:\s*//; s/\s+$//')
+          echo "ver=$VER" >> "$GITHUB_OUTPUT"
+          echo "Versión del plugin: $VER"
+      - name: ¿Ya está publicada?
+        id: check
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "${GITHUB_REF_NAME}" build/prevsoul-core.zip \
-            --title "Prevsoul Core ${GITHUB_REF_NAME#v}" \
-            --notes "$(git tag -l --format='%(contents)' "${GITHUB_REF_NAME}")"
+          if gh release view "v${{ steps.v.outputs.ver }}" >/dev/null 2>&1; then
+            echo "skip=1" >> "$GITHUB_OUTPUT"; echo "La versión ya existe; no se publica nada."
+          else
+            echo "skip=0" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Armar prevsoul-core.zip
+        if: steps.check.outputs.skip == '0'
+        run: |
+          mkdir -p build/prevsoul-core
+          rsync -a --exclude '.git' --exclude '.github' --exclude 'build' --exclude 'README.md' --exclude 'CAMBIOS.md' ./ build/prevsoul-core/
+          cd build && zip -qr prevsoul-core.zip prevsoul-core
+      - name: Publicar
+        if: steps.check.outputs.skip == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VER="${{ steps.v.outputs.ver }}"
+          NOTES=$(awk -v v="$VER" '$0 ~ "^## "v"$" {f=1; next} /^## / {f=0} f' CAMBIOS.md 2>/dev/null)
+          [ -z "$NOTES" ] && NOTES="Prevsoul Core $VER"
+          gh release create "v$VER" build/prevsoul-core.zip --target "$GITHUB_SHA" --title "Prevsoul Core $VER" --notes "$NOTES"

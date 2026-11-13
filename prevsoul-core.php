@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           1.5.1
+ * Version:           1.6.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,12 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '1.5.1' );
+define( 'PS_VERSION', '1.6.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
 require_once __DIR__ . '/includes/prestadores.php';
 require_once __DIR__ . '/includes/demo.php';
+require_once __DIR__ . '/includes/anuncios.php';
 
 const PS_RANKS = array(
 	0 => 'Asociado',
@@ -1266,6 +1267,12 @@ add_shortcode(
 	'ps_hero',
 	function ( $atts ) {
 		$a  = shortcode_atts( array( 'titulo' => '', 'bajada' => '', 'boton' => 'Entrar a la sala de espera', 'boton_url' => '', 'boton2' => '', 'boton2_url' => '' ), $atts );
+		if ( function_exists( 'ps_anuncios_visibles' ) ) {
+			$ads = ps_anuncios_visibles();
+			if ( $ads ) {
+				return ps_slider_html( $ads );
+			}
+		}
 		$n  = ps_online_count();
 		$u1 = $a['boton_url'] ? $a['boton_url'] : ps_get( 'sala_url' );
 		$o  = '<section class="ps-sec ps-bg-oscuro ps-hero"><div class="ps-wrap">';

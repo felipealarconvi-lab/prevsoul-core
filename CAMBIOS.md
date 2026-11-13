@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 1.6.0
+- La caja azul de la portada ahora es un carrusel de anuncios: avanza solo cada 6 segundos, flechas, puntos y deslizar con el dedo en el celular.
+- Nueva sección «Anuncios» en el panel: título, texto, etiqueta con color, imagen, producto vinculado, hasta dos botones, fechas desde/hasta y orden, con vista previa en vivo.
+- El precio de oferta de un anuncio rebaja el producto de verdad durante sus fechas y lo devuelve a su precio al vencer, desactivar o borrar el anuncio.
+- El mensaje de la sala de espera queda cargado como primer anuncio.
+
 ## 1.5.1
 - Botón «Crear datos de prueba» en la página Prevsoul (odontóloga, clínica, productos asignados, cuenta de clínica y cupón PRUEBA100) y botón para borrarlos.
 

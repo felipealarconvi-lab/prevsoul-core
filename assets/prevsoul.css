@@ -199,3 +199,38 @@ button.ps-btn-ghost[type]{background:#fff;color:var(--ps-accent) !important;bord
   .ps-logo span{display:none}
   .ps-head-in{gap:8px}
 }
+
+/* 1.6 · carrusel de anuncios en la portada */
+.ps-slider{position:relative;overflow:hidden;padding:0}
+.ps-slider-track{display:flex;transition:transform .55s ease}
+@media (prefers-reduced-motion:reduce){.ps-slider-track{transition:none}}
+.ps-slide{flex:0 0 100%;min-width:0;padding:72px 0 84px}
+.ps-slide-in{display:flex;align-items:center;gap:40px}
+.ps-slide-tx{flex:1;min-width:0}
+.ps-slide-title{font-size:50px;line-height:1.08;font-weight:800;max-width:17ch;margin:18px 0 14px;color:#fff}
+.ps-slide-art{flex:0 0 40%;max-width:460px}
+.ps-slide-art img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:18px;display:block}
+.ps-slide-chip{gap:8px}
+.ps-chip-sala{background:#fff;color:var(--ps-good)}
+.ps-chip-promo{background:#FFD166;color:#5A3A00}
+.ps-chip-brand{background:#E8F0FC;color:var(--ps-accent)}
+.ps-slide-price{font-size:34px;font-weight:800;color:#fff;margin:0 0 20px;font-variant-numeric:tabular-nums}
+.ps-slide-price s{font-size:18px;color:#9FB2CC;font-weight:600;margin-left:10px}
+.ps-slide-per{font-size:16px;color:#D3E0F5;font-weight:600}
+button.ps-slider-nav{position:absolute;bottom:14px;width:40px;height:40px;border-radius:50%;border:0;background:rgba(255,255,255,.14);color:#fff;font-size:28px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0 0 3px}
+button.ps-slider-nav:hover,button.ps-slider-nav:focus-visible{background:rgba(255,255,255,.28)}
+.ps-prev{right:72px}.ps-next{right:24px}
+.ps-slider-dots{position:absolute;left:0;right:0;bottom:26px;display:flex;justify-content:center;gap:8px}
+.ps-slider .ps-slider-dots button{width:9px;height:9px;min-height:0;padding:0;border:0;border-radius:99px;background:rgba(255,255,255,.35);cursor:pointer;transition:width .3s}
+.ps-slider .ps-slider-dots button.on{width:26px;background:#fff}
+@media (max-width:860px){
+  button.ps-slider-nav{display:none}
+  .ps-slide-in{flex-direction:column;align-items:stretch;gap:20px}
+  .ps-slide-art{order:-1;flex:none;max-width:none}
+  .ps-slide-art img{aspect-ratio:16/9;border-radius:14px}
+}
+@media (max-width:640px){
+  .ps-slide{padding:36px 0 64px}
+  .ps-slide-title{font-size:34px}
+  .ps-slide-price{font-size:28px}
+}

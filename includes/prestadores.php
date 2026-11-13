@@ -200,13 +200,13 @@ add_action(
 	'admin_enqueue_scripts',
 	function () {
 		$screen = get_current_screen();
-		if ( ! $screen || 'ps_clinica' !== $screen->post_type ) {
+		if ( ! $screen || ! in_array( $screen->post_type, array( 'ps_clinica', 'ps_anuncio' ), true ) ) {
 			return;
 		}
 		wp_enqueue_media();
 		wp_add_inline_script(
 			'media-editor',
-			"jQuery(function($){\$(document).on('click','.ps-img-pick',function(e){e.preventDefault();var w=\$(this).closest('.ps-img-field');var f=wp.media({title:'Logo de la clínica',button:{text:'Usar este logo'},library:{type:'image'},multiple:false});f.on('select',function(){var a=f.state().get('selection').first().toJSON();w.find('input').val(a.id);w.find('img').attr('src',(a.sizes&&a.sizes.thumbnail?a.sizes.thumbnail.url:a.url)).show();w.find('.ps-img-clear').show();});f.open();});\$(document).on('click','.ps-img-clear',function(e){e.preventDefault();var w=\$(this).closest('.ps-img-field');w.find('input').val('');w.find('img').hide();\$(this).hide();});});"
+			"jQuery(function($){\$(document).on('click','.ps-img-pick',function(e){e.preventDefault();var w=\$(this).closest('.ps-img-field');var f=wp.media({title:'Elegir imagen',button:{text:'Usar esta imagen'},library:{type:'image'},multiple:false});f.on('select',function(){var a=f.state().get('selection').first().toJSON();w.find('input').val(a.id);w.find('img').attr('src',(a.sizes&&a.sizes.medium?a.sizes.medium.url:(a.sizes&&a.sizes.thumbnail?a.sizes.thumbnail.url:a.url))).show();w.find('.ps-img-clear').show();});f.open();});\$(document).on('click','.ps-img-clear',function(e){e.preventDefault();var w=\$(this).closest('.ps-img-field');w.find('input').val('');w.find('img').hide();\$(this).hide();});});"
 		);
 	}
 );

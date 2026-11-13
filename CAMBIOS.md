@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 1.8.0
+- Menú superior equilibrado: logo a la izquierda, menú centrado entre el logo y una línea divisoria, y carro y Sala de espera a la derecha.
+- Más espacio entre las opciones del menú, letra semi-negrita y la página actual marcada con fondo celeste.
+- Carro sin recuadro y logo un poco más grande.
+- Nombres cortos en el menú (Atención, Packs, Planes, Live); se pueden editar en Apariencia → Menús.
+
 ## 1.7.0
 - Prevsoul Live con interruptor de visibilidad (parte oculto): si está oculto se quita del menú, la barra del celular, la portada y el carrusel, y su página lleva al inicio. Administradores y dentistas lo siguen viendo.
 - Página Live renovada: video con estado (próxima, EN VIVO, grabación), caja de preguntas con votos, «Recordarme» por correo y enlace a la sala de espera al terminar.

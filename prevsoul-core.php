@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           1.7.0
+ * Version:           1.8.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '1.7.0' );
+define( 'PS_VERSION', '1.8.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -22,6 +22,28 @@ require_once __DIR__ . '/includes/prestadores.php';
 require_once __DIR__ . '/includes/demo.php';
 require_once __DIR__ . '/includes/anuncios.php';
 require_once __DIR__ . '/includes/live.php';
+
+/* 1.8: nombres cortos en el menú principal (una sola vez; después se editan en Apariencia → Menús). */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'ps_menu_cortos' ) ) {
+			return;
+		}
+		update_option( 'ps_menu_cortos', 1 );
+		$menu = wp_get_nav_menu_object( 'Menú principal Prevsoul' );
+		if ( ! $menu ) {
+			return;
+		}
+		$map = array( 'Atención dental' => 'Atención', 'Packs dentales' => 'Packs', 'Planes dentales' => 'Planes', 'Prevsoul Live' => 'Live' );
+		foreach ( (array) wp_get_nav_menu_items( $menu->term_id ) as $it ) {
+			if ( isset( $map[ $it->title ] ) ) {
+				wp_update_post( array( 'ID' => $it->ID, 'post_title' => $map[ $it->title ] ) );
+			}
+		}
+	},
+	40
+);
 
 const PS_RANKS = array(
 	0 => 'Asociado',

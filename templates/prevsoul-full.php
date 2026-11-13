@@ -44,10 +44,11 @@ $ps_icon = function ( $d, $size = 22 ) {
 			if ( has_custom_logo() ) {
 				echo wp_kses_post( wp_get_attachment_image( get_theme_mod( 'custom_logo' ), 'medium', false, array( 'class' => 'ps-logo-img', 'alt' => 'Prevsoul' ) ) );
 			} else {
-				echo '<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1D5FD1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3c-2.5 0-4 2-4 4.5 0 2 .8 3.4 1.5 5 .8 2 1 4.5 1.6 6.6.4 1.5 1.9 1.6 2.3 0l.9-3.6c.3-1 1.1-1.5 1.7-1.5s1.4.5 1.7 1.5l.9 3.6c.4 1.6 1.9 1.5 2.3 0 .6-2.1.8-4.6 1.6-6.6.7-1.6 1.5-3 1.5-5C21 5 19.5 3 17 3c-1.8 0-3 1-5 1S8.8 3 7 3z"></path></svg><span>prevsoul</span>';
+				echo '<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#1D5FD1" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3c-2.5 0-4 2-4 4.5 0 2 .8 3.4 1.5 5 .8 2 1 4.5 1.6 6.6.4 1.5 1.9 1.6 2.3 0l.9-3.6c.3-1 1.1-1.5 1.7-1.5s1.4.5 1.7 1.5l.9 3.6c.4 1.6 1.9 1.5 2.3 0 .6-2.1.8-4.6 1.6-6.6.7-1.6 1.5-3 1.5-5C21 5 19.5 3 17 3c-1.8 0-3 1-5 1S8.8 3 7 3z"></path></svg><span>prevsoul</span>';
 			}
 			?>
 		</a>
+		<span class="ps-sp" aria-hidden="true"></span>
 		<nav class="ps-nav" aria-label="Menú principal">
 			<?php
 			wp_nav_menu(
@@ -61,7 +62,9 @@ $ps_icon = function ( $d, $size = 22 ) {
 			);
 			?>
 		</nav>
-		<span class="ps-spacer"></span>
+		<span class="ps-sp ps-sp2" aria-hidden="true"></span>
+		<span class="ps-vl" aria-hidden="true"></span>
+		<div class="ps-head-actions">
 		<a class="ps-cart" href="<?php echo esc_url( $ps_cart_url ); ?>" aria-label="<?php echo esc_attr( 'Carro de compras, ' . (int) $ps_cart_count . ' productos' ); ?>">
 			<?php echo $ps_icon( 'M6 6h15l-1.5 9h-12zM6 6 5 3H2M9 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM18 20a1 1 0 1 0 0-2 1 1 0 0 0 0 2z', 21 ); // phpcs:ignore ?>
 			<span class="ps-cart-n"><?php echo (int) $ps_cart_count; ?></span>
@@ -72,6 +75,7 @@ $ps_icon = function ( $d, $size = 22 ) {
 			<span class="ps-cta-txt"><span class="ps-cta-main">Sala de espera</span><span class="ps-cta-st"><i class="ps-sala-dot<?php echo $ps_open ? '' : ' off'; ?>"></i><?php echo $ps_open ? 'Abierta ahora' : 'Deja tu consulta'; ?></span></span>
 			<span class="ps-cta-short">Sala<i class="ps-sala-dot<?php echo $ps_open ? '' : ' off'; ?>"></i></span>
 		</a>
+		</div>
 	</div>
 </header>
 

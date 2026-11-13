@@ -275,3 +275,27 @@ button.ps-vote-x{color:var(--ps-muted)}
 .ps-dform label{display:flex;flex-direction:column;gap:4px;font-weight:700}
 .ps-btn-rec{background:#D92D20 !important}.ps-btn-stop{background:var(--ps-ink) !important}
 @media (max-width:860px){.ps-live2{grid-template-columns:1fr}}
+
+/* 1.8 · menú superior equilibrado */
+.ps-head-in{gap:0;min-height:72px}
+.ps-logo{font-size:23px;margin-right:0}
+.ps-sp{flex:1 1 0;min-width:32px}
+.ps-spacer{display:none}
+.ps-vl{width:1px;height:28px;background:var(--ps-line);flex:none}
+.ps-head-actions{display:flex;align-items:center;gap:14px;margin-left:28px;flex:none}
+.ps-nav-list{gap:14px;flex-wrap:nowrap}
+.ps-nav-list{align-items:center}
+.ps-nav-list a{font-weight:600;font-size:15px;line-height:1.2;color:#33415C !important;padding:9px 14px;min-height:0;white-space:nowrap}
+.ps-nav-list a:hover{background:var(--ps-soft);color:var(--ps-ink) !important}
+.ps-nav-list .current-menu-item>a,.ps-nav-list .current_page_item>a{color:var(--ps-accent) !important;background:var(--ps-soft);box-shadow:none;border-radius:9px;font-weight:700}
+.ps-cart{border:0}
+.ps-cart:hover{background:var(--ps-soft)}
+.ps-cart-n{top:0;right:-2px}
+@media (max-width:1100px){.ps-nav-list{gap:4px}}
+@media (max-width:860px){
+  .ps-head-in{min-height:64px}
+  .ps-sp2,.ps-vl{display:none}
+  .ps-head-actions{margin-left:0;gap:10px}
+  .ps-logo{font-size:20px}
+  .ps-logo svg{width:28px;height:28px}
+}

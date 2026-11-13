@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.8.0
+- Nuevo cuadro «Versión para redes» al editar cada atención, pack o plan: imágenes para el feed (1080×1350) y las historias (1080×1920) con 3 plantillas, textos para Instagram, Facebook e historias con enlace medible, revisión automática de reglas de salud de Meta y descarga en PNG. La publicación directa (fase 2) queda preparada pero desactivada.
+
 ## 2.7.1
 - El sitio pasa a https: los enlaces internos guardados con http (anuncios del inicio, contenido y ajustes) se corrigen una sola vez.
 

@@ -439,8 +439,8 @@ function ps_inicio2_content() {
 		. ps_sc( '[ps_seccion fondo="blanco"][ps_consulta_aviso][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="claro" titulo="Packs dentales" bajada="Todo lo que necesitas, en un solo pack."][ps_carrusel tipo="packs" ver_todo="/packs-dentales/"][/ps_seccion]' )
 		. ps_sc( '[ps_live_cine]' )
-		. ps_sc( '[ps_seccion fondo="blanco" titulo="Planes dentales" bajada="Tu odontólogo de cabecera todo el año. Elige el plan para ti."][ps_planes][/ps_seccion]' )
-		. ps_sc( '[ps_seccion fondo="claro" titulo="Con prevención, tu boca y tu bolsillo ganan" bajada="Compara lo que inviertes en un plan preventivo con lo que podría costarte tratar después."][ps_ahorro][/ps_seccion]' )
+		. ps_sc( '[ps_seccion fondo="claro" titulo="Con prevención, tu boca y tu bolsillo ganan" bajada="Compara lo que inviertes en un plan preventivo con lo que podría costarte tratar después."][ps_ahorro][ps_puente texto="Elige tu plan y empieza a ahorrar" url="#planes"][/ps_seccion]' )
+		. ps_sc( '[ps_seccion id="planes" fondo="blanco" titulo="Planes dentales" bajada="Tu odontólogo de cabecera todo el año. Elige el plan para ti."][ps_planes][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="blanco" titulo="Tus odontólogos de cabecera" bajada="Profesionales reales, valorados por pacientes."][ps_odontologos limite="6"][/ps_seccion]' )
 		. ps_sc( '[ps_cta titulo="Empieza a prevenir hoy" bajada="Tu primera precita es gratis." boton="Hablar con un odontólogo" url="#sala"]' );
 }
@@ -463,4 +463,45 @@ add_action(
 		wp_update_post( array( 'ID' => $page->ID, 'post_content' => ps_inicio2_content() ) );
 	},
 	60
+);
+
+/** [ps_puente texto="" url=""] Enlace breve entre dos secciones. */
+add_shortcode(
+	'ps_puente',
+	function ( $atts ) {
+		$a = shortcode_atts( array( 'texto' => '', 'url' => '' ), $atts );
+		return $a['texto'] ? '<p class="ps-puente"><a href="' . esc_url( $a['url'] ? $a['url'] : '#' ) . '"><span aria-hidden="true">↓</span> ' . esc_html( $a['texto'] ) . '</a></p>' : '';
+	}
+);
+
+/* 2.3.2: en el inicio ya publicado, el ahorro pasa a estar justo antes de Planes. */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'ps_ahorro_v2' ) ) {
+			return;
+		}
+		update_option( 'ps_ahorro_v2', 1 );
+		$page = get_page_by_path( 'inicio' );
+		if ( ! $page ) {
+			$front = (int) get_option( 'page_on_front' );
+			$page  = $front ? get_post( $front ) : null;
+		}
+		if ( ! $page ) {
+			return;
+		}
+		$c = $page->post_content;
+		if ( ! preg_match( '#<!-- wp:shortcode -->\[ps_seccion[^\]]*\]\[ps_planes\]\[/ps_seccion\]<!-- /wp:shortcode -->#', $c, $pl ) || ! preg_match( '#<!-- wp:shortcode -->\[ps_seccion[^\]]*\]\[ps_ahorro\]\[/ps_seccion\]<!-- /wp:shortcode -->#', $c, $ah ) ) {
+			return;
+		}
+		if ( strpos( $c, $ah[0] ) < strpos( $c, $pl[0] ) ) {
+			return;
+		}
+		$ah2 = str_replace( '[ps_ahorro][/ps_seccion]', '[ps_ahorro][ps_puente texto="Elige tu plan y empieza a ahorrar" url="#planes"][/ps_seccion]', $ah[0] );
+		$pl2 = false === strpos( $pl[0], ' id=' ) ? str_replace( '[ps_seccion ', '[ps_seccion id="planes" ', $pl[0] ) : $pl[0];
+		$c   = str_replace( $ah[0], '', $c );
+		$c   = str_replace( $pl[0], $ah2 . $pl2, $c );
+		wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
+	},
+	75
 );

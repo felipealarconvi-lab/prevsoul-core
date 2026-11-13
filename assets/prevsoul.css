@@ -507,3 +507,8 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
   .ps-logo .ps-logo-svg{height:28px}
   .ps-logo .ps-logo-svg:not(.ps-logo-base){height:38px;margin:-5px 0}
 }
+/* 2.3.2 Puente ahorro → planes */
+.ps-puente{text-align:center;margin:22px 0 0}
+.ps-puente a{display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--ps-accent);text-decoration:none;font-size:16px;padding:8px 14px;border-radius:99px;background:var(--ps-soft)}
+.ps-puente a:hover{background:#DCE8FB}
+#planes{scroll-margin-top:80px}

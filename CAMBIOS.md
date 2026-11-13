@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.3.2
+- Inicio: el bloque de ahorro preventivo pasa a estar justo antes de Planes, con el enlace «Elige tu plan y empieza a ahorrar».
+
 ## 2.3.1
 - El diente del logo queda más junto a la palabra «prevsoul» (se recortó el aire del dibujo), también en los logos de temporada.
 

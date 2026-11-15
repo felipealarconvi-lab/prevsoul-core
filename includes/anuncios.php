@@ -223,7 +223,7 @@ function ps_anuncio_pub_box( $post ) {
 	echo '<p><label><input type="checkbox" name="ps_a[activo]" value="1" ' . checked( $activo, '1', false ) . '> Activo</label></p>';
 }
 function ps_anuncio_prev_box() {
-	echo '<div id="ps-a-prev" style="background:#0B2545;color:#fff;border-radius:10px;padding:22px;font-family:\'Plus Jakarta Sans\',system-ui,sans-serif;display:flex;gap:16px;align-items:center"><div style="flex:1;min-width:0"><span id="pa-chip" style="display:inline-block;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700"></span><div id="pa-t" style="font-size:26px;font-weight:800;line-height:1.1;margin:10px 0 6px"></div><div id="pa-d" style="color:#D3E0F5;font-size:14px;margin-bottom:10px"></div><div id="pa-p" style="font-size:22px;font-weight:800;margin-bottom:10px"></div><span id="pa-b1" style="display:inline-block;background:#1D5FD1;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:800;margin-right:6px"></span><span id="pa-b2" style="display:inline-block;border:1.5px solid #fff;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:800"></span></div><img id="pa-img" alt="" style="width:160px;height:120px;object-fit:cover;border-radius:10px"></div>';
+	echo '<div id="ps-a-prev" style="background:#EAF1FC;color:#0B2545;border-radius:10px;padding:22px;font-family:\'Plus Jakarta Sans\',system-ui,sans-serif;display:flex;gap:16px;align-items:center"><div style="flex:1;min-width:0"><span id="pa-chip" style="display:inline-block;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700"></span><div id="pa-t" style="font-size:26px;font-weight:800;line-height:1.1;margin:10px 0 6px"></div><div id="pa-d" style="color:#4A5B73;font-size:14px;margin-bottom:10px"></div><div id="pa-p" style="font-size:22px;font-weight:800;color:#167A64;margin-bottom:10px"></div><span id="pa-b1" style="display:inline-block;background:#1D5FD1;color:#fff;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:800;margin-right:6px"></span><span id="pa-b2" style="display:inline-block;background:#fff;border:1.5px solid #0B2545;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:800"></span></div><img id="pa-img" alt="" style="width:160px;height:120px;object-fit:cover;border-radius:10px"></div>';
 }
 add_action(
 	'admin_footer-post.php',
@@ -240,14 +240,14 @@ function ps_anuncio_prev_js() {
 	}
 	?>
 	<script>
-	(function(){var C={sala:['#fff','#157347'],promo:['#FFD166','#5A3A00'],brand:['#E8F0FC','#1D5FD1']};
+	(function(){var C={sala:['#fff','#167A64'],promo:['#FFD166','#5A3A00'],brand:['#fff','#1D5FD1']};
 	function q(s){return document.querySelector(s)}function v(n){var e=q('[name="'+n+'"]');return e?e.value:''}
 	function clp(n){return '$'+Math.round(n).toLocaleString('es-CL')}
 	function up(){var col=v('ps_a[color]')||'brand',ch=q('#pa-chip'),et=v('ps_a[etiqueta]');
 	ch.textContent=et||(col==='sala'?'Sala de espera abierta':'');ch.style.display=ch.textContent?'inline-block':'none';ch.style.background=C[col][0];ch.style.color=C[col][1];
 	q('#pa-t').textContent=(q('#title')||{}).value||'Título del anuncio';q('#pa-d').textContent=v('ps_a[texto]');
 	var o=q('#ps_a_producto'),opt=o&&o.options[o.selectedIndex],reg=opt?parseFloat(opt.getAttribute('data-price')||0):0,of=parseFloat(v('ps_a[oferta]')||0),p=q('#pa-p');
-	p.innerHTML=reg?(of&&of<reg?clp(of)+' <s style="font-size:14px;color:#9FB2CC">'+clp(reg)+'</s>':clp(reg)):'';
+	p.innerHTML=reg?(of&&of<reg?clp(of)+' <s style="font-size:14px;color:#4A5B73">'+clp(reg)+'</s>':clp(reg)):'';
 	[['#pa-b1','ps_a[b1]'],['#pa-b2','ps_a[b2]']].forEach(function(b){var e=q(b[0]);e.textContent=v(b[1]);e.style.display=e.textContent?'inline-block':'none'});
 	var im=q('.ps-img-field img'),pi=q('#pa-img');pi.src=im&&im.style.display!=='none'?im.src:'';pi.style.display=pi.src&&pi.getAttribute('src')?'block':'none'}
 	document.addEventListener('input',up);document.addEventListener('change',up);document.addEventListener('click',function(){setTimeout(up,300)});up();})();

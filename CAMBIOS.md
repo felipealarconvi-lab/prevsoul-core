@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.9.0
+- Paleta corporativa v1: a los azules de confianza se suma el menta de prevención (#5FD3B8), el mismo de las piezas para redes.
+- Portada clara: el carrusel del inicio pasa a fondo azul bruma con título azul noche, precio en verde y botón «Arma tu plan» en azul. La vista previa de anuncios en el escritorio se ve igual.
+- Botón «Consulta online» de la cabecera en menta. En las demás secciones oscuras (Prevsoul Live, Consulta online) el botón principal también va en menta.
+- Checks de lo incluido en verde menta, estado «sala abierta» en menta y nueva etiqueta de beneficio .ps-chip-incluye (menta suave).
+
 ## 2.8.0
 - Nuevo cuadro «Versión para redes» al editar cada atención, pack o plan: imágenes para el feed (1080×1350) y las historias (1080×1920) con 3 plantillas, textos para Instagram, Facebook e historias con enlace medible, revisión automática de reglas de salud de Meta y descarga en PNG. La publicación directa (fase 2) queda preparada pero desactivada.
 

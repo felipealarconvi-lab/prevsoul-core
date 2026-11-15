@@ -580,3 +580,37 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-foot-soc a{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);display:inline-flex;align-items:center;justify-content:center;transition:background .15s}
 .ps-foot-soc a:hover{background:rgba(255,255,255,.22)}
 .ps-foot-soc svg{width:18px;height:18px;fill:#fff}
+
+/* ===== Paleta corporativa v1 (2.9.0): azules de confianza + menta de prevención ===== */
+:root{--ps-mint:#5FD3B8;--ps-mint-hover:#8BE0CB;--ps-mint-ink:#167A64;--ps-mint-soft:#E6F7F2;--ps-sky:#7CC4F2}
+/* Cabecera: botón Consulta online en menta */
+.ps-head-cta{background:var(--ps-mint);color:var(--ps-ink) !important}
+.ps-head-cta:hover{background:var(--ps-mint-hover)}
+/* Secciones oscuras: botón principal en menta con texto azul noche */
+.ps-bg-oscuro .ps-btn:not(.ps-btn-outline-light):not(.ps-btn-ghost):not(.ps-btn-stop){background:var(--ps-mint);color:var(--ps-ink) !important}
+.ps-bg-oscuro .ps-btn:not(.ps-btn-outline-light):not(.ps-btn-ghost):not(.ps-btn-stop):hover{background:var(--ps-mint-hover)}
+.ps-bg-oscuro :focus-visible{outline-color:var(--ps-mint)}
+/* Checks de lo incluido en verde menta */
+.ps-checks li::before{border-color:var(--ps-mint-ink)}
+/* Estado sala de espera en menta */
+.ps-sala-dot,.ps-sala-dot::after{background:var(--ps-mint)}
+.ps-chip-live,.ps-chip-sala{color:var(--ps-mint-ink)}
+.ps-sala2-now.is-open .ps-sala2-st{color:var(--ps-mint)}
+/* Etiqueta de beneficio */
+.ps-chip-incluye{background:var(--ps-mint-soft);color:var(--ps-mint-ink)}
+/* Portada clara: carrusel del inicio sobre azul bruma */
+.ps-slider.ps-bg-oscuro{background:var(--ps-soft);color:var(--ps-ink)}
+.ps-slider .ps-slide-title,.ps-slider.ps-bg-oscuro h1{color:var(--ps-ink)}
+.ps-slider .ps-hero-sub{color:var(--ps-muted)}
+.ps-slider .ps-slide-price{color:var(--ps-mint-ink)}
+.ps-slider .ps-slide-price s,.ps-slider .ps-slide-per{color:var(--ps-muted)}
+.ps-slider.ps-bg-oscuro .ps-slide-tx .ps-actions .ps-btn:not(.ps-btn-outline-light){background:var(--ps-accent) !important;color:#fff !important}
+.ps-slider.ps-bg-oscuro .ps-slide-tx .ps-actions .ps-btn:not(.ps-btn-outline-light):hover{background:var(--ps-accent-ink) !important}
+.ps-slider .ps-btn-outline-light{background:#fff !important;color:var(--ps-ink) !important;border-color:var(--ps-ink) !important}
+.ps-slider.ps-bg-oscuro :focus-visible{outline-color:var(--ps-accent)}
+.ps-slider .ps-chip-brand{background:#fff}
+.ps-slider .ps-chip-live{background:#fff}
+.ps-slider button.ps-slider-nav{background:rgba(11,37,69,.10);color:var(--ps-ink)}
+.ps-slider button.ps-slider-nav:hover,.ps-slider button.ps-slider-nav:focus-visible{background:rgba(11,37,69,.18)}
+.ps-slider .ps-slider-dots button{background:rgba(11,37,69,.25)}
+.ps-slider .ps-slider-dots button.on{background:var(--ps-mint-ink)}

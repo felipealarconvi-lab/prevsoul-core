@@ -60,6 +60,19 @@ function ps_redes_data( $post_id ) {
 			$ini .= mb_strtoupper( mb_substr( $w, 0, 1 ) );
 		}
 	}
+	$img_id = (int) $p->get_image_id();
+	$img    = $img_id ? wp_get_attachment_image_url( $img_id, 'full' ) : '';
+	$meta   = $img_id ? wp_get_attachment_metadata( $img_id ) : array();
+	$imgw   = isset( $meta['width'] ) ? (int) $meta['width'] : 0;
+	$av     = '';
+	if ( $pid ) {
+		$logo = (int) get_post_meta( $pid, '_ps_logo', true );
+		if ( 'ps_clinica' === get_post_type( $pid ) && $logo ) {
+			$av = wp_get_attachment_image_url( $logo, 'thumbnail' );
+		} elseif ( has_post_thumbnail( $pid ) ) {
+			$av = get_the_post_thumbnail_url( $pid, 'thumbnail' );
+		}
+	}
 	$short = trim( wp_strip_all_tags( $p->get_short_description() ) );
 	$ttl   = get_post_meta( $post_id, '_ps_redes_ttl', true );
 	if ( ! $ttl ) {
@@ -73,6 +86,9 @@ function ps_redes_data( $post_id ) {
 		'inc'   => $items,
 		'who'   => $who,
 		'ini'   => $ini ? $ini : 'PS',
+		'img'   => $img ? $img : '',
+		'imgw'  => $imgw,
+		'av'    => $av ? $av : '',
 		'slug'  => $p->get_slug(),
 		'url'   => get_permalink( $post_id ),
 		'ttl'   => $ttl,
@@ -141,13 +157,14 @@ function ps_redes_box( $post ) {
 		</div>
 		<div class="psr-c"><h4>Diseño</h4>
 			<span class="psr-l">Plantilla</span>
-			<div class="psr-seg" data-k="tpl"><button type="button" data-v="A">Azul confianza</button><button type="button" data-v="B">Claro</button><button type="button" data-v="C">Amarillo diente</button></div>
+			<div class="psr-seg" data-k="tpl"><button type="button" data-v="A">Azul noche</button><button type="button" data-v="B">Claro</button><button type="button" data-v="C">Menta</button></div>
 			<input type="hidden" name="ps_redes_tpl" id="psr-tpl" value="<?php echo esc_attr( $d['tpl'] ); ?>">
 			<span class="psr-l">Objetivo del texto</span>
 			<div class="psr-seg" data-k="goal"><button type="button" data-v="v" class="on">Vender</button><button type="button" data-v="e">Educar</button><button type="button" data-v="r">Recordar</button></div>
 			<span class="psr-l"><label for="psr-ttl">Frase principal</label></span>
 			<input type="text" id="psr-ttl" name="ps_redes_ttl" maxlength="70" value="<?php echo esc_attr( $d['ttl'] ); ?>">
 			<p class="psr-note">La frase y la plantilla se guardan al actualizar el producto.</p>
+			<p class="psr-note">La foto sale de la <b>imagen del producto</b>: 1600 × 1200 px (4:3), con lo importante al centro (≈1300 × 900). La foto de quien lo realiza: 400 × 400 px.</p>
 		</div>
 		<div class="psr-c"><h4>Revisión automática</h4><ul class="psr-chk" id="psr-chk"></ul>
 			<p class="psr-note">Reglas de salud en Meta: sin promesas de resultados, sin «antes y después», sin aludir a condiciones personales.</p></div>
@@ -175,31 +192,38 @@ function ps_redes_box( $post ) {
 (function(){
 var D=<?php echo wp_json_encode( $d ); ?>,TP=<?php echo wp_json_encode( $tooth ); ?>,st={tpl:D.tpl||'A',goal:'v'};
 var $=function(i){return document.getElementById(i)};
-var T={A:{bg:['#0B2545','#123A6B','#1D5FD1'],fg:'#fff',mut:'rgba(255,255,255,.82)',ctaBg:'#F5C518',ctaFg:'#0B2545',wm:'rgba(255,255,255,.10)',chip:'rgba(255,255,255,.18)',tooth:'#fff',fill:null},
-       B:{bg:['#EAF1FC','#F7FAFE','#ffffff'],fg:'#0B2545',mut:'#4A5B73',ctaBg:'#1D5FD1',ctaFg:'#fff',wm:'rgba(29,95,209,.09)',chip:'rgba(11,37,69,.08)',tooth:'#0B2545',fill:'#fff'},
-       C:{bg:['#F5C518','#F5C518','#F2B90C'],fg:'#0B2545',mut:'rgba(11,37,69,.78)',ctaBg:'#0B2545',ctaFg:'#fff',wm:'rgba(255,255,255,.35)',chip:'rgba(11,37,69,.1)',tooth:'#0B2545',fill:'#fff'}};
+var T={A:{panel:'#0B2545',fg:'#fff',mut:'#C9D6EA',chk:'#5FD3B8',prBg:'#5FD3B8',prFg:'#0B2545',ctaBg:'#fff',ctaFg:'#0B2545',av:'#1D3A63',avFg:'#fff'},
+       B:{panel:'#fff',fg:'#0B2545',mut:'#4A5B73',chk:'#167A64',prBg:'#5FD3B8',prFg:'#0B2545',ctaBg:'#1D5FD1',ctaFg:'#fff',av:'#EAF1FC',avFg:'#0B2545'},
+       C:{panel:'#5FD3B8',fg:'#0B2545',mut:'#0B2545',chk:'#0B2545',prBg:'#0B2545',prFg:'#fff',ctaBg:'#0B2545',ctaFg:'#fff',av:'#fff',avFg:'#0B2545'}};
+var IM={};function loadImg(k,src){if(!src)return;var i=new Image();i.crossOrigin='anonymous';i.onload=function(){IM[k]=i;render()};i.onerror=function(){IM[k]=null};i.src=src}
 function utm(src){var u=new URL(D.url);u.searchParams.set('utm_source',src);u.searchParams.set('utm_medium','social');u.searchParams.set('utm_campaign',D.slug);return u.toString()}
 function wrap(ctx,text,maxW){var w=String(text).split(/\s+/),lines=[],l='';w.forEach(function(x){var t=l?l+' '+x:x;if(ctx.measureText(t).width>maxW&&l){lines.push(l);l=x}else l=t});if(l)lines.push(l);return lines}
-function rr(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
+function rr(ctx,x,y,w,h,r){if(typeof r==='number')r=[r,r,r,r];ctx.beginPath();ctx.moveTo(x+r[0],y);ctx.lineTo(x+w-r[1],y);ctx.arcTo(x+w,y,x+w,y+r[1],r[1]);ctx.lineTo(x+w,y+h-r[2]);ctx.arcTo(x+w,y+h,x+w-r[2],y+h,r[2]);ctx.lineTo(x+r[3],y+h);ctx.arcTo(x,y+h,x,y+h-r[3],r[3]);ctx.lineTo(x,y+r[0]);ctx.arcTo(x,y,x+r[0],y,r[0]);ctx.closePath()}
 function tooth(ctx,x,y,s,stroke,fill,lw){if(!TP)return;var p=new Path2D(TP);ctx.save();ctx.translate(x,y);ctx.scale(s,s);ctx.translate(-2,-1.4);if(fill){ctx.fillStyle=fill;ctx.fill(p)}ctx.strokeStyle=stroke;ctx.lineWidth=lw/s;ctx.lineCap='round';ctx.lineJoin='round';ctx.stroke(p);ctx.restore()}
 function F(w,px){return w+' '+px+'px "Plus Jakarta Sans", -apple-system, "Segoe UI", sans-serif'}
-function draw(cv,story){var ctx=cv.getContext('2d'),W=cv.width,H=cv.height,t=T[st.tpl];
- var g=ctx.createLinearGradient(0,0,W*0.6,H);g.addColorStop(0,t.bg[0]);g.addColorStop(.6,t.bg[1]);g.addColorStop(1,t.bg[2]);ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
- tooth(ctx,W-470,story?330:170,26,t.wm,null,40);
- var X=80,y=story?200:90,mw=W-160;
- tooth(ctx,X,y-4,3.4,t.tooth,t.fill,5);ctx.fillStyle=t.fg;ctx.font=F(800,50);ctx.textBaseline='top';ctx.fillText('prevsoul',X+76,y+6);
- var inc=story?D.inc.slice(0,3):D.inc;ctx.font=F(800,story?108:94);var tl=wrap(ctx,$('psr-ttl').value||D.name,mw-40).slice(0,4);
- var lh=story?112:98,listH=inc.length*58,blockH=46+tl.length*lh+26+listH+30+120+30+90+40+74;
- y=Math.max(story?420:300,(story?H-330:H-120)-blockH);
- ctx.fillStyle=t.mut;ctx.font=F(800,32);ctx.fillText(D.tipo.toUpperCase().split('').join(String.fromCharCode(8202)),X,y);y+=56;
- ctx.fillStyle=t.fg;ctx.font=F(800,story?108:94);tl.forEach(function(l){ctx.fillText(l,X,y);y+=lh});y+=22;
- ctx.font=F(500,38);inc.forEach(function(it){ctx.save();ctx.strokeStyle=t.fg;ctx.lineWidth=6;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(X+2,y+22);ctx.lineTo(X+14,y+34);ctx.lineTo(X+36,y+8);ctx.stroke();ctx.restore();ctx.fillStyle=t.fg;var l=wrap(ctx,it,mw-60)[0];ctx.fillText(l,X+58,y);y+=58});y+=26;
- ctx.fillStyle=t.fg;ctx.font=F(800,112);ctx.fillText(D.price,X,y);var pw=ctx.measureText(D.price).width;if(D.per){ctx.fillStyle=t.mut;ctx.font=F(500,38);ctx.fillText(D.per,X+pw+18,y+60)}y+=140;
- var cta=story?'Toca el enlace':'Agenda en prevsoul.cl';ctx.font=F(800,40);var cw=ctx.measureText(cta).width+76;ctx.fillStyle=t.ctaBg;rr(ctx,X,y,cw,92,24);ctx.fill();ctx.fillStyle=t.ctaFg;ctx.fillText(cta,X+38,y+25);y+=126;
- ctx.fillStyle=t.chip;ctx.beginPath();ctx.arc(X+35,y+35,35,0,Math.PI*2);ctx.fill();ctx.fillStyle=t.fg;ctx.font=F(800,28);var iw=ctx.measureText(D.ini).width;ctx.fillText(D.ini,X+35-iw/2,y+20);
- ctx.fillStyle=t.mut;ctx.font=F(500,30);ctx.fillText(wrap(ctx,'Lo realiza: '+D.who,mw-100)[0],X+88,y+19);
- if(story){ctx.fillStyle=t.fg;ctx.font=F(800,36);var s='prevsoul.cl',sw=ctx.measureText(s).width;ctx.fillText(s,(W-sw)/2,H-170);ctx.font=F(800,56);ctx.fillText('⌃',(W-30)/2,H-230)}
- ctx.fillStyle=t.mut;ctx.font=F(500,24);ctx.fillText('Valores referenciales. No reemplaza la evaluación odontológica presencial.',X,H-(story?90:58));}
+function cover(ctx,img,X,Y,W,H){var s=Math.max(W/img.width,H/img.height),sw=W/s,sh=H/s;ctx.drawImage(img,(img.width-sw)/2,(img.height-sh)/2,sw,sh,X,Y,W,H)}
+function pill(ctx,t,X,Y,bg,fg,px,w,right){ctx.font=F(w,px);var tw=ctx.measureText(t).width,h=Math.round(px*1.9),pw=tw+px*1.8;if(right)X-=pw;ctx.fillStyle=bg;rr(ctx,X,Y,pw,h,h/2);ctx.fill();ctx.fillStyle=fg;ctx.textBaseline='middle';ctx.fillText(t,X+px*.9,Y+h/2+1);ctx.textBaseline='top';return pw}
+function draw(cv,story){var ctx=cv.getContext('2d'),W=cv.width,H=cv.height,t=T[st.tpl]||T.A;ctx.textBaseline='top';
+ /* foto del producto, recortada al centro */
+ var PH=story?1000:640;if(IM.img){cover(ctx,IM.img,0,0,W,PH)}else{ctx.fillStyle='#EAF1FC';ctx.fillRect(0,0,W,PH);tooth(ctx,W/2-150,PH/2-170,26,'rgba(29,95,209,.35)',null,22)}
+ var top=story?250:48;pill(ctx,D.tipo,64,top,'#fff','#0B2545',26,700);
+ ctx.font=F(800,28);var lw=ctx.measureText('prevsoul.cl').width+50;ctx.fillStyle='#0B2545';rr(ctx,W-64-lw,top,lw,53,26);ctx.fill();ctx.textBaseline='middle';ctx.fillStyle='#fff';ctx.fillText('prevsoul',W-64-lw+25,top+27);ctx.fillStyle='#5FD3B8';ctx.fillText('.cl',W-64-lw+25+ctx.measureText('prevsoul').width,top+27);ctx.textBaseline='top';
+ /* panel */
+ var py=story?940:PH;ctx.fillStyle=t.panel;rr(ctx,0,py,W,H-py,story?[56,56,0,0]:0);ctx.fill();
+ var X=72,y=py+(story?72:52),mw=W-144;
+ ctx.fillStyle=t.fg;ctx.font=F(800,story?92:70);var tl=wrap(ctx,$('psr-ttl').value||D.name,mw).slice(0,3);tl.forEach(function(l){ctx.fillText(l,X,y);y+=story?96:74});y+=story?24:16;
+ ctx.font=F(600,story?38:30);D.inc.slice(0,3).forEach(function(it){var s=story?1.2:1;ctx.save();ctx.strokeStyle=t.chk;ctx.lineWidth=story?7:6;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(X+2*s,y+20*s);ctx.lineTo(X+13*s,y+31*s);ctx.lineTo(X+34*s,y+8*s);ctx.stroke();ctx.restore();ctx.fillStyle=t.fg;ctx.fillText(wrap(ctx,it,mw-60)[0],X+(story?60:52),y);y+=story?58:46});y+=story?30:22;
+ /* precio, botón y quién lo realiza, apoyados abajo */
+ var bot=story?H-280:H-52,avY=story?bot-110:bot-100,ph=story?110:94;ctx.font=F(800,story?76:64);var pw=ctx.measureText(D.price).width,perw=0;
+ if(D.per){ctx.font=F(600,story?30:26);perw=ctx.measureText(D.per).width+14;ctx.font=F(800,story?76:64)}
+ var p2=avY-(story?44:34)-ph;if(p2<y){p2=y;avY=p2+ph+(story?44:34);bot=avY+(story?110:100)}
+ var bw=pw+perw+60;ctx.fillStyle=t.prBg;rr(ctx,X,p2,bw,ph,28);ctx.fill();ctx.fillStyle=t.prFg;ctx.textBaseline='middle';ctx.fillText(D.price,X+30,p2+ph/2+2);if(D.per){ctx.font=F(600,story?30:26);ctx.fillText(D.per,X+30+pw+14,p2+ph/2+8)}
+ var cta=story?'Toca el enlace':'Agenda en prevsoul.cl';ctx.font=F(800,story?34:28);var cw=ctx.measureText(cta).width+64,cx=X+bw+28,ch=story?84:72;
+ if(cx+cw>W-X){cta=story?'Toca el enlace':'prevsoul.cl';cw=ctx.measureText(cta).width+64}
+ ctx.fillStyle=t.ctaBg;rr(ctx,cx,p2+(ph-ch)/2,cw,ch,ch/2);ctx.fill();ctx.fillStyle=t.ctaFg;ctx.fillText(cta,cx+32,p2+ph/2+2);ctx.textBaseline='top';
+ ctx.save();ctx.beginPath();ctx.arc(X+38,avY+38,38,0,Math.PI*2);ctx.closePath();if(IM.av){ctx.clip();cover(ctx,IM.av,X,avY,76,76)}else{ctx.fillStyle=t.av;ctx.fill();ctx.fillStyle=t.avFg;ctx.font=F(800,26);var iw=ctx.measureText(D.ini).width;ctx.fillText(D.ini,X+38-iw/2,avY+24)}ctx.restore();
+ ctx.fillStyle=t.mut;ctx.font=F(500,story?30:26);ctx.fillText('Lo realiza: ',X+96,avY+22);var lw2=ctx.measureText('Lo realiza: ').width;ctx.fillStyle=t.fg;ctx.font=F(800,story?30:26);ctx.fillText(wrap(ctx,D.who,mw-110-lw2)[0],X+96+lw2,avY+22);
+ ctx.fillStyle=t.mut;ctx.font=F(500,story?24:20);ctx.fillText('Valores referenciales. No reemplaza la evaluación odontológica presencial.',X,bot-(story?24:20));}
 function texts(){var g=st.goal,inc=D.inc,ttl=$('psr-ttl').value||D.name,pr=D.price+(D.per?' '+D.per:'');
  var hook={v:ttl+' 🦷',e:'¿Sabías que muchos problemas dentales se pueden detectar antes de que duelan? 🦷',r:'Recordatorio amable: tu control dental también es parte de cuidarte 🦷'}[g];
  var ig=hook+'\n\n'+(g==='e'?'En un control preventivo tu odontólogo revisa a tiempo lo que todavía no se nota. En Prevsoul lo incluimos en:\n\n':'')+'✨ '+D.name+'\n'+inc.map(function(x){return '✔️ '+x}).join('\n')+'\n\n💙 '+pr+'\n📍 Lo realiza: '+D.who+'\n\n👉 Agenda desde el enlace en nuestra bio.\n\nValores referenciales. No reemplaza la evaluación odontológica presencial.\n\n#Prevsoul #OdontologíaPreventiva #DentistaDeCabecera #SaludBucal #Chile';
@@ -208,13 +232,14 @@ function texts(){var g=st.goal,inc=D.inc,ttl=$('psr-ttl').value||D.name,pr=D.pri
  $('psr-nig').textContent=ig.length+' / 2.200';$('psr-nfb').textContent=fb.length+' caracteres';checks()}
 function checks(){var txt=($('psr-ig').value+' '+$('psr-fb').value+' '+$('psr-ttl').value).toLowerCase();
  var bad=/(garantiz|100 ?%|sin dolor|cura|te sangran|tienes caries|tus caries|antes y después|resultados? (asegurad|garantiz))/.test(txt);
- var rows=[[!bad,bad?'Revisa la frase: tiene una promesa o alude a una condición personal':'Sin promesas de resultados ni alusiones a condiciones personales'],[true,'Incluye «No reemplaza la evaluación odontológica presencial»'],[D.who!=='Red de odontólogos Prevsoul','Muestra quién realiza'+(D.who==='Red de odontólogos Prevsoul'?' (asígnalo en «Quién realiza el tratamiento»)':'')],[D.inc.length>0,D.inc.length?'Detalle de lo que incluye':'Agrega lo que incluye: una línea por ítem en la descripción'],[D.pub,D.pub?'Enlace con seguimiento listo':'El producto debe estar publicado para que el enlace funcione']];
+ var rows=[[!bad,bad?'Revisa la frase: tiene una promesa o alude a una condición personal':'Sin promesas de resultados ni alusiones a condiciones personales'],[true,'Incluye «No reemplaza la evaluación odontológica presencial»'],[D.who!=='Red de odontólogos Prevsoul','Muestra quién realiza'+(D.who==='Red de odontólogos Prevsoul'?' (asígnalo en «Quién realiza el tratamiento»)':'')],[D.inc.length>0,D.inc.length?'Detalle de lo que incluye':'Agrega lo que incluye: una línea por ítem en la descripción'],[!!D.img&&D.imgw>=1080,!D.img?'Agrega la imagen del producto (1600 × 1200 px)':(D.imgw>=1080?'Foto del producto lista':'La foto es pequeña: súbela de al menos 1600 × 1200 px')],[D.pub,D.pub?'Enlace con seguimiento listo':'El producto debe estar publicado para que el enlace funcione']];
  $('psr-chk').innerHTML=rows.map(function(r){return '<li><span class="'+(r[0]?'psr-ok':'psr-wa')+'">'+(r[0]?'✓':'!')+'</span><span>'+r[1]+'</span></li>'}).join('')}
 function render(){draw($('psr-feed'),false);draw($('psr-story'),true);texts()}
 document.querySelectorAll('#psr .psr-seg').forEach(function(sg){var k=sg.dataset.k;[].forEach.call(sg.children,function(b){b.classList.toggle('on',b.dataset.v===st[k])});sg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st[k]=b.dataset.v;[].forEach.call(sg.children,function(x){x.classList.toggle('on',x===b)});if(k==='tpl')$('psr-tpl').value=b.dataset.v;render()})});
 $('psr-ttl').addEventListener('input',render);
 document.getElementById('psr').addEventListener('click',function(e){var c=e.target.closest('[data-copy]');if(!c)return;var el=$(c.dataset.copy);el.select();try{navigator.clipboard.writeText(el.value)}catch(x){document.execCommand('copy')}var o=c.textContent;c.textContent='¡Copiado!';setTimeout(function(){c.textContent=o},1500)});
 $('psr-dl').addEventListener('click',function(){[['psr-feed','feed'],['psr-story','historia']].forEach(function(p,i){setTimeout(function(){$(p[0]).toBlob(function(b){var a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='prevsoul-'+D.slug+'-'+p[1]+'.png';document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},500)},'image/png')},i*400)})});
+loadImg('img',D.img);loadImg('av',D.av);
 render();
 if(document.fonts&&document.fonts.load){Promise.all([document.fonts.load(F(800,90)),document.fonts.load(F(500,38))]).then(render,render)}
 })();

@@ -1,5 +1,12 @@
 # Cambios de Prevsoul Core
 
+## 2.10.0
+- «Versión para redes» con fotografía: el feed (1080×1350) y la historia (1080×1920) usan la imagen del producto, recortada al centro (1080×640 y 1080×1000), con un panel de texto debajo.
+- Plantillas nuevas con la paleta de marca: Azul noche, Claro y Menta. La Menta reemplaza a la Amarilla, y los productos que la tenían elegida pasan a Menta.
+- Precio en un bloque destacado, botón de agenda y «Lo realiza» con la foto del odontólogo o el logo de la clínica, si existen.
+- Sin foto, el espacio se llena con azul bruma y el diente de Prevsoul. La revisión automática avisa si falta la foto o si mide menos de 1080 px de ancho.
+- Guía en el cuadro: foto del producto de 1600 × 1200 px (4:3) con lo importante al centro, y foto de quien lo realiza de 400 × 400 px.
+
 ## 2.9.0
 - Paleta corporativa v1: a los azules de confianza se suma el menta de prevención (#5FD3B8), el mismo de las piezas para redes.
 - Portada clara: el carrusel del inicio pasa a fondo azul bruma con título azul noche, precio en verde y botón «Arma tu plan» en azul. La vista previa de anuncios en el escritorio se ve igual.

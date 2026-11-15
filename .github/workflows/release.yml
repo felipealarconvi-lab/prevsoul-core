@@ -35,7 +35,7 @@ jobs:
         if: steps.check.outputs.skip == '0'
         run: |
           mkdir -p build/prevsoul-core
-          rsync -a --exclude '.git' --exclude '.github' --exclude 'build' --exclude 'README.md' --exclude 'CAMBIOS.md' ./ build/prevsoul-core/
+          rsync -a --exclude '.git' --exclude '.github' --exclude 'build' --exclude 'README.md' --exclude 'CAMBIOS.md' --exclude 'docs' ./ build/prevsoul-core/
           cd build && zip -qr prevsoul-core.zip prevsoul-core
       - name: Publicar
         if: steps.check.outputs.skip == '0'

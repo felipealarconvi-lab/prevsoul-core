@@ -1,5 +1,12 @@
 # Cambios de Prevsoul Core
 
+## 2.11.0
+- «Versión para redes» con 9 formatos: Clásico, Precio grande, Dividido, Pregunta, Lista, Marca, Foto arriba, Foto de fondo y Foto en marco. Si el producto tiene imagen, parte en Foto arriba (el diseño de la 2.10.0); si no, en Clásico.
+- 8 combinaciones de colores de la paleta v1: Bruma (predeterminada, antes «Claro»), Azul noche, Menta, Azul Prevsoul, Azul profundo, Noche cielo, Menta viva y Blanco. Fondos planos, frase clave en color de acento y precio en píldora.
+- Foto: la imagen del producto o una elegida solo para redes desde la biblioteca de medios, con ajuste de encuadre. Formato, colores, foto y encuadre se guardan por producto.
+- Se mantienen de la 2.10.0 la foto o el logo de quien lo realiza, el aviso de foto faltante o pequeña y la guía de tamaños. Nuevo recordatorio: foto propia o con permiso, sin «antes y después» ni tratamientos en boca.
+- Guía de marca (docs/MARCA.md) con la tabla de formatos y colores para redes, e imágenes de muestra en docs/redes/.
+
 ## 2.10.0
 - «Versión para redes» con fotografía: el feed (1080×1350) y la historia (1080×1920) usan la imagen del producto, recortada al centro (1080×640 y 1080×1000), con un panel de texto debajo.
 - Plantillas nuevas con la paleta de marca: Azul noche, Claro y Menta. La Menta reemplaza a la Amarilla, y los productos que la tenían elegida pasan a Menta.

@@ -28,9 +28,44 @@ Los colores funcionales (éxito #157347, error #B42318, estrella #A65F00 y ofert
 - Azul Prevsoul no va sobre azul noche (contraste 2,6:1).
 - Cada pieza lleva como máximo dos acentos: menta y uno de los azules.
 - **Sitio:** portada clara (azul bruma) con título azul noche, precio en menta profunda y botón azul. El botón «Consulta online» de la cabecera va en menta. En las secciones oscuras, el botón principal va en menta con texto azul noche.
-- **Redes y anuncios:** fondo azul noche, título blanco con la frase clave en menta, tarjetas blancas con checks en verde y precio en un bloque menta con texto azul noche.
+- **Redes y anuncios:** el estilo principal es **Bruma** (ver «Estilos para redes»). Los otros dos estilos quedan guardados para usarlos cuando se necesiten.
 - **Tipografía:** Plus Jakarta Sans, en 800 para títulos y entre 400 y 600 para texto.
 - **Formas:** 14 px de radio en las tarjetas del sitio, 28 px en las tarjetas de anuncios y botones tipo píldora. Íconos de línea. Sin emojis ni degradados.
+
+## Estilos para redes
+
+En el panel «Versión para redes» de cada producto se eligen por separado el **formato** y los **colores**: 9 × 8 = 72 diseños. Ninguno se elimina; las imágenes de muestra están en `docs/redes/`.
+
+### Formatos
+
+| Formato | Para qué |
+|---|---|
+| Clásico | Promoción general |
+| Precio grande | Ofertas, lanzamientos y precio de entrada |
+| Dividido | Frase arriba en color y el detalle abajo sobre blanco |
+| Pregunta | Contenido educativo («¿Cuándo fue tu último control dental?») |
+| Lista | Explicar qué incluye, con ítems numerados |
+| Marca | Presencia de marca, poco texto |
+| Foto arriba | Foto del producto con panel de texto debajo (inicial si hay foto) |
+| Foto de fondo | Foto a toda la pieza con tarjeta de color abajo |
+| Foto en marco | Foto en recuadro redondeado sobre el color |
+
+Fotos: propias o con permiso, 1600 × 1200 px (4:3) con lo importante al centro; nunca «antes y después» ni tratamientos en boca.
+
+### Colores
+
+| Colores | Fondo | Frase clave | Precio | Uso sugerido |
+|---|---|---|---|---|
+| **Bruma** (predeterminado) | Azul bruma #EAF1FC | Azul Prevsoul | Píldora azul, texto blanco | Día a día |
+| Azul noche | Azul noche #0B2545 | Menta | Píldora menta, texto azul noche | Lanzamientos |
+| Menta | Menta suave #E6F7F2 | Menta profunda | Píldora azul noche, texto menta | Familias y temporada |
+| Azul Prevsoul | Azul Prevsoul #1D5FD1 | Menta | Píldora azul noche, texto menta | Piezas muy de marca |
+| Azul profundo | Azul profundo #164BA8 | Azul cielo | Píldora blanca, texto azul profundo | Planes, tono institucional |
+| Noche cielo | Azul noche #0B2545 | Azul cielo | Píldora azul cielo, texto azul noche | Alternativa suave a Azul noche |
+| Menta viva | Menta #5FD3B8 | Azul profundo | Píldora azul noche, texto blanco | Verano y piezas llamativas |
+| Blanco | Blanco #FFFFFF | Menta profunda | Píldora azul noche, texto menta | Aspecto limpio y clínico |
+
+Todas usan tarjeta blanca (azul bruma en Blanco) con checks en menta profunda. Se descartó el fondo menta profunda: ninguna frase clave de la paleta se leía bien sobre él.
 
 ## Formatos de anuncios
 

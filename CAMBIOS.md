@@ -1,5 +1,14 @@
 # Cambios de Prevsoul Core
 
+## 2.14.0
+- Nueva pantalla Prevsoul → Armador de packs y planes.
+- Catálogo UCO: unidades por prestación, valor UCO 2026, factor público editable, rango de precios de mercado 2026 y marca «Dentro / Bajo / Sobre el mercado».
+- Armar pack y Armar plan: precio redondeado, pago a la clínica, margen neto, LTV, costo máximo por cliente en Meta, cuota en UF y vista de cómo lo ve el paciente; semáforo verde/rojo de rentabilidad, recomendaciones y advertencia ⚠ PG (precio gancho).
+- Oportunidades (en rosado): necesidades del buscador con búsquedas, consultas online y compras, y el pack sugerido para cada una.
+- Rendimiento: ventas, ingresos, margen estimado y origen de cada compra (anuncios Meta, redes, buscador, consulta online, directo) desde los pedidos; planes activos y abandono reales; resultados de la Prueba A/B; gasto en Meta ingresado a mano.
+- Recomendaciones de precios y Ajustes (comisiones por tipo, factor clínica en planes, pasarela, IVA, UF, redondeo) que se guardan.
+- El botón para crear productos queda desactivado por ahora.
+
 ## 2.13.0
 - Nuevo recuadro «Prueba A/B» en la Versión para redes: arma dos versiones del mismo anuncio con filosofías distintas (Informativa, El amigo que es dentista, Advertencia con salida, Educativa).
 - Cada versión trae texto principal, título (máx. 40), descripción, enlace con seguimiento propio (utm_source=meta, utm_campaign=ab-producto, utm_content=ab-a/b-filosofía) y nombre del anuncio, con botón Copiar y revisión de reglas de salud de Meta.

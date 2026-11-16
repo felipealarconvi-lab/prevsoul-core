@@ -669,3 +669,26 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-prod div.product form.cart .button{margin:0;float:none}
 .ps-prod form.cart::before,.ps-prod form.cart::after{display:none!important}
 .ps-prod span.onsale{background:#5FD3B8!important;color:#0B2545!important;border-radius:999px!important;font-weight:800;min-height:0!important;min-width:0!important;padding:4px 12px!important;line-height:1.4!important;top:12px!important;left:12px!important}
+
+/* 2.16.0 · Carrusel de inicio con imagen de producto */
+.ps-slider.ps-bg-oscuro{background:linear-gradient(180deg,#EAF1FC 0%,#F4F8FE 100%)}
+.ps-slider .ps-slide{padding:48px 0 76px}
+.ps-slider .ps-slide-in{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;min-height:440px}
+.ps-slider .ps-slide-title{font-size:clamp(32px,4.2vw,52px);letter-spacing:-1px;line-height:1.05}
+.ps-slider .ps-slide-price{color:var(--ps-ink)}
+.ps-slider .ps-slide-art{position:relative;justify-self:end;width:100%;max-width:470px;flex:none;z-index:0}
+.ps-slider .ps-slide-art::before{content:"";position:absolute;inset:-18px -18px 18px 18px;border-radius:32px;background:#5FD3B8;opacity:.28;z-index:-1}
+.ps-slider .ps-slide-art img{aspect-ratio:1/1;border-radius:28px;box-shadow:0 24px 48px -24px rgba(11,37,69,.45)}
+.ps-slide-off{position:absolute;top:18px;left:18px;background:#0B2545;color:#fff;font-weight:800;font-size:15px;padding:8px 14px;border-radius:999px;line-height:1.2}
+.ps-slider .ps-chip-promo{background:#FFF1C7;color:#7A5300}
+.ps-slider button.ps-slider-nav{background:#fff;border:1px solid #D7E1EE}
+@media (max-width:820px){
+  .ps-slider .ps-slide{padding:20px 0 64px}
+  .ps-slider .ps-slide-in{grid-template-columns:1fr;gap:20px;min-height:0}
+  .ps-slider .ps-slide-art{order:-1;justify-self:stretch;max-width:none}
+  .ps-slider .ps-slide-art::before{display:none}
+  .ps-slider .ps-slide-art img{aspect-ratio:4/3;border-radius:20px}
+  .ps-slider .ps-slide-title{font-size:30px}
+  .ps-slider .ps-slide-tx .ps-actions .ps-btn{flex:1 1 100%}
+}
+.ps-slider .ps-slide-in:not(:has(.ps-slide-art)){grid-template-columns:1fr;min-height:0}

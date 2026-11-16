@@ -135,7 +135,16 @@ function ps_slider_html( $ids ) {
 				$b1url = add_query_arg( 'add-to-cart', $pid, wc_get_cart_url() );
 			}
 		}
-		$img = (int) $m( 'imagen' );
+		$img  = (int) $m( 'imagen' );
+		$desc = '';
+		if ( $prod ) {
+			if ( ! $img ) {
+				$img = (int) $prod->get_image_id();
+			}
+			if ( $reg > $cur && $cur > 0 ) {
+				$desc = '<span class="ps-slide-off">−' . (int) round( ( 1 - $cur / $reg ) * 100 ) . '%</span>';
+			}
+		}
 		$out .= '<div class="ps-slide" role="group" aria-roledescription="anuncio" aria-label="' . (int) ( $n + 1 ) . ' de ' . count( $ids ) . '"' . ( $n ? ' aria-hidden="true"' : '' ) . '><div class="ps-wrap ps-slide-in"><div class="ps-slide-tx">' . $chip;
 		$out .= '<' . $tag . ' class="ps-slide-title">' . esc_html( get_the_title( $id ) ) . '</' . $tag . '>';
 		$out .= $m( 'texto' ) ? '<p class="ps-hero-sub">' . esc_html( $m( 'texto' ) ) . '</p>' : '';
@@ -148,7 +157,7 @@ function ps_slider_html( $ids ) {
 		}
 		$out .= '</div></div>';
 		if ( $img ) {
-			$out .= '<div class="ps-slide-art">' . wp_get_attachment_image( $img, 'large', false, array( 'loading' => $n ? 'lazy' : 'eager', 'alt' => '' ) ) . '</div>';
+			$out .= '<div class="ps-slide-art">' . wp_get_attachment_image( $img, 'large', false, array( 'loading' => $n ? 'lazy' : 'eager', 'alt' => '' ) ) . $desc . '</div>';
 		}
 		$out .= '</div></div>';
 	}

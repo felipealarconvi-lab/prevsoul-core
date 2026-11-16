@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.16.0
+- Carrusel de inicio con imagen: si el anuncio está vinculado a un producto y no tiene imagen propia, usa la imagen del producto.
+- Nuevo diseño de cada diapositiva: texto a la izquierda y foto cuadrada a la derecha con bordes redondeados y bloque menta detrás; en el celular la foto va arriba.
+- Etiqueta de descuento automática sobre la foto cuando el producto está rebajado.
+
 ## 2.15.2
 - Ficha de producto: botón de compra alineado al borde y etiqueta «¡Oferta!» en menta.
 

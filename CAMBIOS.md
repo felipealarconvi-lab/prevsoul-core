@@ -1,5 +1,12 @@
 # Cambios de Prevsoul Core
 
+## 2.15.0
+- La ficha de producto usa ahora el diseño Prevsoul completo: misma cabecera (menú y botón «Consulta online»), pie de página y barra de pestañas en el celular que el resto del sitio.
+- Paleta corporativa en la ficha: título azul noche, precio grande, botón de compra azul Prevsoul, «Realiza» en tarjeta azul bruma, imagen con bordes redondeados, ruta de navegación y pestañas en azul y menta.
+- Etiqueta de categoría en menta sobre el título.
+- Segundo botón «¿Dudas? Consulta online» y tres garantías cortas bajo el botón de compra (editables con el filtro ps_producto_garantias).
+- Productos relacionados como tarjetas.
+
 ## 2.14.0
 - Nueva pantalla Prevsoul → Armador de packs y planes.
 - Catálogo UCO: unidades por prestación, valor UCO 2026, factor público editable, rango de precios de mercado 2026 y marca «Dentro / Bajo / Sobre el mercado».

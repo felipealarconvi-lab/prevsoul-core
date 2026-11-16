@@ -81,10 +81,22 @@ $ps_icon = function ( $d, $size = 22 ) {
 
 <main id="ps-main" class="ps-main">
 	<?php
-	while ( have_posts() ) :
-		the_post();
-		the_content();
-	endwhile;
+	if ( function_exists( 'ps_es_producto' ) && ps_es_producto() ) :
+		echo '<div class="ps-wrap ps-prod">';
+		if ( function_exists( 'woocommerce_breadcrumb' ) ) {
+			woocommerce_breadcrumb( array( 'wrap_before' => '<nav class="ps-prod-crumb" aria-label="Ruta">', 'wrap_after' => '</nav>', 'delimiter' => ' / ', 'home' => 'Inicio' ) );
+		}
+		while ( have_posts() ) :
+			the_post();
+			wc_get_template_part( 'content', 'single-product' );
+		endwhile;
+		echo '</div>';
+	else :
+		while ( have_posts() ) :
+			the_post();
+			the_content();
+		endwhile;
+	endif;
 	?>
 </main>
 

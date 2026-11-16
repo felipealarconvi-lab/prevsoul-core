@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.15.1
+- Ficha de producto: precio en tamaño grande y botón de compra alineado cuando el producto se vende de a uno.
+
 ## 2.15.0
 - La ficha de producto usa ahora el diseño Prevsoul completo: misma cabecera (menú y botón «Consulta online»), pie de página y barra de pestañas en el celular que el resto del sitio.
 - Paleta corporativa en la ficha: título azul noche, precio grande, botón de compra azul Prevsoul, «Realiza» en tarjeta azul bruma, imagen con bordes redondeados, ruta de navegación y pestañas en azul y menta.

@@ -664,3 +664,6 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-prod ul.products li.product .button{background:var(--ps-accent);color:#fff;border-radius:10px;font-weight:800;padding:9px 14px;font-size:14px}
 .ps-prod a{color:var(--ps-accent)}
 @media(max-width:820px){.ps-prod div.product{grid-template-columns:1fr;gap:20px}.ps-prod-trust{grid-template-columns:1fr}.ps-prod .single_add_to_cart_button,.ps-prod-dudas{flex:1 1 100%;width:100%}}
+.ps-prod div.product .summary p.price,.ps-prod div.product .summary span.price{font-size:34px!important;font-weight:800;color:var(--ps-ink)!important}
+.ps-prod form.cart .quantity:has(input[type=hidden]){display:none}
+.ps-prod div.product form.cart .button{margin:0;float:none}

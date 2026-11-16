@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.15.2
+- Ficha de producto: botón de compra alineado al borde y etiqueta «¡Oferta!» en menta.
+
 ## 2.15.1
 - Ficha de producto: precio en tamaño grande y botón de compra alineado cuando el producto se vende de a uno.
 

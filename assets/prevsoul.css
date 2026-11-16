@@ -667,3 +667,5 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-prod div.product .summary p.price,.ps-prod div.product .summary span.price{font-size:34px!important;font-weight:800;color:var(--ps-ink)!important}
 .ps-prod form.cart .quantity:has(input[type=hidden]){display:none}
 .ps-prod div.product form.cart .button{margin:0;float:none}
+.ps-prod form.cart::before,.ps-prod form.cart::after{display:none!important}
+.ps-prod span.onsale{background:#5FD3B8!important;color:#0B2545!important;border-radius:999px!important;font-weight:800;min-height:0!important;min-width:0!important;padding:4px 12px!important;line-height:1.4!important;top:12px!important;left:12px!important}

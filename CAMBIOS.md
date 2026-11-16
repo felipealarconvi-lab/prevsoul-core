@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.12.0
+- Textos de la «Versión para redes» con la voz de marca «el amigo que es dentista»: fórmula de 5 tiempos (gancho, verdad directa, salida, qué incluye y precio, cierre amable), tuteo, chilenismos suaves y sin emojis.
+- 3 versiones por objetivo (Vender, Educar, Recordar) y botón «Otra versión del texto ↻». Educar usa «Mito o verdad» y el «Diccionario de la boca».
+- Precio con «Sin letra chica»; si es a cotizar, «Precio a cotizar, sin compromiso». La historia lleva una frase corta según el objetivo.
+- Revisión automática ampliada: avisa si un texto da por hecho lo que le pasa a quien lee (con tú o usted) o dice «el más barato».
+
 ## 2.11.0
 - «Versión para redes» con 9 formatos: Clásico, Precio grande, Dividido, Pregunta, Lista, Marca, Foto arriba, Foto de fondo y Foto en marco. Si el producto tiene imagen, parte en Foto arriba (el diseño de la 2.10.0); si no, en Clásico.
 - 8 combinaciones de colores de la paleta v1: Bruma (predeterminada, antes «Claro»), Azul noche, Menta, Azul Prevsoul, Azul profundo, Noche cielo, Menta viva y Blanco. Fondos planos, frase clave en color de acento y precio en píldora.

@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.13.0
+- Nuevo recuadro «Prueba A/B» en la Versión para redes: arma dos versiones del mismo anuncio con filosofías distintas (Informativa, El amigo que es dentista, Advertencia con salida, Educativa).
+- Cada versión trae texto principal, título (máx. 40), descripción, enlace con seguimiento propio (utm_source=meta, utm_campaign=ab-producto, utm_content=ab-a/b-filosofía) y nombre del anuncio, con botón Copiar y revisión de reglas de salud de Meta.
+- Paso a paso para crear la prueba en el Administrador de anuncios y leer el resultado en Analytics.
+
 ## 2.12.0
 - Textos de la «Versión para redes» con la voz de marca «el amigo que es dentista»: fórmula de 5 tiempos (gancho, verdad directa, salida, qué incluye y precio, cierre amable), tuteo, chilenismos suaves y sin emojis.
 - 3 versiones por objetivo (Vender, Educar, Recordar) y botón «Otra versión del texto ↻». Educar usa «Mito o verdad» y el «Diccionario de la boca».

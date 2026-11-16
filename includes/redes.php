@@ -172,6 +172,13 @@ function ps_redes_box( $post ) {
 .psr-chk li{display:flex;gap:7px;padding:4px 0;border-top:1px solid #EEF1F5}.psr-chk li:first-child{border-top:0}
 .psr-ok{color:#157347;font-weight:800}.psr-wa{color:#8A5300;font-weight:800}
 .psr-note{font-size:11.5px;color:#4A5B73;background:#F6F8FB;border-radius:8px;padding:8px 10px;margin-top:8px}
+.psr-ab{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.psr-ab>div{border:1px solid #D7E1EE;border-radius:10px;padding:10px;background:#FAFCFF}
+.psr-ab select{width:100%;max-width:none}.psr-ab textarea{width:100%;min-height:150px;font-size:12px}.psr-ab input[type=text]{width:100%;font-size:12px}
+.psr-ab .psr-tag{display:inline-block;font-size:10.5px;font-weight:800;border-radius:99px;padding:2px 8px;background:#EAF1FC;color:#164BA8;margin-bottom:6px}
+.psr-ab .psr-tag.b{background:#E6F7F2;color:#167A64}
+.psr-ab .psr-fl{font-size:11px;font-weight:700;color:#4A5B73;margin:6px 0 3px;display:flex;justify-content:space-between}
+.psr-steps{margin:8px 0 0 18px;font-size:12px;line-height:1.55}.psr-steps li{margin-bottom:3px}
 .psr-ph2{border-style:dashed}.psr-badge{font-size:10.5px;font-weight:800;background:#FFF4DE;color:#8A5300;border-radius:99px;padding:2px 8px;margin-left:6px}
 @media (max-width:1400px){.psr{grid-template-columns:1fr 1fr}.psr-mid{grid-column:1/-1;order:-1}}
 @media (max-width:900px){.psr{grid-template-columns:1fr}}
@@ -215,6 +222,23 @@ function ps_redes_box( $post ) {
 		<div class="psr-c" style="margin-top:10px"><h4>Fase 1 · Descargar y programar</h4>
 			<div class="psr-row"><button type="button" class="button button-primary" id="psr-dl">Descargar imágenes</button><a class="button" target="_blank" rel="noopener" href="<?php echo esc_url( 'https://business.facebook.com/latest/content_calendar?business_id=' . $d['biz'] ); ?>">Abrir Planificador de Meta ↗</a></div>
 			<p class="psr-note">Cada texto lleva su enlace con seguimiento (utm_source=instagram / facebook): en Analytics verás cuántas visitas y ventas trajo cada red.</p>
+		</div>
+		<div class="psr-c" id="psr-abbox"><h4>Prueba A/B · dos filosofías para el mismo anuncio</h4>
+			<p class="psr-note" style="margin-top:0">Misma imagen, mismo público y mismo presupuesto; solo cambia el texto. Así sabes qué forma de hablar trae más clics y precitas.</p>
+			<div class="psr-ab">
+				<div><span class="psr-tag">Versión A</span><select id="psr-aba" aria-label="Filosofía de la versión A"></select><div id="psr-abfa"></div></div>
+				<div><span class="psr-tag b">Versión B</span><select id="psr-abb" aria-label="Filosofía de la versión B"></select><div id="psr-abfb"></div></div>
+			</div>
+			<details style="margin-top:8px"><summary style="cursor:pointer;font-weight:700;font-size:12px">Cómo crear la prueba en Meta (paso a paso)</summary>
+			<ol class="psr-steps">
+				<li>Presiona <b>Descargar imágenes</b>: las dos versiones usan el mismo feed.</li>
+				<li>Abre el <a target="_blank" rel="noopener" href="<?php echo esc_url( 'https://adsmanager.facebook.com/adsmanager/manage/campaigns?business_id=' . $d['biz'] ); ?>">Administrador de anuncios ↗</a> y crea una campaña con objetivo <b>Tráfico</b>.</li>
+				<li>Arma el anuncio de la <b>versión A</b>: sube la imagen y copia el texto principal, el título, la descripción, el enlace y el nombre de A.</li>
+				<li>Con el anuncio A abierto, usa <b>Prueba A/B</b> (o Duplicar) y en la copia cambia <b>solo</b> el texto principal, el título, la descripción, el enlace y el nombre por los de B.</li>
+				<li>Métrica: <b>costo por clic en el enlace</b>. Duración: <b>al menos 7 días</b>. Revisa que el «poder estimado» llegue al 80 %; si no, sube el presupuesto o alarga la prueba.</li>
+				<li>El presupuesto y el pago los defines tú en Meta.</li>
+				<li>Al terminar, en Analytics → Adquisición, filtra por <b>utm_content</b> (ab-a-… y ab-b-…) para ver cuál trajo más visitas y precitas.</li>
+			</ol></details>
 		</div>
 		<div class="psr-c psr-ph2"><h4>Fase 2 · Publicar desde WordPress <span class="psr-badge">Requiere app de Meta</span></h4>
 			<div class="psr-row"><button type="button" class="button" disabled>Publicar ahora en Instagram y Facebook</button><button type="button" class="button" disabled>Programar…</button></div>
@@ -350,13 +374,26 @@ function texts(){var g=st.goal,inc=D.inc,ttl=$('psr-ttl').value||D.name,pr=D.pri
  var fb=hook+'\n\n'+x.d+'\n\n'+D.name+' por '+pr+'.'+(inc.length?' Incluye:\n'+inc.map(function(i){return '• '+i}).join('\n'):'')+'\n\nLo realiza: '+D.who+'.\n\nAgenda aquí: '+utm('facebook')+'\n\nValores referenciales. No reemplaza la evaluación odontológica presencial.';
  $('psr-ig').value=ig;$('psr-fb').value=fb;$('psr-st').value={v:'Sin esperar a que duela',e:'¿Mito o verdad?',r:'¿Y el último control?'}[g]+' · '+D.name+' · '+pr+' · Toca el enlace';$('psr-stu').value=utm('instagram');
  $('psr-nig').textContent=ig.length+' / 2.200';$('psr-nfb').textContent=fb.length+' caracteres';checks()}
+/* Prueba A/B: filosofías de comunicación (estudio Método Mochi, 15-nov-2026). Todas cumplen las reglas de salud de Meta. */
+var LEG=' Valores referenciales. No reemplaza la evaluación odontológica presencial.';
+var PH={
+ info:{n:'Informativa (directa, neutra)',f:function(p){return {t:D.name+' por '+p.pr+'.'+(p.inc?' Incluye: '+p.inc+'.':'')+' Lo realiza '+D.who+'. Agenda en prevsoul.cl.',h:(D.name.length+p.pr.length+3<=40?D.name+' · '+p.pr:'Agenda tu control · '+p.pr),d:'Agenda en prevsoul.cl'}}},
+ amigo:{n:'El amigo que es dentista (cercana, con humor)',f:function(p){return {t:'El «mañana pido hora» más largo de Chile: el del dentista. Lo bueno es que se arregla en un rato: un control a tiempo pilla los problemas cuando todavía son chicos. '+D.name+': '+p.pr+', sin letra chica. ¿Te tinca?',h:'Nadie te va a retar. Te vamos a revisar.',d:p.pr+' · sin letra chica'}}},
+ alerta:{n:'Advertencia con salida (seria, directa)',f:function(p){return {t:'El diente no avisa. Cuando avisa, ya sale más caro. Una caries chica se arregla en una sesión; si se deja, puede terminar en endodoncia y corona. Un control dos veces al año la pilla a tiempo. '+D.name+': '+p.pr+'.',h:'Un control a tiempo sale más barato',d:p.pr+' · agenda en prevsoul.cl'}}},
+ edu:{n:'Educativa (mito o verdad)',f:function(p){return {t:'Mito o verdad: «Si no duele, está todo bien». Mito. Las caries y el sarro avanzan calladitos; cuando molestan, ya están más avanzados. En un control preventivo se revisan a tiempo. '+D.name+': '+p.pr+'.',h:'Mito: si no duele, está todo bien',d:p.pr+' · '+D.name}}}};
+function abURL(k,side){var u=new URL(D.url);u.searchParams.set('utm_source','meta');u.searchParams.set('utm_medium','paid');u.searchParams.set('utm_campaign','ab-'+D.slug);u.searchParams.set('utm_content','ab-'+side+'-'+k);return u.toString()}
+function abField(lbl,id,val,area,max){var n=val.length,warn=max&&n>max;return '<div class="psr-fl"><span>'+lbl+'</span><span'+(warn?' style="color:#8A5300"':'')+'>'+n+(max?' / '+max:'')+'</span></div>'+(area?'<textarea id="'+id+'">':'<input type="text" id="'+id+'" value="')+val.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')+(area?'</textarea>':'">')+'<div class="psr-row"><button type="button" class="button" data-copy="'+id+'">Copiar</button></div>'}
+function abSide(side){var sel=$('psr-ab'+side),k=sel.value,p={pr:D.price==='Cotizar'?'precio a cotizar':D.price+(D.per?' '+D.per:''),inc:D.inc.slice(0,3).join(', ').toLowerCase()},o=PH[k].f(p),t=o.t+LEG;
+ var bad=/(garantiz|100 ?%|sin dolor|\bcura|(te|le) (sangran|duele|duelen)|sufres|sufre de|(tienes|tiene) (caries|sarro|mal aliento|dolor)|antes y después|el más barato|los más baratos)/i.test(t+' '+o.h);
+ $('psr-abf'+side).innerHTML=abField('Texto principal','psr-ab'+side+'t',t,true)+abField('Título','psr-ab'+side+'h',o.h,false,40)+abField('Descripción','psr-ab'+side+'d',o.d,false,30)+abField('Enlace (con seguimiento '+side.toUpperCase()+')','psr-ab'+side+'u',abURL(k,side),false)+abField('Nombre del anuncio','psr-ab'+side+'n','Prevsoul · '+D.slug+' · '+side.toUpperCase()+' · '+PH[k].n.split(' (')[0],false)+'<ul class="psr-chk" style="margin-top:6px"><li><span class="'+(bad?'psr-wa':'psr-ok')+'">'+(bad?'!':'✓')+'</span><span>'+(bad?'Revisa el texto: promesa o suposición sobre quien lee':'Cumple las reglas de salud de Meta')+'</span></li></ul>'}
+function abInit(){['a','b'].forEach(function(s,i){var sel=$('psr-ab'+s);sel.innerHTML=Object.keys(PH).map(function(k){return '<option value="'+k+'">'+PH[k].n+'</option>'}).join('');sel.value=i?'amigo':'info';sel.addEventListener('change',function(){if($('psr-aba').value===$('psr-abb').value){var ks=Object.keys(PH),o=s==='a'?'b':'a';$('psr-ab'+o).value=ks[(ks.indexOf(sel.value)+1)%ks.length];abSide(o)}abSide(s)});abSide(s)})}
 function checks(){var txt=($('psr-ig').value+' '+$('psr-fb').value+' '+$('psr-ttl').value).toLowerCase();
  var bad=/(garantiz|100 ?%|sin dolor|\bcura|(te|le) (sangran|duele|duelen)|sufres|sufre de|(tienes|tiene) (caries|sarro|mal aliento|dolor)|tus caries|sus caries|antes y después|resultados? (asegurad|garantiz))/.test(txt),cheap=/(más barat[oa]s? (de|del)|los más baratos|el más barato)/.test(txt);
  var rows=[[!bad,bad?'Revisa la frase: tiene una promesa o da por hecho lo que le pasa a quien lee':'Sin promesas ni suposiciones sobre quien lee'],[!cheap,cheap?'Evita «el más barato»: di el precio y qué incluye':'Precio claro, sin «el más barato»'],[true,'Incluye «No reemplaza la evaluación odontológica presencial»'],[D.who!=='Red de odontólogos Prevsoul','Muestra quién realiza'+(D.who==='Red de odontólogos Prevsoul'?' (asígnalo en «Quién realiza el tratamiento»)':'')],[D.inc.length>0,D.inc.length?'Detalle de lo que incluye':'Agrega lo que incluye: una línea por ítem en la descripción'],[D.pub,D.pub?'Enlace con seguimiento listo':'El producto debe estar publicado para que el enlace funcione']];if(st.lay.charAt(0)==='f'){var big=IMG&&IMG.naturalWidth>=1080;rows.push([!!big,!IMG?'Elige una foto: la imagen del producto u otra de la biblioteca (1600 × 1200 px)':(big?'Foto lista':'La foto es pequeña: súbela de al menos 1600 × 1200 px')]);rows.push([true,'Foto propia o con permiso; sin «antes y después» ni tratamientos en boca'])}
  $('psr-chk').innerHTML=rows.map(function(r){return '<li><span class="'+(r[0]?'psr-ok':'psr-wa')+'">'+(r[0]?'✓':'!')+'</span><span>'+r[1]+'</span></li>'}).join('')}
 function render(){$('psr-fotobox').style.display=st.lay.charAt(0)==='f'?'':'none';draw($('psr-feed'),false);draw($('psr-story'),true);texts()}
 document.querySelectorAll('#psr .psr-seg').forEach(function(sg){var k=sg.dataset.k;[].forEach.call(sg.children,function(b){b.classList.toggle('on',b.dataset.v===st[k])});sg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;st[k]=b.dataset.v;[].forEach.call(sg.children,function(x){x.classList.toggle('on',x===b)});if(k==='tpl')$('psr-tpl').value=b.dataset.v;if(k==='lay')$('psr-lay').value=b.dataset.v;if(k==='goal')st.n=0;render()})});
-$('psr-ttl').addEventListener('input',render);$('psr-otra').addEventListener('click',function(){st.n=(st.n||0)+1;texts()});$('psr-fy').addEventListener('input',render);
+abInit();$('psr-ttl').addEventListener('input',render);$('psr-otra').addEventListener('click',function(){st.n=(st.n||0)+1;texts()});$('psr-fy').addEventListener('input',render);
 $('psr-pick').addEventListener('click',function(){if(!window.wp||!wp.media)return;var fr=wp.media({title:'Elige una foto para redes',library:{type:'image'},multiple:false,button:{text:'Usar esta foto'}});fr.on('select',function(){var a=fr.state().get('selection').first().toJSON();$('psr-img').value=a.id;setImg(a.url)});fr.open()});
 $('psr-unpick').addEventListener('click',function(){$('psr-img').value=0;setImg(D.feat)});
 document.getElementById('psr').addEventListener('click',function(e){var c=e.target.closest('[data-copy]');if(!c)return;var el=$(c.dataset.copy);el.select();try{navigator.clipboard.writeText(el.value)}catch(x){document.execCommand('copy')}var o=c.textContent;c.textContent='¡Copiado!';setTimeout(function(){c.textContent=o},1500)});

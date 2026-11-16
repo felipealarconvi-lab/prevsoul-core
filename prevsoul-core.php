@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.16.0
+ * Version:           2.17.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.16.0' );
+define( 'PS_VERSION', '2.17.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -35,6 +35,7 @@ require_once __DIR__ . '/includes/marketing.php';
 require_once __DIR__ . '/includes/redes.php';
 require_once __DIR__ . '/includes/armador.php';
 require_once __DIR__ . '/includes/producto.php';
+require_once __DIR__ . '/includes/familia.php';
 
 /* 1.8: nombres cortos en el menú principal (una sola vez; después se editan en Apariencia → Menús). */
 add_action(
@@ -227,7 +228,9 @@ function ps_fields() {
 			'email'    => array( 'Correo', 'text', '' ),
 			'telefono' => array( 'Teléfono', 'text', '' ),
 			'motivo'   => array( 'Motivo', 'text', '' ),
-			'mensaje'  => array( 'Mensaje del paciente', 'textarea', '' ),
+			'meta'     => array( 'Le gustaría poder…', 'text', '' ),
+			'espera'   => array( 'Qué espera de la consulta', 'text', '' ),
+			'mensaje'  => array( 'Lo que se lo impide hoy (mensaje)', 'textarea', '' ),
 			'estado'   => array( 'Estado del caso', 'precita', '' ),
 			'notas'    => array( 'Notas internas', 'textarea', '' ),
 		),
@@ -746,6 +749,8 @@ function ps_handle_precita() {
 	$tel    = sanitize_text_field( wp_unslash( $_POST['ps_tel'] ?? '' ) );
 	$motivo = sanitize_text_field( wp_unslash( $_POST['ps_motivo'] ?? '' ) );
 	$msg    = sanitize_textarea_field( wp_unslash( $_POST['ps_msg'] ?? '' ) );
+	$meta   = sanitize_text_field( wp_unslash( $_POST['ps_meta'] ?? '' ) );
+	$exp    = sanitize_text_field( wp_unslash( $_POST['ps_exp'] ?? '' ) );
 	if ( ! $nombre || ! is_email( $email ) ) {
 		wp_safe_redirect( $back );
 		exit;
@@ -758,12 +763,12 @@ function ps_handle_precita() {
 		)
 	);
 	if ( $id && ! is_wp_error( $id ) ) {
-		foreach ( array( 'nombre' => $nombre, 'email' => $email, 'telefono' => $tel, 'motivo' => $motivo, 'mensaje' => $msg, 'estado' => 'nueva' ) as $k => $v ) {
+		foreach ( array( 'nombre' => $nombre, 'email' => $email, 'telefono' => $tel, 'motivo' => $motivo, 'mensaje' => $msg, 'meta' => $meta, 'espera' => $exp, 'estado' => 'nueva' ) as $k => $v ) {
 			update_post_meta( $id, '_ps_' . $k, $v );
 		}
 		$to = ps_get( 'notify_email' );
 		if ( $to ) {
-			wp_mail( $to, 'Nueva solicitud de precita: ' . $motivo, "Paciente: $nombre\nCorreo: $email\nTeléfono: $tel\nMotivo: $motivo\n\nVer en el panel: " . admin_url( 'post.php?post=' . $id . '&action=edit' ) );
+			wp_mail( $to, 'Nueva solicitud de precita: ' . $motivo, "Paciente: $nombre\nCorreo: $email\nTeléfono: $tel\nMotivo: $motivo\nQuiere poder: $meta\nEspera de la consulta: $exp\n\nVer en el panel: " . admin_url( 'post.php?post=' . $id . '&action=edit' ) );
 		}
 	}
 	wp_safe_redirect( add_query_arg( 'ps_precita', 'ok', $back ) );

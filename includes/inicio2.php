@@ -290,8 +290,19 @@ function ps_sala2() {
 	foreach ( $needs as $i => $n ) {
 		$out .= '<label><input type="radio" name="ps_motivo" value="' . esc_attr( $n ) . '" ' . checked( $pre ? $pre : '', $n, false ) . ( 0 === $i ? ' required' : '' ) . '><span>' . esc_html( $n ) . '</span></label>';
 	}
-	$out .= '</fieldset><div class="ps-sala2-step"><div class="ps-msg">' . $av . '<p>Déjame tu nombre y cómo contactarte, y te llamo en cuanto sea tu turno.</p></div>';
-	$out .= '<div class="ps-sala2-fields"><label><span>Tu nombre</span><input type="text" name="ps_nombre" required autocomplete="name"></label><label><span>Teléfono</span><input name="ps_tel" type="tel" required autocomplete="tel" placeholder="+56 9 …"></label><label><span>Correo</span><input name="ps_email" type="email" required autocomplete="email"></label><label class="ps-sala2-wide"><span>Cuéntanos brevemente (opcional)</span><textarea name="ps_msg" rows="2" maxlength="600"></textarea></label></div>';
+	$out .= '</fieldset><div class="ps-sala2-step">';
+	$metas = array( 'Comer de todo', 'Reír en las fotos', 'Dormir sin molestias', 'Hablar tranquilo', 'No faltar al trabajo o al colegio', 'Otra' );
+	$exps  = array( 'Saber si es urgente', 'Saber qué opciones tengo', 'Saber cuánto cuesta', 'Saber cómo cuidarme en casa' );
+	$out  .= '<div class="ps-msg">' . $av . '<p>¿Qué te gustaría poder hacer sin que tu boca te lo impida?</p></div><fieldset class="ps-sala2-chips ps-sala2-meta"><legend class="screen-reader-text">Lo que te gustaría poder hacer</legend>';
+	foreach ( $metas as $x ) {
+		$out .= '<label><input type="radio" name="ps_meta" value="' . esc_attr( $x ) . '"><span>' . esc_html( $x ) . '</span></label>';
+	}
+	$out .= '</fieldset><div class="ps-msg">' . $av . '<p>¿Y qué te gustaría llevarte de esta conversación?</p></div><fieldset class="ps-sala2-chips ps-sala2-exp"><legend class="screen-reader-text">Qué esperas de la consulta</legend>';
+	foreach ( $exps as $x ) {
+		$out .= '<label><input type="radio" name="ps_exp" value="' . esc_attr( $x ) . '"><span>' . esc_html( $x ) . '</span></label>';
+	}
+	$out .= '</fieldset><div class="ps-msg">' . $av . '<p>Déjame tu nombre y cómo contactarte, y te llamo en cuanto sea tu turno.</p></div>';
+	$out .= '<div class="ps-sala2-fields"><label><span>Tu nombre</span><input type="text" name="ps_nombre" required autocomplete="name"></label><label><span>Teléfono</span><input name="ps_tel" type="tel" required autocomplete="tel" placeholder="+56 9 …"></label><label><span>Correo</span><input name="ps_email" type="email" required autocomplete="email"></label><label class="ps-sala2-wide"><span>¿Qué te lo está impidiendo hoy? (opcional)</span><textarea name="ps_msg" rows="2" maxlength="600"></textarea></label></div>';
 	$out .= '<p class="ps-consent"><label><input type="checkbox" name="ps_ok" value="1" required> Acepto que Prevsoul use estos datos, incluida información de salud que comparta, solo para orientarme y contactarme, según la <a href="' . esc_url( get_privacy_policy_url() ? get_privacy_policy_url() : home_url( '/politica-de-privacidad/' ) ) . '">política de privacidad</a>.</label></p>';
 	$out .= '<button class="ps-btn ps-btn-lg ps-sala2-go" type="submit">Entrar a la sala de espera</button><p class="ps-muted ps-small">La precita es orientación informativa: no reemplaza una consulta ni un diagnóstico presencial.</p></div></form></div>';
 	return $out . ps_inicio_js();

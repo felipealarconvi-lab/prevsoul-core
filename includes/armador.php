@@ -464,7 +464,7 @@ function ps_armador_page() {
 	if ( isset( $_GET['ok'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		echo '<div class="notice notice-success is-dismissible"><p>Factores y ajustes guardados.</p></div>';
 	}
-	echo $form . '</div><script>window.PSARM=' . wp_json_encode( $data ) . ';</script><script>' . PS_ARM_JS . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput
+	echo $form . apply_filters( 'ps_armador_extra', '' ) . '</div><script>window.PSARM=' . wp_json_encode( $data ) . ';</script><script>' . PS_ARM_JS . '</script>'; // phpcs:ignore WordPress.Security.EscapeOutput
 }
 
 add_action(

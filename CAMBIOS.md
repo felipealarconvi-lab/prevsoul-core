@@ -1,5 +1,16 @@
 # Cambios de Prevsoul Core
 
+## 2.17.0
+- Plan Familiar «Prevsoul cuida a quien cuida»: precio por integrante (titular al precio del Plan Individual y cada integrante adicional al % de Armador → Ajustes), contador de integrantes, «Tu control va primero», segundo responsable opcional y bloque «Nosotros nos acordamos por ti».
+- Mi cuenta → «Mi plan»: integrantes (titular primero), meta personal de cada uno con sus propias palabras, último control y estado (al día, pronto, por agendar); segundo responsable editable.
+- En cada pedido con plan, recuadro «Prevsoul · Plan y controles» para registrar la fecha del último control de cada integrante.
+- Recordatorio mensual (uno por familia, a la titular y al segundo responsable) cuando alguien está por agendar.
+- Correo de seguimiento cada 6 meses: «¿Tu boca te deja hacer lo que quieres?» (1 a 5); con 1 a 3 invita a la consulta online, con 4 o 5 agradece.
+- «Para qué te sirve»: campo nuevo en cada producto, con textos iniciales para los 13 productos, visible en la ficha.
+- Consulta online: dos preguntas nuevas (qué te gustaría poder hacer y qué esperas de la conversación) y «¿Qué te lo está impidiendo hoy?»; se guardan en la precita y llegan en el aviso.
+- Armador: tarjeta «Plan Familiar y metas» en Rendimiento y tabla de precio por integrante en Armar plan.
+- Privacidad: nombres, metas y respuestas quedan solo en el sitio; no se envían a Meta ni a Clarity.
+
 ## 2.16.0
 - Carrusel de inicio con imagen: si el anuncio está vinculado a un producto y no tiene imagen propia, usa la imagen del producto.
 - Nuevo diseño de cada diapositiva: texto a la izquierda y foto cuadrada a la derecha con bordes redondeados y bloque menta detrás; en el celular la foto va arriba.

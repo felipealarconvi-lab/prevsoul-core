@@ -111,18 +111,17 @@ function ps_slider_html( $ids ) {
 		$m     = function ( $k ) use ( $id ) {
 			return ps_anuncio_meta( $id, $k );
 		};
-		$pzp = null;
-		if ( function_exists( 'ps_pz_slide_html' ) ) {
+		if ( function_exists( 'ps_pz_slide_render' ) ) {
+			$open = '<div class="ps-slide ps-slide-pz" role="group" aria-roledescription="anuncio" aria-label="' . (int) ( $n + 1 ) . ' de ' . count( $ids ) . '"' . ( $n ? ' aria-hidden="true"' : '' ) . '>';
+			$tagn = 0 === $n ? 'h1' : 'h2';
 			if ( 'product' === get_post_type( $id ) ) {
-				$pzp = wc_get_product( $id );
+				$pp = wc_get_product( $id );
+				if ( $pp ) {
+					$out .= $open . ps_pz_slide_html( $pp, '', $tagn ) . '</div>';
+				}
 			} else {
-				$lp  = (int) $m( 'producto' );
-				$lpp = ( $lp && function_exists( 'wc_get_product' ) ) ? wc_get_product( $lp ) : null;
-				$pzp = ps_pz_en_slider( $lpp ) ? $lpp : null;
+				$out .= $open . ps_pz_slide_render( ps_pz_anuncio_data( $id ), $tagn ) . '</div>';
 			}
-		}
-		if ( $pzp ) {
-			$out .= '<div class="ps-slide ps-slide-pz" role="group" aria-roledescription="anuncio" aria-label="' . (int) ( $n + 1 ) . ' de ' . count( $ids ) . '"' . ( $n ? ' aria-hidden="true"' : '' ) . '>' . ps_pz_slide_html( $pzp, '', 0 === $n ? 'h1' : 'h2' ) . '</div>';
 			continue;
 		}
 		$color = $m( 'color' ) ? $m( 'color' ) : 'brand';
@@ -230,6 +229,11 @@ function ps_anuncio_box( $post ) {
 	}
 	$row( '<label for="ps_a_producto">Producto vinculado</label>', '<select id="ps_a_producto" name="ps_a[producto]">' . $sel . '</select>', 'Opcional. Muestra el precio y, si el botón 1 no tiene enlace, lo lleva directo al carro con ese producto.' );
 	$row( '<label for="ps_a_oferta">Precio de oferta</label>', '<input type="number" min="0" step="1" id="ps_a_oferta" name="ps_a[oferta]" value="' . esc_attr( $m( 'oferta' ) ) . '" placeholder="Ej: 39990">', '<strong>Rebaja el producto de verdad</strong> durante las fechas del anuncio: la tienda cobra este precio y muestra el normal tachado. Al vencer, desactivar o borrar el anuncio, el producto vuelve a su precio.' );
+	$fams = '<option value="">Automático</option>';
+	foreach ( ps_pz_familias() as $fk => $fv ) {
+		$fams .= '<option value="' . esc_attr( $fk ) . '" ' . selected( $m( 'pz_familia' ), $fk, false ) . '>' . esc_html( $fv[1] ) . '</option>';
+	}
+	$row( '<label for="ps_a_pzh">Palabra héroe</label>', '<input id="ps_a_pzh" name="ps_a[pz_heroe]" maxlength="24" value="' . esc_attr( $m( 'pz_heroe' ) ) . '" placeholder="Automática"> <select name="ps_a[pz_familia]">' . $fams . '</select>', 'La palabra escrita a mano y el color del slide. Vacío = la del producto vinculado o una sugerencia automática.' );
 	$row( '<label for="ps_a_b1">Botón 1</label>', '<input id="ps_a_b1" name="ps_a[b1]" value="' . esc_attr( $m( 'b1' ) ) . '" placeholder="Comprar ahora"> <input class="regular-text" name="ps_a[b1_url]" value="' . esc_attr( $m( 'b1_url' ) ) . '" placeholder="Enlace (vacío = al carro con el producto)">' );
 	$row( '<label for="ps_a_b2">Botón 2</label>', '<input id="ps_a_b2" name="ps_a[b2]" value="' . esc_attr( $m( 'b2' ) ) . '" placeholder="Ver detalles"> <input class="regular-text" name="ps_a[b2_url]" value="' . esc_attr( $m( 'b2_url' ) ) . '" placeholder="/packs-dentales/">' );
 	echo '</table>';
@@ -245,8 +249,18 @@ function ps_anuncio_pub_box( $post ) {
 	echo '<p><label for="ps_a_orden"><strong>Orden en el carrusel</strong></label><br><input type="number" min="1" id="ps_a_orden" name="ps_a[orden]" value="' . esc_attr( $m( 'orden' ) ? $m( 'orden' ) : 10 ) . '" style="width:80px"></p>';
 	echo '<p><label><input type="checkbox" name="ps_a[activo]" value="1" ' . checked( $activo, '1', false ) . '> Activo</label></p>';
 }
-function ps_anuncio_prev_box() {
-	echo '<div id="ps-a-prev" style="background:#EAF1FC;color:#0B2545;border-radius:10px;padding:22px;font-family:\'Plus Jakarta Sans\',system-ui,sans-serif;display:flex;gap:16px;align-items:center"><div style="flex:1;min-width:0"><span id="pa-chip" style="display:inline-block;border-radius:99px;padding:3px 10px;font-size:11px;font-weight:700"></span><div id="pa-t" style="font-size:26px;font-weight:800;line-height:1.1;margin:10px 0 6px"></div><div id="pa-d" style="color:#4A5B73;font-size:14px;margin-bottom:10px"></div><div id="pa-p" style="font-size:22px;font-weight:800;color:#167A64;margin-bottom:10px"></div><span id="pa-b1" style="display:inline-block;background:#1D5FD1;color:#fff;border-radius:8px;padding:8px 12px;font-size:13px;font-weight:800;margin-right:6px"></span><span id="pa-b2" style="display:inline-block;background:#fff;border:1.5px solid #0B2545;border-radius:8px;padding:7px 11px;font-size:13px;font-weight:800"></span></div><img id="pa-img" alt="" style="width:160px;height:120px;object-fit:cover;border-radius:10px"></div>';
+function ps_anuncio_prev_box( $post ) {
+	$d = ps_pz_anuncio_data( $post->ID );
+	$j = array(
+		'nombre'  => $d['nombre'],
+		'heroe'   => $d['heroe'],
+		'frase'   => $d['frase'],
+		'pincel'  => $d['pincel'],
+		'familia' => $d['familia'],
+		'img'     => $d['img'] ? wp_get_attachment_image_url( $d['img'], 'full' ) : '',
+		'conprod' => (bool) ps_anuncio_meta( $post->ID, 'producto' ),
+	);
+	echo '<canvas id="ps-a-pz" data-pz="' . esc_attr( wp_json_encode( $j ) ) . '" style="width:100%;max-width:760px;border-radius:8px;display:block"></canvas><p class="description">Vista aproximada del slide con el estilo Prevsoul. La etiqueta, la bajada y el botón se ven en el sitio. Al cambiar el producto o la imagen, guarda para actualizar la foto.</p>';
 }
 add_action(
 	'admin_footer-post.php',
@@ -263,17 +277,11 @@ function ps_anuncio_prev_js() {
 	}
 	?>
 	<script>
-	(function(){var C={sala:['#fff','#167A64'],promo:['#FFD166','#5A3A00'],brand:['#fff','#1D5FD1']};
-	function q(s){return document.querySelector(s)}function v(n){var e=q('[name="'+n+'"]');return e?e.value:''}
-	function clp(n){return '$'+Math.round(n).toLocaleString('es-CL')}
-	function up(){var col=v('ps_a[color]')||'brand',ch=q('#pa-chip'),et=v('ps_a[etiqueta]');
-	ch.textContent=et||(col==='sala'?'Sala de espera abierta':'');ch.style.display=ch.textContent?'inline-block':'none';ch.style.background=C[col][0];ch.style.color=C[col][1];
-	q('#pa-t').textContent=(q('#title')||{}).value||'Título del anuncio';q('#pa-d').textContent=v('ps_a[texto]');
-	var o=q('#ps_a_producto'),opt=o&&o.options[o.selectedIndex],reg=opt?parseFloat(opt.getAttribute('data-price')||0):0,of=parseFloat(v('ps_a[oferta]')||0),p=q('#pa-p');
-	p.innerHTML=reg?(of&&of<reg?clp(of)+' <s style="font-size:14px;color:#4A5B73">'+clp(reg)+'</s>':clp(reg)):'';
-	[['#pa-b1','ps_a[b1]'],['#pa-b2','ps_a[b2]']].forEach(function(b){var e=q(b[0]);e.textContent=v(b[1]);e.style.display=e.textContent?'inline-block':'none'});
-	var im=q('.ps-img-field img'),pi=q('#pa-img');pi.src=im&&im.style.display!=='none'?im.src:'';pi.style.display=pi.src&&pi.getAttribute('src')?'block':'none'}
-	document.addEventListener('input',up);document.addEventListener('change',up);document.addEventListener('click',function(){setTimeout(up,300)});up();})();
+	(function(){var c=document.getElementById('ps-a-pz');if(!c||!window.PSPZ)return;var b=JSON.parse(c.getAttribute('data-pz')),t=null;
+	function v(n){var e=document.querySelector('[name="'+n+'"]');return e?e.value.trim():''}
+	function up(){var d=Object.assign({},b),h=v('ps_a[pz_heroe]'),f=v('ps_a[pz_familia]'),ti=(document.getElementById('title')||{}).value||'';
+	if(h)d.heroe=h;if(f)d.familia=f;if(!b.conprod&&ti)d.frase=ti.trim();PSPZ.draw(c,'slide',d)}
+	document.addEventListener('input',function(){clearTimeout(t);t=setTimeout(up,200)});document.addEventListener('change',up);up();})();
 	</script>
 	<?php
 }
@@ -300,6 +308,8 @@ add_action(
 			'hasta'    => preg_match( '/^\d{4}-\d{2}-\d{2}$/', $in['hasta'] ?? '' ) ? $in['hasta'] : '',
 			'orden'    => max( 1, absint( $in['orden'] ?? 10 ) ),
 			'activo'   => empty( $in['activo'] ) ? '' : '1',
+			'pz_heroe' => sanitize_text_field( $in['pz_heroe'] ?? '' ),
+			'pz_familia' => isset( ps_pz_familias()[ $in['pz_familia'] ?? '' ] ) ? $in['pz_familia'] : '',
 		);
 		foreach ( $clean as $k => $v ) {
 			update_post_meta( $post_id, '_ps_' . $k, $v );

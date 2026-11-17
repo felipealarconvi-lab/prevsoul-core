@@ -132,7 +132,7 @@ add_action(
 	'admin_enqueue_scripts',
 	function ( $hook ) {
 		$scr = get_current_screen();
-		$ok  = ( $scr && 'product' === $scr->post_type && in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) || ( isset( $_GET['page'] ) && 'ps-piezas' === $_GET['page'] ); // phpcs:ignore
+		$ok  = ( $scr && in_array( $scr->post_type, array( 'product', 'ps_anuncio' ), true ) && in_array( $hook, array( 'post.php', 'post-new.php' ), true ) ) || ( isset( $_GET['page'] ) && 'ps-piezas' === $_GET['page'] ); // phpcs:ignore
 		if ( ! $ok ) {
 			return;
 		}
@@ -275,18 +275,99 @@ function ps_pz_slider_extra( $ads ) {
 function ps_pz_en_slider( $prod ) {
 	return $prod && ps_pz_get( $prod )['slider'];
 }
-function ps_pz_slide_html( $prod, $url, $tag ) {
-	$d   = ps_pz_js( $prod );
-	$fam = ps_pz_familias()[ $d['familia'] ];
-	$o   = '<div class="ps-pz ps-pz-' . esc_attr( $d['familia'] ) . '" style="--pz:' . esc_attr( $fam[0] ) . '">';
-	if ( $prod->get_image_id() ) {
-		$o .= '<div class="ps-pz-foto">' . wp_get_attachment_image( $prod->get_image_id(), 'large', false, array( 'alt' => '', 'loading' => 'eager' ) ) . '</div>';
+
+/** Palabra héroe y color sugeridos para un anuncio sin producto. */
+function ps_pz_anuncio_sugerido( $id ) {
+	$t = get_the_title( $id ) . ' ' . ps_anuncio_meta( $id, 'texto' ) . ' ' . ps_anuncio_meta( $id, 'b1_url' );
+	if ( preg_match( '/niñ|cepill|infantil/iu', $t ) ) {
+		return array( 'A cepillar', 'rosa' );
 	}
-	$o .= '<div class="ps-pz-tx">' . ( $d['frase'] ? '<p class="ps-pz-frase">“' . esc_html( $d['frase'] ) . '”</p>' : '' );
-	$o .= '<span class="ps-pz-eti">' . esc_html( mb_strtolower( $d['nombre'] ) ) . '</span>';
+	if ( preg_match( '/famil/iu', $t ) ) {
+		return array( 'Yo también', 'rosa' );
+	}
+	if ( preg_match( '/consult|odont[oó]log|sala|habla/iu', $t ) ) {
+		return array( 'Hablemos', 'celeste' );
+	}
+	if ( preg_match( '/dolor|urgenc/iu', $t ) ) {
+		return array( 'Alivio', 'periwinkle' );
+	}
+	return array( 'Elige bien', 'periwinkle' );
+}
+
+/** Datos del slide para un anuncio del carrusel (con o sin producto vinculado). */
+function ps_pz_anuncio_data( $id ) {
+	$m    = function ( $k ) use ( $id ) {
+		return ps_anuncio_meta( $id, $k );
+	};
+	$pid  = (int) $m( 'producto' );
+	$prod = ( $pid && function_exists( 'wc_get_product' ) ) ? wc_get_product( $pid ) : null;
+	$url  = $m( 'b1_url' );
+	if ( $prod ) {
+		$j = ps_pz_js( $prod );
+		$d = array(
+			'nombre'  => $j['nombre'],
+			'heroe'   => $j['heroe'],
+			'frase'   => $j['frase'],
+			'pincel'  => $j['pincel'],
+			'familia' => $j['familia'],
+			'img'     => $m( 'imagen' ) ? (int) $m( 'imagen' ) : (int) $prod->get_image_id(),
+		);
+		$url = $url ? $url : get_permalink( $pid );
+	} else {
+		$sug = ps_pz_anuncio_sugerido( $id );
+		$d   = array(
+			'nombre'  => '',
+			'sub'     => $m( 'texto' ),
+			'heroe'   => $sug[0],
+			'frase'   => get_the_title( $id ),
+			'pincel'  => '',
+			'familia' => $sug[1],
+			'img'     => (int) $m( 'imagen' ),
+		);
+	}
+	if ( $m( 'pz_heroe' ) ) {
+		$d['heroe'] = $m( 'pz_heroe' );
+	}
+	if ( $m( 'pz_familia' ) && isset( ps_pz_familias()[ $m( 'pz_familia' ) ] ) ) {
+		$d['familia'] = $m( 'pz_familia' );
+	}
+	$chip = '';
+	if ( 'sala' === $m( 'color' ) && ! $m( 'etiqueta' ) ) {
+		$on   = ps_online_count();
+		$chip = $on ? 'Sala de espera abierta · ' . $on . ( 1 === $on ? ' odontólogo disponible' : ' odontólogos disponibles' ) : 'Deja tu consulta · te respondemos pronto';
+	} elseif ( $m( 'etiqueta' ) ) {
+		$chip = $m( 'etiqueta' );
+	}
+	$d['chip']  = $chip;
+	$d['live']  = 'sala' === $m( 'color' ) && ! $m( 'etiqueta' ) && ps_online_count() > 0;
+	$d['url']   = $url ? $url : ps_get( 'sala_url' );
+	$d['boton'] = $m( 'b1' ) ? $m( 'b1' ) : 'PREVSOUL';
+	return $d;
+}
+
+function ps_pz_slide_html( $prod, $url, $tag ) {
+	$j = ps_pz_js( $prod );
+	$j['img']   = (int) $prod->get_image_id();
+	$j['url']   = $url ? $url : get_permalink( $prod->get_id() );
+	$j['boton'] = 'PREVSOUL';
+	$j['chip']  = '';
+	return ps_pz_slide_render( $j, $tag );
+}
+function ps_pz_slide_render( $d, $tag ) {
+	$fam = ps_pz_familias()[ isset( ps_pz_familias()[ $d['familia'] ] ) ? $d['familia'] : 'celeste' ];
+	$len = mb_strlen( $d['heroe'] );
+	$o   = '<div class="ps-pz ps-pz-' . esc_attr( $d['familia'] ) . '" style="--pz:' . esc_attr( $fam[0] ) . '">';
+	if ( ! empty( $d['img'] ) ) {
+		$o .= '<div class="ps-pz-foto">' . wp_get_attachment_image( (int) $d['img'], 'large', false, array( 'alt' => '', 'loading' => 'eager' ) ) . '</div>';
+	}
+	$o .= '<div class="ps-pz-tx">';
+	$o .= ! empty( $d['chip'] ) ? '<span class="ps-pz-chip">' . ( ! empty( $d['live'] ) ? '<i class="ps-sala-dot"></i>' : '' ) . esc_html( $d['chip'] ) . '</span>' : '';
+	$o .= $d['frase'] ? '<p class="ps-pz-frase">“' . esc_html( $d['frase'] ) . '”</p>' : '';
+	$o .= ! empty( $d['sub'] ) ? '<p class="ps-pz-sub">' . esc_html( $d['sub'] ) . '</p>' : '';
+	$o .= $d['nombre'] ? '<span class="ps-pz-eti">' . esc_html( mb_strtolower( $d['nombre'] ) ) . '</span>' : '';
 	$o .= $d['pincel'] ? '<span class="ps-pz-pincel">' . esc_html( $d['pincel'] ) . '</span>' : '';
-	$o .= '</div><' . $tag . ' class="ps-pz-heroe"' . ( mb_strlen( $d['heroe'] ) > 8 ? ' style="font-size:' . ( mb_strlen( $d['heroe'] ) > 11 ? '8.5' : '10.5' ) . 'cqw"' : '' ) . '>' . esc_html( $d['heroe'] ) . '<span class="screen-reader-text"> · ' . esc_html( $d['nombre'] ) . '</span></' . $tag . '>';
-	$o .= '<a class="ps-pz-btn" href="' . esc_url( $url ? $url : get_permalink( $prod->get_id() ) ) . '" aria-label="Ver ' . esc_attr( $d['nombre'] ) . '">PREVSOUL</a></div>';
+	$o .= '</div><' . $tag . ' class="ps-pz-heroe"' . ( $len > 8 ? ' style="font-size:' . ( $len > 11 ? '8.5' : '10.5' ) . 'cqw"' : '' ) . '>' . esc_html( $d['heroe'] ) . '<span class="screen-reader-text"> · ' . esc_html( $d['frase'] ) . '</span></' . $tag . '>';
+	$o .= '<a class="ps-pz-btn' . ( 'PREVSOUL' === $d['boton'] ? '' : ' ps-pz-btn-tx' ) . '" href="' . esc_url( $d['url'] ) . '">' . esc_html( $d['boton'] ) . '</a></div>';
 	static $f = false;
 	if ( ! $f ) {
 		$f  = true;

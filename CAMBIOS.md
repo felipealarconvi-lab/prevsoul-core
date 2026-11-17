@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.19.0
+- Slider del inicio con el estilo nuevo en todos los anuncios: foto, palabra héroe escrita a mano, frase, pincelada y color por familia. El diseño anterior deja de usarse.
+- Anuncios vinculados a un producto toman la pieza del producto (palabra, frase, color y precio); los demás usan el título como frase y el texto como bajada.
+- Campos nuevos en cada anuncio: «Palabra héroe» y familia de color (vacío = automático). Se mantienen la etiqueta, el estado en vivo de la sala de espera y el botón con su texto y enlace.
+- Vista previa del anuncio en el panel con el estilo nuevo.
+
 ## 2.18.1
 - Auditor de piezas: acepta palabras héroe de hasta 3 palabras (como «A la vista»).
 

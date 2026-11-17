@@ -760,3 +760,11 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
   .ps-pz-pincel{font-size:4.6vw;margin-top:4vw;padding:1vw 4vw}
   .ps-pz-btn{right:5vw;bottom:5vw;font-size:3.2vw;padding:2.6vw 5vw;border-radius:2vw 2vw 0 2vw}
 }
+.ps-pz-chip{display:inline-flex;align-items:center;gap:.6cqw;background:#fff;color:#0B1A2E;font-weight:700;font-size:1.15cqw;padding:.45cqw 1.2cqw;border-radius:99px;margin-bottom:1.5cqw}
+.ps-pz .ps-pz-sub{font-size:1.45cqw;line-height:1.4;margin:1.2cqw 0 0;color:inherit;opacity:.92;max-width:34cqw}
+.ps-pz-btn.ps-pz-btn-tx{letter-spacing:.03em;font-size:1.45cqw}
+@media (max-width:700px){
+  .ps-pz-chip{font-size:3vw;padding:1vw 2.6vw;margin-bottom:3vw;gap:1.5vw}
+  .ps-pz .ps-pz-sub{font-size:3.6vw;margin-top:2vw;max-width:none}
+  .ps-pz-btn.ps-pz-btn-tx{font-size:3.4vw}
+}

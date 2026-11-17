@@ -802,3 +802,10 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-ab-b{background:#D9727F;color:#0B2545;border-radius:8px}
 .ps-ab-s{background:repeating-linear-gradient(45deg,#E6F7F2 0 7px,#fff 7px 14px);color:#0E5A49;border:2px dashed #1F9D74;border-left:0;border-radius:0 8px 8px 0;margin-left:2px}
 @media (max-width:640px){.ps-ab-row{grid-template-columns:1fr;gap:6px}.ps-ab-bar{font-size:13px;padding:0 8px}.ps-ab-s{white-space:normal;line-height:1.15;font-size:12px}}
+
+/* 2.22.0 · Logo nuevo: diente con escudo, «prev» + «soul» en azul profundo */
+.ps-logo{color:#164BA8 !important}
+.ps-wm{display:inline-flex;align-items:baseline;color:inherit}
+.ps-wm-p{font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;letter-spacing:-.5px}
+.ps-wm-s{font-family:Quicksand,'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.04em;letter-spacing:-.2px;margin-left:.02em}
+.ps-foot-brand .ps-wm{color:#fff}

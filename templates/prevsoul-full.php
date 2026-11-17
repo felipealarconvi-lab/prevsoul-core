@@ -44,7 +44,7 @@ $ps_icon = function ( $d, $size = 22 ) {
 			if ( has_custom_logo() ) {
 				echo wp_kses_post( wp_get_attachment_image( get_theme_mod( 'custom_logo' ), 'medium', false, array( 'class' => 'ps-logo-img', 'alt' => 'Prevsoul' ) ) );
 			} else {
-				echo ( function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'header' ) : '' ) . '<span>prevsoul</span>'; // phpcs:ignore
+				echo ( function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'header' ) : '' ) . '<span class="ps-wm"><span class="ps-wm-p">prev</span><span class="ps-wm-s">soul</span></span>'; // phpcs:ignore
 			}
 			?>
 		</a>
@@ -103,7 +103,7 @@ $ps_icon = function ( $d, $size = 22 ) {
 <footer class="ps-foot">
 	<div class="ps-wrap ps-foot-in">
 		<div>
-			<strong class="ps-foot-brand"><?php echo function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'full', '#fff', '#0B2545' ) : ''; // phpcs:ignore ?>prevsoul</strong>
+			<strong class="ps-foot-brand"><?php echo function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'full', '#fff', '#0B2545' ) : ''; // phpcs:ignore ?><span class="ps-wm"><span class="ps-wm-p">prev</span><span class="ps-wm-s">soul</span></span></strong>
 			<p>Planes dentales preventivos con odontólogo de cabecera.</p>
 			<?php echo function_exists( 'ps_mk_social_html' ) ? ps_mk_social_html() : ''; // phpcs:ignore ?>
 		</div>

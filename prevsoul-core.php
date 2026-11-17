@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.21.0
+ * Version:           2.22.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.21.0' );
+define( 'PS_VERSION', '2.22.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -525,7 +525,7 @@ function ps_stars_html( $avg, $count ) {
 add_action(
 	'wp_enqueue_scripts',
 	function () {
-		wp_enqueue_style( 'prevsoul-font', 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap', array(), null );
+		wp_enqueue_style( 'prevsoul-font', 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Quicksand:wght@500;700&display=swap', array(), null );
 		wp_enqueue_style( 'prevsoul', PS_URL . 'assets/prevsoul.css', array(), PS_VERSION );
 	}
 );

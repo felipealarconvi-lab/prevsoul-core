@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.22.0
+- Logo nuevo: el diente original con un escudo verde menta y un check sobre la muesca (prevención: diente protegido), en azul profundo #164BA8. «prev» en Plus Jakarta Sans negrita y «soul» en Quicksand, con una separación mínima.
+- Aplicado en la cabecera, el pie, el ícono de la pestaña y la página en construcción. Los logos de temporada (Navidad, primavera y verano) se arman sobre el diente con escudo.
+- Sobre fondos oscuros el escudo pasa a menta clara.
+
 ## 2.21.0
 - Ahorro del inicio más fácil de leer: dos barras con el total de los años (con tu plan y sin prevención) y la diferencia rayada en verde con «Ahorras $…». Se mantiene la cifra destacada del ahorro; se quitan las barras año por año.
 

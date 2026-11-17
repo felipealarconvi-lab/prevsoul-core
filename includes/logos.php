@@ -80,14 +80,17 @@ function ps_logo_actual( $ts = null ) {
  * @param string $bg    Color de fondo (el verano rellena el diente para tapar el sol).
  * @param string $slug  Temporada (por defecto la de hoy).
  */
-function ps_logo_svg( $ctx = 'header', $color = '#1D5FD1', $bg = '#fff', $slug = null ) {
+function ps_logo_svg( $ctx = 'header', $color = '#164BA8', $bg = '#fff', $slug = null ) {
 	$a    = ps_logo_arte();
 	$slug = $slug ? $slug : ps_logo_actual();
 	$fill = 'verano' === $slug ? $bg : 'none';
 	$t    = '<path d="' . $a['tooth'] . '" fill="' . esc_attr( $fill ) . '" stroke="' . esc_attr( $color ) . '" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>';
+	// Escudo de prevención sobre la muesca del diente (logo 2.22.0).
+	$claro = in_array( strtolower( $color ), array( '#fff', '#ffffff', 'white' ), true );
+	$t    .= '<path d="' . $a['shield'] . '" fill="' . ( $claro ? '#5FD3B8' : '#1F9D74' ) . '" stroke="' . esc_attr( $bg ) . '" stroke-width="1.5" paint-order="stroke"/><path d="' . $a['check'] . '" fill="none" stroke="' . ( $claro ? esc_attr( $bg ) : '#fff' ) . '" stroke-width="1.15" stroke-linecap="round" stroke-linejoin="round"/>';
 	switch ( $slug ) {
 		case 'navidad':
-			$vb  = 'full' === $ctx ? '-5 -7 31 31' : ( 'icon' === $ctx ? '-4 -6 27 27' : '-3.4 -5 22.4 26.6' );
+			$vb  = 'full' === $ctx ? '-5 -7 31 31' : ( 'icon' === $ctx ? '-4 -6 27 27' : '-3.4 -5 25.8 26.6' );
 			$in  = ( 'full' === $ctx ? $a['xmas_deco'] : '' ) . $t . $a['xmas_hat'] . ( 'header' === $ctx ? $a['xmas_hdr'] : '' );
 			break;
 		case 'primavera':
@@ -99,7 +102,7 @@ function ps_logo_svg( $ctx = 'header', $color = '#1D5FD1', $bg = '#fff', $slug =
 			$in  = $a['su_back'] . $t . $a['su_glasses'] . ( 'full' === $ctx ? $a['su_waves'] : '' );
 			break;
 		default:
-			$vb = 'icon' === $ctx ? '0 0 24 24' : '2 1.4 18.2 21';
+			$vb = 'icon' === $ctx ? '0 0 24 24' : '2 1.2 20.4 21.4';
 			$in = $t;
 	}
 	return '<svg class="ps-logo-svg ps-logo-' . esc_attr( $slug ) . '" viewBox="' . $vb . '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">' . $in . '</svg>';
@@ -112,7 +115,7 @@ add_action(
 		if ( function_exists( 'has_site_icon' ) && has_site_icon() ) {
 			return;
 		}
-		$svg = ps_logo_svg( 'icon', '#1D5FD1', '#fff' );
+		$svg = ps_logo_svg( 'icon', '#164BA8', '#fff' );
 		echo '<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,' . rawurlencode( $svg ) . '">' . "\n"; // phpcs:ignore
 	},
 	2
@@ -143,12 +146,12 @@ function ps_logos_page() {
 	echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="ps_logos_save">' . wp_nonce_field( 'ps_logos_save', '_wpnonce', true, false ); // phpcs:ignore
 	echo '<table class="widefat striped ps-lg"><thead><tr><th>Logo</th><th>Temporada</th><th>Fechas (día-mes)</th><th>Desde el año</th><th>Activa</th></tr></thead><tbody>';
 	foreach ( $temps as $k => $t ) {
-		echo '<tr><td>' . ps_logo_svg( 'full', '#1D5FD1', '#fff', $k ) . '</td><td><strong>' . esc_html( $t['nombre'] ) . '</strong><br><span class="description">' . esc_html( $t['desc'] ) . '</span></td>'; // phpcs:ignore
+		echo '<tr><td>' . ps_logo_svg( 'full', '#164BA8', '#fff', $k ) . '</td><td><strong>' . esc_html( $t['nombre'] ) . '</strong><br><span class="description">' . esc_html( $t['desc'] ) . '</span></td>'; // phpcs:ignore
 		echo '<td><input class="rg" type="text" name="t[' . esc_attr( $k ) . '][rangos]" value="' . esc_attr( $t['rangos'] ) . '"><br><span class="description">Ej: 21-11:30-11, 07-01:20-03</span></td>';
 		echo '<td><input type="number" min="0" max="2100" style="width:90px" name="t[' . esc_attr( $k ) . '][desde]" value="' . (int) $t['desde'] . '"><br><span class="description">0 = siempre</span></td>';
 		echo '<td><label><input type="checkbox" name="t[' . esc_attr( $k ) . '][activo]" value="1" ' . checked( ! empty( $t['activo'] ), true, false ) . '> Sí</label></td></tr>';
 	}
-	echo '<tr><td>' . ps_logo_svg( 'full', '#1D5FD1', '#fff', 'base' ) . '</td><td><strong>Logo base</strong><br><span class="description">Cuando no hay temporada activa</span></td><td colspan="3">Resto del año</td></tr>'; // phpcs:ignore
+	echo '<tr><td>' . ps_logo_svg( 'full', '#164BA8', '#fff', 'base' ) . '</td><td><strong>Logo base</strong><br><span class="description">Cuando no hay temporada activa</span></td><td colspan="3">Resto del año</td></tr>'; // phpcs:ignore
 	echo '</tbody></table><p><label>Mostrar ahora: <select name="forzar"><option value="">Automático por fecha</option>';
 	foreach ( $names as $k => $n ) {
 		echo '<option value="' . esc_attr( $k ) . '" ' . selected( $forzar, $k, false ) . '>' . esc_html( $n ) . '</option>';

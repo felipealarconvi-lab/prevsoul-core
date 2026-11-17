@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.23.1
+- Logo: «prevsoul» un poco más cerca del diente en la cabecera, el pie y las piezas.
+
 ## 2.23.0
 - Piezas firmadas con el logo nuevo: el cuadrado, la historia y las tarjetas de productos cambian «Prev Soul» a pincel por el diente con escudo y «prevsoul».
 - Slide del inicio: el logo va abajo a la izquierda y el botón dice su acción («Contratar plan», «Ver pack», «Agendar» o el texto del anuncio) en azul profundo, en vez de «PREVSOUL».

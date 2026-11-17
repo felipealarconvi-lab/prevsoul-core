@@ -818,3 +818,9 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-pz-btn,.ps-pz-btn.ps-pz-btn-tx{background:#164BA8;letter-spacing:.01em;font-size:1.45cqw;border-radius:1.1cqw}
 .ps-pz-btn:hover,.ps-pz-btn:focus-visible{background:#0B2545}
 @media (max-width:700px){.ps-pz-logo{position:relative;left:auto;bottom:auto;order:2;margin:4vw 6vw 0;font-size:3.6vw}}
+
+/* 2.23.1 · «prevsoul» más cerca del diente */
+.ps-logo{gap:0}
+.ps-logo .ps-wm{margin-left:0}
+.ps-foot-brand{gap:1px}
+.ps-pz-firma{gap:.08em}

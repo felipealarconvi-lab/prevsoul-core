@@ -783,3 +783,7 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-plan.has-pz>.ps-pzq{margin:-22px -22px 2px;border-radius:20px 20px 0 0}
 .ps-plan.has-pz .ps-plan-top{z-index:2}
 .ps-prod ul.products li.product .ps-pzq,ul.products li.product .ps-pzq{margin-bottom:10px}
+.ps-cph-pz{position:relative}
+.ps-cph-pz .ps-pzq{border-radius:0}
+.ps-cph-pz .ps-coff{z-index:2}
+.ps-ccard.has-pz .ps-pz-cita{font-size:14px}

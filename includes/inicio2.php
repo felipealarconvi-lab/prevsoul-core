@@ -106,10 +106,12 @@ function ps_price_html( $p ) {
 function ps_carrusel_card( $p, $tipo ) {
 	$on_sale = $p->is_on_sale();
 	$img     = $p->get_image_id() ? wp_get_attachment_image( $p->get_image_id(), 'woocommerce_thumbnail', false, array( 'loading' => 'lazy', 'alt' => '' ) ) : '<span class="ps-cph-ph">' . ps_diente_svg( true, 42 ) . '</span>';
-	$o       = '<article class="ps-ccard"><a class="ps-cph" href="' . esc_url( $p->get_permalink() ) . '" tabindex="-1">' . $img . ( $on_sale ? '<span class="ps-coff">Oferta</span>' : '' ) . '</a><div class="ps-cbody">';
+	$pz      = function_exists( 'ps_pz_square_html' );
+	$o       = $pz ? '<article class="ps-ccard has-pz"><div class="ps-cph-pz">' . ps_pz_square_html( $p ) . ( $on_sale ? '<span class="ps-coff">Oferta</span>' : '' ) . '</div><div class="ps-cbody">' : '<article class="ps-ccard"><a class="ps-cph" href="' . esc_url( $p->get_permalink() ) . '" tabindex="-1">' . $img . ( $on_sale ? '<span class="ps-coff">Oferta</span>' : '' ) . '</a><div class="ps-cbody">';
 	$cat     = 'packs' === $tipo ? '' : ps_child_cat_name( $p );
 	$o      .= $cat ? '<span class="ps-ccat">' . esc_html( $cat ) . '</span>' : '';
 	$o      .= '<h3 class="ps-ctitle"><a href="' . esc_url( $p->get_permalink() ) . '">' . esc_html( $p->get_name() ) . '</a></h3>';
+	$o      .= $pz ? ps_pz_frase( $p ) : '';
 	$o      .= ps_dientes_html( (float) $p->get_average_rating(), (int) $p->get_review_count(), 15 );
 	if ( 'packs' === $tipo && ( $lines = ps_product_lines( $p ) ) ) {
 		$o .= '<ul class="ps-cchk">';

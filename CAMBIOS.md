@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.20.1
+- Inicio: los carruseles de Atención dental y Packs dentales (y los resultados del buscador) usan el cuadrado de la marca y la frase de cada producto; la etiqueta «Oferta» se mantiene.
+
 ## 2.20.0
 - Tarjetas de atenciones, packs y planes con el estilo de la marca: arriba un cuadrado con la foto del producto, su palabra escrita a mano y el precio en la pincelada del color de su familia; debajo, la frase de la pieza entre comillas.
 - Se aplica en las páginas Atención dental, Packs dentales y Planes dentales, en la tienda y las categorías de WooCommerce y en las tarjetas de planes del inicio.

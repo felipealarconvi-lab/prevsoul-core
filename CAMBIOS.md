@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.24.1
+- Vista responsive: el selector incluye Atenciones, Packs y Planes.
+
 ## 2.24.0
 - Nueva pantalla Prevsoul → Vista responsive: ver el sitio en celular chico, iPhone, Android grande, tablet, notebook y escritorio, girar, elegir página o pegar una dirección, y modo «Todas a la vez».
 

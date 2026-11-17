@@ -21,7 +21,7 @@ function ps_rv_paginas() {
 		$p['Tienda'] = wc_get_page_permalink( 'shop' );
 		$p['Carrito'] = wc_get_cart_url();
 	}
-	foreach ( array( 'atenciones', 'packs', 'planes' ) as $slug ) {
+	foreach ( array( 'atencion-dental', 'packs-dentales', 'planes-dentales' ) as $slug ) {
 		$t = get_term_by( 'slug', $slug, 'product_cat' );
 		if ( $t && ! is_wp_error( $t ) ) {
 			$p[ $t->name ] = get_term_link( $t );

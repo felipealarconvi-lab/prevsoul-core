@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.19.2
+- Plan Familiar: el contador de la ficha parte en 2 integrantes (coincide con «desde $17.480»); precio base del producto ajustado a $17.480.
+
 ## 2.19.1
 - Slider y piezas: la palabra escrita a mano ya no choca con la frase ni con el botón.
 

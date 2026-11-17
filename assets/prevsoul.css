@@ -787,3 +787,6 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-cph-pz .ps-pzq{border-radius:0}
 .ps-cph-pz .ps-coff{z-index:2}
 .ps-ccard.has-pz .ps-pz-cita{font-size:14px}
+
+/* 2.20.2 · Gráfico de ahorro con colores de la marca (validado: contraste y daltonismo) */
+.ps-sw-b,.ps-bar-b{background:#D9727F}

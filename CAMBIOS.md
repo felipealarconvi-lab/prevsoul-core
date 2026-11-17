@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.20.2
+- Gráfico de ahorro: «Sin prevención» pasa del naranjo al rosa Soul profundo (#D9727F); «Con plan» sigue en azul Prevsoul. Combinación validada en contraste y daltonismo.
+- Precios redondos sin terminación en 990: Pack Encías $70.000, Pack Niños $40.000, Pack Control $50.000 (sin oferta), Plan Individual $10.000 y Plan Familiar desde $17.500.
+
 ## 2.20.1
 - Inicio: los carruseles de Atención dental y Packs dentales (y los resultados del buscador) usan el cuadrado de la marca y la frase de cada producto; la etiqueta «Oferta» se mantiene.
 

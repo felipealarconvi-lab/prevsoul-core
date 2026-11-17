@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.25.0
+- Prueba social (Prevsoul → Prueba social): vendidos reales en tramos (+5, +10, +25…), dientrellas doradas con destellos (B1 en tarjetas, B2 en la ficha), sellos y testimonio destacado con autorización del paciente. Todo automático; solo se puede ocultar.
+- Formulario de reseñas: casilla para autorizar el uso como testimonio.
+
 ## 2.24.1
 - Vista responsive: el selector incluye Atenciones, Packs y Planes.
 

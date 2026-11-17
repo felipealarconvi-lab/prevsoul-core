@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.24.1
+ * Version:           2.25.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.24.1' );
+define( 'PS_VERSION', '2.25.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -38,6 +38,7 @@ require_once __DIR__ . '/includes/producto.php';
 require_once __DIR__ . '/includes/familia.php';
 require_once __DIR__ . '/includes/piezas.php';
 require_once __DIR__ . '/includes/responsive.php';
+require_once __DIR__ . '/includes/prueba-social.php';
 
 /* 1.8: nombres cortos en el menú principal (una sola vez; después se editan en Apariencia → Menús). */
 add_action(
@@ -839,9 +840,7 @@ function ps_product_card( $p ) {
 		}
 		$out .= '</ul>';
 	}
-	if ( $p->get_review_count() ) {
-		$out .= '<div>' . ps_stars_html( (float) $p->get_average_rating(), (int) $p->get_review_count() ) . '</div>';
-	}
+	$out .= function_exists( 'ps_ps_linea' ) ? ps_ps_linea( $p, 15 ) : '';
 	if ( '' !== $price && null !== $price ) {
 		$monthly = has_term( 'planes-dentales', 'product_cat', $p->get_id() ) || in_array( 'planes-dentales', ps_parent_slugs( $p ), true );
 		$out    .= '<div class="ps-price">' . wp_kses_post( $p->get_price_html() ) . ( $monthly ? ' <span class="ps-muted ps-small">/ mes</span>' : '' ) . '</div>';

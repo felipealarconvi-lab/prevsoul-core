@@ -415,7 +415,7 @@ function ps_pz_square_html( $prod ) {
 	}
 	$o .= '<span class="ps-pzq-in"><span class="ps-pzq-h"' . ( $len > 8 ? ' style="font-size:' . ( $len > 11 ? '14' : '17' ) . 'cqw"' : '' ) . '>' . esc_html( $d['heroe'] ) . '</span>';
 	$o .= $d['pincel'] ? '<span class="ps-pzq-p">' . esc_html( $d['pincel'] ) . '</span>' : '';
-	$o .= '</span><span class="ps-pzq-l">' . ps_pz_logo( '#fff', '#0B1A2E' ) . '</span></a>';
+	$o .= '</span><span class="ps-pzq-l">' . ps_pz_logo( '#fff', '#0B1A2E' ) . '</span>' . ( function_exists( 'ps_ps_sello_html' ) ? ps_ps_sello_html( $prod ) : '' ) . '</a>';
 	return $o . ps_pz_fonts_once();
 }
 function ps_pz_frase( $prod ) {

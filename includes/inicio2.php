@@ -23,6 +23,9 @@ function ps_dientes_html( $avg, $count, $size = 16 ) {
 	if ( ! $count ) {
 		return '<span class="ps-rating ps-rating-new">' . ps_diente_svg( true, $size ) . ' Nuevo</span>';
 	}
+	if ( function_exists( 'ps_dientrellas_html' ) ) {
+		return ps_dientrellas_html( $avg, $count, $size, 'B1' );
+	}
 	$f = (int) round( $avg );
 	$o = '<span class="ps-rating" role="img" aria-label="' . esc_attr( sprintf( 'Valoración %s de 5, %d opiniones', number_format( $avg, 1, ',', '' ), $count ) ) . '">';
 	for ( $i = 0; $i < 5; $i++ ) {
@@ -112,7 +115,7 @@ function ps_carrusel_card( $p, $tipo ) {
 	$o      .= $cat ? '<span class="ps-ccat">' . esc_html( $cat ) . '</span>' : '';
 	$o      .= '<h3 class="ps-ctitle"><a href="' . esc_url( $p->get_permalink() ) . '">' . esc_html( $p->get_name() ) . '</a></h3>';
 	$o      .= $pz ? ps_pz_frase( $p ) : '';
-	$o      .= ps_dientes_html( (float) $p->get_average_rating(), (int) $p->get_review_count(), 15 );
+	$o      .= function_exists( 'ps_ps_linea' ) ? ps_ps_linea( $p, 15 ) : '';
 	if ( 'packs' === $tipo && ( $lines = ps_product_lines( $p ) ) ) {
 		$o .= '<ul class="ps-cchk">';
 		foreach ( $lines as $l ) {
@@ -407,9 +410,7 @@ function ps_planes() {
 			}
 			$out .= '</ul>';
 		}
-		if ( $p->get_review_count() ) {
-			$out .= ps_dientes_html( (float) $p->get_average_rating(), (int) $p->get_review_count(), 14 );
-		}
+		$out .= function_exists( 'ps_ps_linea' ) ? ps_ps_linea( $p, 14 ) : '';
 		$out .= $has ? '<a class="ps-btn' . ( $hl ? '' : ' ps-btn-ghost' ) . '" href="' . esc_url( $p->add_to_cart_url() ) . '" rel="nofollow">Contratar</a>' : '<a class="ps-btn ps-btn-ghost" href="' . esc_url( add_query_arg( 'ps_motivo', 'Plan para organización', ps_get( 'sala_url' ) ) ) . '">Solicitar cotización</a>';
 		$out .= '<a class="ps-plan-more" href="' . esc_url( $p->get_permalink() ) . '">Ver detalle</a></article>';
 	}

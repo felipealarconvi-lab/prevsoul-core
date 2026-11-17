@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.26.0
+- Prueba social: datos de demostración (ficticios) que solo se ven mientras el sitio está en construcción; se activan y apagan en Prevsoul → Prueba social.
+- Nueva lista Prevsoul → Antes de publicar, con aviso en el admin mientras queden pendientes.
+
 ## 2.25.0
 - Prueba social (Prevsoul → Prueba social): vendidos reales en tramos (+5, +10, +25…), dientrellas doradas con destellos (B1 en tarjetas, B2 en la ficha), sellos y testimonio destacado con autorización del paciente. Todo automático; solo se puede ocultar.
 - Formulario de reseñas: casilla para autorizar el uso como testimonio.

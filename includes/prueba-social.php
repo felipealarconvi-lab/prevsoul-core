@@ -12,6 +12,39 @@ function ps_ps_sellos() {
 	return array( '' => 'Ninguno', 'mas' => 'Más contratado', 'nuevo' => 'Nuevo', 'familias' => 'Favorito de las familias', 'reco' => 'Recomendado' );
 }
 
+/* ------------------------------------------------------------------
+ * Modo demostración: datos ficticios SOLO mientras el sitio está en
+ * construcción. Al abrir el sitio al público desaparecen solos.
+ * ---------------------------------------------------------------- */
+function ps_ps_demo() {
+	return '1' === (string) get_option( 'ps_social_demo', '' ) && function_exists( 'ps_construccion_on' ) && ps_construccion_on();
+}
+function ps_ps_demo_data( $pid ) {
+	$m = array(
+		34 => array( 63, 4.7, 22, '', 'Me explicaron todo con calma y sin apuro.', 'Javiera Soto' ),
+		35 => array( 18, 4.6, 7, '', '', '' ),
+		36 => array( 41, 4.8, 16, 'mas', 'Salí con los dientes como nuevos y sin dolor.', 'Andrés Muñoz' ),
+		37 => array( 12, 4.9, 6, '', '', '' ),
+		38 => array( 9, 4.8, 5, '', '', '' ),
+		39 => array( 27, 4.5, 11, '', 'Sonrisa natural, nada exagerado. Justo lo que quería.', 'Paula Rojas' ),
+		40 => array( 14, 4.7, 6, 'reco', '', '' ),
+		41 => array( 33, 4.8, 13, 'mas', 'Por fin me ordené con los controles.', 'Cristián Vega' ),
+		42 => array( 26, 4.9, 12, 'familias', 'Mis hijos ahora van felices al control.', 'Rodrigo Pérez' ),
+		43 => array( 8, 4.6, 5, '', '', '' ),
+		44 => array( 52, 4.9, 18, 'mas', 'Por fin un dentista que me explica todo con calma.', 'Carolina Díaz' ),
+		45 => array( 27, 4.8, 12, 'familias', 'Nos ordenó a toda la familia, y yo también me hice mi control.', 'Fernanda Lagos' ),
+		46 => array( 6, 4.7, 5, 'nuevo', '', '' ),
+	);
+	return isset( $m[ $pid ] ) ? $m[ $pid ] : array( 11, 4.7, 6, '', '', '' );
+}
+function ps_ps_rating( $p ) {
+	if ( ps_ps_demo() ) {
+		$d = ps_ps_demo_data( $p->get_id() );
+		return array( $d[1], $d[2] );
+	}
+	return array( (float) $p->get_average_rating(), (int) $p->get_review_count() );
+}
+
 function ps_ps_cfg( $pid ) {
 	$c = get_post_meta( $pid, '_ps_social', true );
 	return wp_parse_args( is_array( $c ) ? $c : array(), array( 'vend' => 'auto', 'rat' => 'auto', 'sello' => '', 'tes' => 0 ) );
@@ -23,6 +56,9 @@ function ps_ps_es_plan( $p ) {
 
 /** Ventas reales (WooCommerce las suma al pagarse cada pedido). */
 function ps_ps_ventas( $p ) {
+	if ( ps_ps_demo() ) {
+		return ps_ps_demo_data( $p->get_id() )[0];
+	}
 	return (int) $p->get_total_sales();
 }
 
@@ -91,7 +127,8 @@ function ps_dientrellas_html( $avg, $count, $size = 16, $variant = 'B1', $largo 
 /** Línea para tarjetas: dientrellas B1 + vendidos. */
 function ps_ps_linea( $p, $size = 15 ) {
 	$c = ps_ps_cfg( $p->get_id() );
-	$o = 'off' === $c['rat'] ? '' : ps_dientrellas_html( (float) $p->get_average_rating(), (int) $p->get_review_count(), $size, 'B1' );
+	$rt = ps_ps_rating( $p );
+	$o  = 'off' === $c['rat'] ? '' : ps_dientrellas_html( $rt[0], $rt[1], $size, 'B1' );
 	$v = ps_ps_vendidos_txt( $p );
 	if ( ! $o && ! $v ) {
 		return '';
@@ -102,11 +139,21 @@ function ps_ps_linea( $p, $size = 15 ) {
 function ps_ps_sello_html( $p ) {
 	$c = ps_ps_cfg( $p->get_id() );
 	$s = ps_ps_sellos();
+	if ( ! $c['sello'] && ps_ps_demo() ) {
+		$c['sello'] = ps_ps_demo_data( $p->get_id() )[3];
+	}
 	return ( $c['sello'] && isset( $s[ $c['sello'] ] ) ) ? '<span class="ps-ps-sello">' . esc_html( $s[ $c['sello'] ] ) . '</span>' : '';
 }
 
 function ps_ps_testimonio_html( $p ) {
 	$c = ps_ps_cfg( $p->get_id() );
+	if ( ! $c['tes'] && ps_ps_demo() ) {
+		$d = ps_ps_demo_data( $p->get_id() );
+		if ( $d[4] ) {
+			$w = explode( ' ', $d[5] );
+			return '<blockquote class="ps-ps-tes">«' . esc_html( $d[4] ) . '»<cite>' . esc_html( $w[0] . ' ' . mb_substr( $w[1], 0, 1 ) . '.' ) . '</cite></blockquote>';
+		}
+	}
 	if ( ! $c['tes'] ) {
 		return '';
 	}
@@ -142,7 +189,8 @@ add_action(
 		$c = ps_ps_cfg( $product->get_id() );
 		$s = ps_ps_sello_html( $product );
 		$v = ps_ps_vendidos_txt( $product );
-		$r = 'off' === $c['rat'] ? '' : ps_dientrellas_html( (float) $product->get_average_rating(), (int) $product->get_review_count(), 22, 'B2', true );
+		$rt = ps_ps_rating( $product );
+		$r  = 'off' === $c['rat'] ? '' : ps_dientrellas_html( $rt[0], $rt[1], 22, 'B2', true );
 		if ( $s || $v || $r ) {
 			echo '<div class="ps-ps-ficha">' . ( $s || $v ? '<div class="ps-ps-top">' . $s . ( $v ? '<span class="ps-ps-vend">' . esc_html( $v ) . '</span>' : '' ) . '</div>' : '' ) . ( $r ? '<a class="ps-ps-rlink" href="#reviews">' . $r . '</a>' : '' ) . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
@@ -233,6 +281,19 @@ add_action(
 	}
 );
 
+add_action(
+	'admin_post_ps_social_demo',
+	function () {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Sin permiso' );
+		}
+		check_admin_referer( 'ps_social_demo' );
+		update_option( 'ps_social_demo', empty( $_GET['on'] ) ? '' : '1' ); // phpcs:ignore WordPress.Security.NonceVerification
+		wp_safe_redirect( admin_url( 'admin.php?page=ps-social' ) );
+		exit;
+	}
+);
+
 function ps_ps_page() {
 	$prods = function_exists( 'wc_get_products' ) ? wc_get_products( array( 'status' => 'publish', 'limit' => 100, 'orderby' => 'menu_order', 'order' => 'ASC' ) ) : array();
 	$se    = ps_ps_sellos();
@@ -240,6 +301,9 @@ function ps_ps_page() {
 	if ( isset( $_GET['ok'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		echo '<div class="notice notice-success is-dismissible"><p>Guardado.</p></div>';
 	}
+	$dm = '1' === (string) get_option( 'ps_social_demo', '' );
+	$du = wp_nonce_url( admin_url( 'admin-post.php?action=ps_social_demo&on=' . ( $dm ? '0' : '1' ) ), 'ps_social_demo' );
+	echo '<div class="notice ' . ( $dm ? 'notice-warning' : 'notice-info' ) . '" style="padding:12px 14px"><p style="margin:0 0 8px"><strong>Datos de demostración: ' . ( $dm ? 'ACTIVOS' : 'apagados' ) . '</strong></p><p style="margin:0 0 8px">' . ( $dm ? 'El sitio muestra vendidos, dientrellas, sellos y testimonios <strong>ficticios</strong> para que veas cómo se verá. Solo funcionan mientras el sitio está en construcción: si lo abres al público desaparecen solos. Apágalos antes de publicar.' : 'Actívalos para ver el sitio con vendidos, dientrellas, sellos y testimonios ficticios mientras está en construcción.' ) . '</p><a class="button ' . ( $dm ? '' : 'button-primary' ) . '" href="' . esc_url( $du ) . '">' . ( $dm ? 'Apagar datos de demostración' : 'Activar datos de demostración' ) . '</a></div>';
 	echo '<p>Los vendidos y las dientrellas salen solos de las ventas y reseñas reales. Aquí puedes ocultarlos, elegir un sello y destacar un testimonio autorizado por el paciente.</p>';
 	echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="ps_social_save">';
 	wp_nonce_field( 'ps_social' );
@@ -247,8 +311,8 @@ function ps_ps_page() {
 	foreach ( $prods as $p ) {
 		$id  = $p->get_id();
 		$c   = ps_ps_cfg( $id );
-		$n   = ps_ps_ventas( $p );
-		$t   = ps_ps_tramo( $n );
+		$n   = (int) $p->get_total_sales();
+		$t   = ps_ps_tramo( ps_ps_ventas( $p ) );
 		$rc  = (int) $p->get_review_count();
 		$k   = 'ps[' . $id . ']';
 		$tes = get_comments( array( 'post_id' => $id, 'status' => 'approve', 'type' => 'review', 'number' => 50, 'meta_key' => 'ps_testimonio_ok', 'meta_value' => 1 ) ); // phpcs:ignore WordPress.DB.SlowDBQuery

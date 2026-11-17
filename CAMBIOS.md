@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.27.0
+- Nueva pantalla Prevsoul → Datos: resumen de indicadores (MRR, planes activos, altas y bajas, ventas, pagos sin completar, atenciones), origen de ventas, diccionario de métricas editable y exportación CSV anonimizada con registro de descargas.
+- Cada pedido guarda el primer origen del paciente (UTM, gclid, fbclid, referente) y si pasó por la Consulta online.
+- Foto diaria automática de indicadores a las 03:00, excluyendo pedidos de prueba.
+
 ## 2.26.1
 - Corrige el acceso a Prevsoul → Antes de publicar.
 

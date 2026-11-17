@@ -111,6 +111,20 @@ function ps_slider_html( $ids ) {
 		$m     = function ( $k ) use ( $id ) {
 			return ps_anuncio_meta( $id, $k );
 		};
+		$pzp = null;
+		if ( function_exists( 'ps_pz_slide_html' ) ) {
+			if ( 'product' === get_post_type( $id ) ) {
+				$pzp = wc_get_product( $id );
+			} else {
+				$lp  = (int) $m( 'producto' );
+				$lpp = ( $lp && function_exists( 'wc_get_product' ) ) ? wc_get_product( $lp ) : null;
+				$pzp = ps_pz_en_slider( $lpp ) ? $lpp : null;
+			}
+		}
+		if ( $pzp ) {
+			$out .= '<div class="ps-slide ps-slide-pz" role="group" aria-roledescription="anuncio" aria-label="' . (int) ( $n + 1 ) . ' de ' . count( $ids ) . '"' . ( $n ? ' aria-hidden="true"' : '' ) . '>' . ps_pz_slide_html( $pzp, '', 0 === $n ? 'h1' : 'h2' ) . '</div>';
+			continue;
+		}
 		$color = $m( 'color' ) ? $m( 'color' ) : 'brand';
 		$chip  = '';
 		if ( 'sala' === $color && ! $m( 'etiqueta' ) ) {

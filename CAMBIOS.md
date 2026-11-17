@@ -1,5 +1,13 @@
 # Cambios de Prevsoul Core
 
+## 2.18.0
+- Máquina de piezas: cada producto arma solo su slide del inicio (1600 × 600), su cuadrado para redes (1080 × 1080) y su historia (1080 × 1920) con el estilo de la marca: foto del producto, palabra héroe escrita a mano, frase, pincelada y color por familia.
+- Recuadro «Pieza Prevsoul» en la ficha de cada producto con vista previa en vivo, botones de descarga en PNG y casilla «Mostrar en el slider del inicio».
+- Textos del equipo creativo listos para los 13 productos; los productos nuevos del Armador reciben una sugerencia automática según su tipo. `{precio}` pone el precio vigente solo.
+- Auditor automático: avisa si aparece «seguro», promesas o superlativos, «demás», frases de más de 12 palabras o falta la foto.
+- Panel → Prevsoul → Piezas: galería con las piezas de todos los productos y descarga de todo.
+- Slider: los productos marcados se muestran con el nuevo diseño (también si ya tenían anuncio); en el celular la foto va arriba.
+
 ## 2.17.0
 - Plan Familiar «Prevsoul cuida a quien cuida»: precio por integrante (titular al precio del Plan Individual y cada integrante adicional al % de Armador → Ajustes), contador de integrantes, «Tu control va primero», segundo responsable opcional y bloque «Nosotros nos acordamos por ti».
 - Mi cuenta → «Mi plan»: integrantes (titular primero), meta personal de cada uno con sus propias palabras, último control y estado (al día, pronto, por agendar); segundo responsable editable.

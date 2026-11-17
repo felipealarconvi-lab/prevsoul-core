@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.17.0
+ * Version:           2.18.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.17.0' );
+define( 'PS_VERSION', '2.18.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -36,6 +36,7 @@ require_once __DIR__ . '/includes/redes.php';
 require_once __DIR__ . '/includes/armador.php';
 require_once __DIR__ . '/includes/producto.php';
 require_once __DIR__ . '/includes/familia.php';
+require_once __DIR__ . '/includes/piezas.php';
 
 /* 1.8: nombres cortos en el menú principal (una sola vez; después se editan en Apariencia → Menús). */
 add_action(
@@ -1319,6 +1320,9 @@ add_shortcode(
 		$a  = shortcode_atts( array( 'titulo' => '', 'bajada' => '', 'boton' => 'Entrar a la sala de espera', 'boton_url' => '', 'boton2' => '', 'boton2_url' => '' ), $atts );
 		if ( function_exists( 'ps_anuncios_visibles' ) ) {
 			$ads = ps_anuncios_visibles();
+			if ( function_exists( 'ps_pz_slider_extra' ) ) {
+				$ads = array_merge( $ads, ps_pz_slider_extra( $ads ) );
+			}
 			if ( $ads ) {
 				return ps_slider_html( $ads );
 			}

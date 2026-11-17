@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.23.0
+- Piezas firmadas con el logo nuevo: el cuadrado, la historia y las tarjetas de productos cambian «Prev Soul» a pincel por el diente con escudo y «prevsoul».
+- Slide del inicio: el logo va abajo a la izquierda y el botón dice su acción («Contratar plan», «Ver pack», «Agendar» o el texto del anuncio) en azul profundo, en vez de «PREVSOUL».
+- Las descargas de la máquina de piezas usan la misma firma y el mismo botón.
+
 ## 2.22.0
 - Logo nuevo: el diente original con un escudo verde menta y un check sobre la muesca (prevención: diente protegido), en azul profundo #164BA8. «prev» en Plus Jakarta Sans negrita y «soul» en Quicksand, con una separación mínima.
 - Aplicado en la cabecera, el pie, el ícono de la pestaña y la página en construcción. Los logos de temporada (Navidad, primavera y verano) se arman sobre el diente con escudo.

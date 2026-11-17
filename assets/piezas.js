@@ -14,7 +14,8 @@
 			document.fonts.load('700 40px Quicksand'),
 			document.fonts.load('80px "Caveat Brush"'),
 			document.fonts.load('30px "Homemade Apple"'),
-			document.fonts.load('20px "Space Mono"')
+			document.fonts.load('20px "Space Mono"'),
+			document.fonts.load('800 30px "Plus Jakarta Sans"')
 		]).catch(function () {});
 	}
 	function loadImg(url) {
@@ -68,6 +69,31 @@
 		for (i = 0; i < 5; i++) { x.fillRect(-w / 2 + r() * w * .5, -h / 2 + r() * h, w * (.3 + r() * .5), Math.max(1, h * .02)); }
 		x.restore();
 	}
+
+	/* Logo nuevo: diente con escudo + «prevsoul». (x,y) = esquina inferior izquierda; h = alto del diente. */
+	var TOOTH = 'M7 3c-2.5 0-4 2-4 4.5 0 2 .8 3.4 1.5 5 .8 2 1 4.5 1.6 6.6.4 1.5 1.9 1.6 2.3 0l.9-3.6c.3-1 1.1-1.5 1.7-1.5s1.4.5 1.7 1.5l.9 3.6c.4 1.6 1.9 1.5 2.3 0 .6-2.1.8-4.6 1.6-6.6.3-.7.6-1.4.8-2.1C17.2 11 16 10.6 15.8 9.8 15.6 8.9 14.4 9.6 13.9 8.6 13.4 7.7 12.1 7.9 12.3 6.6 12.4 5.6 11.9 4.6 11.6 3.9C10.5 3.8 9.2 3 7 3z';
+	var SHIELD = 'M17.8 2.2c1.3.7 2.6 1.1 4 1.2.2 0 .3.1.3.3v3c0 2.6-1.7 4.6-4.1 5.6-.1.1-.3.1-.4 0-2.4-1-4.1-3-4.1-5.6v-3c0-.2.1-.3.3-.3 1.4-.1 2.7-.5 4-1.2z';
+	function logoWidth(x, h) { var fs = h * .62; font(x, '800 ' + fs + 'px "Plus Jakarta Sans"'); var a = x.measureText('prev').width; font(x, '700 ' + fs * 1.04 + 'px Quicksand'); return h * 1.02 + a + fs * .02 + x.measureText('soul').width; }
+	function logo(x, X, Y, h, color, ring) {
+		var light = color === '#fff', k = h / 21.4;
+		x.save(); x.translate(X, Y - h); x.scale(k, k); x.translate(-2, -1.2);
+		if (typeof Path2D !== 'undefined') {
+			x.lineCap = 'round'; x.lineJoin = 'round';
+			x.strokeStyle = color; x.lineWidth = 1.9; x.stroke(new Path2D(TOOTH));
+			var sh = new Path2D(SHIELD);
+			x.strokeStyle = ring; x.lineWidth = 3; x.stroke(sh);
+			x.fillStyle = light ? '#5FD3B8' : '#1F9D74'; x.fill(sh);
+			x.strokeStyle = light ? ring : '#fff'; x.lineWidth = 1.15; x.stroke(new Path2D('M15.9 7.1l1.3 1.3 2.4-2.6'));
+		}
+		x.restore();
+		var fs = h * .62, tx = X + h * 1.02;
+		x.save(); x.textAlign = 'left'; x.textBaseline = 'alphabetic'; x.fillStyle = color;
+		font(x, '800 ' + fs + 'px "Plus Jakarta Sans"'); x.fillText('prev', tx, Y - h * .2);
+		var a = x.measureText('prev').width;
+		font(x, '700 ' + fs * 1.04 + 'px Quicksand'); x.fillText('soul', tx + a + fs * .02, Y - h * .2);
+		x.restore();
+	}
+
 	function sp(x, v) { if ('letterSpacing' in x) { x.letterSpacing = v; } }
 
 	function drawVertical(x, d, img, W, H) {
@@ -95,8 +121,7 @@
 			font(x, '500 ' + Math.round(W * .04) + 'px Quicksand'); x.fillStyle = '#fff';
 			wrap(x, '“' + d.frase + '”', W * .8).slice(0, 3).forEach(function (l, k) { x.fillText(l, W / 2, y + W * .09 + k * W * .052); });
 		}
-		font(x, Math.round(W * .048) + 'px "Caveat Brush"'); x.textAlign = 'right'; x.fillStyle = '#fff';
-		x.fillText('Prev Soul', W - W * .05, H - W * .04);
+		var lh = W * .058; logo(x, W - W * .05 - logoWidth(x, lh), H - W * .045, lh, '#fff', NOCHE);
 	}
 	function drawSlide(x, d, img, W, H) {
 		var col = C[d.familia] || C.rosa, tc = TXT_SLIDE[d.familia] || '#fff';
@@ -125,11 +150,13 @@
 		font(x, hs + 'px "Caveat Brush"');
 		x.save(); x.shadowColor = 'rgba(11,26,46,.18)'; x.shadowOffsetY = 4; x.fillStyle = '#fff';
 		x.fillText(d.heroe, hx, H * .7); x.restore();
-		var bw = 250, bh = 76, bx = W - 50 - bw, by = H - 50 - bh;
-		x.fillStyle = BOTON; x.beginPath();
-		if (x.roundRect) { x.roundRect(bx, by, bw, bh, [18, 18, 0, 18]); } else { x.rect(bx, by, bw, bh); }
-		x.fill(); font(x, '700 24px Quicksand'); sp(x, '5px'); x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle';
-		x.fillText('PREVSOUL', bx + bw / 2 + 3, by + bh / 2 + 1); sp(x, '0px');
+		var cta = d.cta || 'Ver más';
+		font(x, '800 26px "Plus Jakarta Sans"'); var bw = x.measureText(cta).width + 64, bh = 72, bx = W - 50 - bw, by = H - 50 - bh;
+		x.fillStyle = '#164BA8'; x.beginPath();
+		if (x.roundRect) { x.roundRect(bx, by, bw, bh, 18); } else { x.rect(bx, by, bw, bh); }
+		x.fill(); x.fillStyle = '#fff'; x.textAlign = 'center'; x.textBaseline = 'middle';
+		x.fillText(cta, bx + bw / 2, by + bh / 2 + 1);
+		logo(x, 90, H - 52, 46, tc === '#fff' ? '#fff' : NOCHE, col);
 	}
 	function draw(canvas, fmt, d) {
 		var s = FMT[fmt]; canvas.width = s[0]; canvas.height = s[1];
@@ -180,7 +207,7 @@
 		function data() {
 			var fam = root.querySelector('[name="ps_pz[familia]"]:checked');
 			var pin = f('pincel').value.replace('{precio}', base.precio || '').trim();
-			return { nombre: base.nombre, img: base.img, heroe: f('heroe').value.trim(), frase: f('frase').value.trim(), pincel: pin, familia: fam ? fam.value : base.familia };
+			return { nombre: base.nombre, img: base.img, cta: base.cta, heroe: f('heroe').value.trim(), frase: f('frase').value.trim(), pincel: pin, familia: fam ? fam.value : base.familia };
 		}
 		function render() {
 			var d = data();

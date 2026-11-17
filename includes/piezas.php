@@ -9,7 +9,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-const PS_PZ_FONTS = 'https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Caveat+Brush&family=Homemade+Apple&family=Space+Mono&display=swap';
+const PS_PZ_FONTS = 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@800&family=Quicksand:wght@500;700&family=Caveat+Brush&family=Homemade+Apple&family=Space+Mono&display=swap';
 
 function ps_pz_familias() {
 	return array(
@@ -107,6 +107,25 @@ function ps_pz_get( $prod ) {
 	return $d;
 }
 
+
+/** Texto del botón según el tipo de producto (reemplaza al antiguo «PREVSOUL»). */
+function ps_pz_cta( $prod ) {
+	$all = array_merge( ps_parent_slugs( $prod ), wp_get_post_terms( $prod->get_id(), 'product_cat', array( 'fields' => 'slugs' ) ) );
+	if ( in_array( PS_CATS['planes'], $all, true ) ) {
+		return '' === $prod->get_price() ? 'Cotizar plan' : 'Contratar plan';
+	}
+	if ( in_array( PS_CATS['packs'], $all, true ) ) {
+		return 'Ver pack';
+	}
+	return 'Agendar';
+}
+
+/** Logo nuevo (diente con escudo + prevsoul) para firmar piezas. */
+function ps_pz_logo( $color = '#fff', $ring = '#0B1A2E' ) {
+	$svg = function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'header', $color, $ring, 'base' ) : '';
+	return '<span class="ps-pz-firma" style="color:' . esc_attr( $color ) . '">' . $svg . '<span class="ps-wm"><span class="ps-wm-p">prev</span><span class="ps-wm-s">soul</span></span></span>';
+}
+
 /** Datos listos para dibujar. */
 function ps_pz_js( $prod ) {
 	$d   = ps_pz_get( $prod );
@@ -119,6 +138,7 @@ function ps_pz_js( $prod ) {
 		'pincel'  => trim( str_replace( '{precio}', ps_pz_precio( $prod ), $d['pincel'] ) ),
 		'familia' => $d['familia'],
 		'img'     => $img ? $img : '',
+		'cta'     => ps_pz_cta( $prod ),
 	);
 }
 
@@ -163,6 +183,7 @@ function ps_pz_box( $post ) {
 		'img'     => $js['img'],
 		'precio'  => ps_pz_precio( $prod ),
 		'familia' => $d['familia'],
+		'cta'     => $js['cta'],
 	);
 	wp_nonce_field( 'ps_pz_save', 'ps_pz_nonce' );
 	echo '<div class="ps-pz-editor" data-pz="' . esc_attr( wp_json_encode( $base ) ) . '"><div>';
@@ -341,7 +362,7 @@ function ps_pz_anuncio_data( $id ) {
 	$d['chip']  = $chip;
 	$d['live']  = 'sala' === $m( 'color' ) && ! $m( 'etiqueta' ) && ps_online_count() > 0;
 	$d['url']   = $url ? $url : ps_get( 'sala_url' );
-	$d['boton'] = $m( 'b1' ) ? $m( 'b1' ) : 'PREVSOUL';
+	$d['boton'] = $m( 'b1' ) ? $m( 'b1' ) : ( $prod ? ps_pz_cta( $prod ) : 'Ver más' );
 	return $d;
 }
 
@@ -349,7 +370,7 @@ function ps_pz_slide_html( $prod, $url, $tag ) {
 	$j = ps_pz_js( $prod );
 	$j['img']   = (int) $prod->get_image_id();
 	$j['url']   = $url ? $url : get_permalink( $prod->get_id() );
-	$j['boton'] = 'PREVSOUL';
+	$j['boton'] = $j['cta'];
 	$j['chip']  = '';
 	return ps_pz_slide_render( $j, $tag );
 }
@@ -367,7 +388,9 @@ function ps_pz_slide_render( $d, $tag ) {
 	$o .= $d['nombre'] ? '<span class="ps-pz-eti">' . esc_html( mb_strtolower( $d['nombre'] ) ) . '</span>' : '';
 	$o .= $d['pincel'] ? '<span class="ps-pz-pincel">' . esc_html( $d['pincel'] ) . '</span>' : '';
 	$o .= '</div><' . $tag . ' class="ps-pz-heroe"' . ( $len > 8 ? ' style="font-size:' . ( $len > 11 ? '8' : '10' ) . 'cqw"' : '' ) . '>' . esc_html( $d['heroe'] ) . '<span class="screen-reader-text"> · ' . esc_html( $d['frase'] ) . '</span></' . $tag . '>';
-	$o .= '<a class="ps-pz-btn' . ( 'PREVSOUL' === $d['boton'] ? '' : ' ps-pz-btn-tx' ) . '" href="' . esc_url( $d['url'] ) . '">' . esc_html( $d['boton'] ) . '</a></div>';
+	$claro = in_array( $d['familia'], array( 'celeste', 'lima' ), true );
+	$o    .= '<span class="ps-pz-logo">' . ps_pz_logo( $claro ? '#0B2545' : '#fff', $fam[0] ) . '</span>';
+	$o    .= '<a class="ps-pz-btn ps-pz-btn-tx" href="' . esc_url( $d['url'] ) . '">' . esc_html( $d['boton'] ) . '</a></div>';
 	return $o . ps_pz_fonts_once();
 }
 
@@ -392,7 +415,7 @@ function ps_pz_square_html( $prod ) {
 	}
 	$o .= '<span class="ps-pzq-in"><span class="ps-pzq-h"' . ( $len > 8 ? ' style="font-size:' . ( $len > 11 ? '14' : '17' ) . 'cqw"' : '' ) . '>' . esc_html( $d['heroe'] ) . '</span>';
 	$o .= $d['pincel'] ? '<span class="ps-pzq-p">' . esc_html( $d['pincel'] ) . '</span>' : '';
-	$o .= '</span><span class="ps-pzq-l">Prev Soul</span></a>';
+	$o .= '</span><span class="ps-pzq-l">' . ps_pz_logo( '#fff', '#0B1A2E' ) . '</span></a>';
 	return $o . ps_pz_fonts_once();
 }
 function ps_pz_frase( $prod ) {

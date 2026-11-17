@@ -259,6 +259,7 @@ function ps_anuncio_prev_box( $post ) {
 		'familia' => $d['familia'],
 		'img'     => $d['img'] ? wp_get_attachment_image_url( $d['img'], 'full' ) : '',
 		'conprod' => (bool) ps_anuncio_meta( $post->ID, 'producto' ),
+		'cta'     => $d['boton'],
 	);
 	echo '<canvas id="ps-a-pz" data-pz="' . esc_attr( wp_json_encode( $j ) ) . '" style="width:100%;max-width:760px;border-radius:8px;display:block"></canvas><p class="description">Vista aproximada del slide con el estilo Prevsoul. La etiqueta, la bajada y el botón se ven en el sitio. Al cambiar el producto o la imagen, guarda para actualizar la foto.</p>';
 }

@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.21.0
+- Ahorro del inicio más fácil de leer: dos barras con el total de los años (con tu plan y sin prevención) y la diferencia rayada en verde con «Ahorras $…». Se mantiene la cifra destacada del ahorro; se quitan las barras año por año.
+
 ## 2.20.2
 - Gráfico de ahorro: «Sin prevención» pasa del naranjo al rosa Soul profundo (#D9727F); «Con plan» sigue en azul Prevsoul. Combinación validada en contraste y daltonismo.
 - Precios redondos sin terminación en 990: Pack Encías $70.000, Pack Niños $40.000, Pack Control $50.000 (sin oferta), Plan Individual $10.000 y Plan Familiar desde $17.500.

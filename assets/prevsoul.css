@@ -790,3 +790,15 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 
 /* 2.20.2 · Gráfico de ahorro con colores de la marca (validado: contraste y daltonismo) */
 .ps-sw-b,.ps-bar-b{background:#D9727F}
+
+/* 2.21.0 · Ahorro en dos barras con la diferencia marcada */
+.ps-ahorro2 .ps-tile-dark{flex:none}
+.ps-ab{display:flex;flex-direction:column;gap:12px;margin-top:6px}
+.ps-ab-row{display:grid;grid-template-columns:130px 1fr;align-items:center;gap:12px}
+.ps-ab-lbl{font-weight:700;font-size:15px;color:var(--ps-ink)}
+.ps-ab-track{display:flex;min-width:0}
+.ps-ab-bar{display:flex;align-items:center;min-height:44px;padding:0 12px;box-sizing:border-box;font-weight:800;font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-ab-a{background:#1D5FD1;color:#fff;border-radius:8px 0 0 8px}
+.ps-ab-b{background:#D9727F;color:#0B2545;border-radius:8px}
+.ps-ab-s{background:repeating-linear-gradient(45deg,#E6F7F2 0 7px,#fff 7px 14px);color:#0E5A49;border:2px dashed #1F9D74;border-left:0;border-radius:0 8px 8px 0;margin-left:2px}
+@media (max-width:640px){.ps-ab-row{grid-template-columns:1fr;gap:6px}.ps-ab-bar{font-size:13px;padding:0 8px}.ps-ab-s{white-space:normal;line-height:1.15;font-size:12px}}

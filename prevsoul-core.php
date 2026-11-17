@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.20.2
+ * Version:           2.21.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.20.2' );
+define( 'PS_VERSION', '2.21.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -882,14 +882,13 @@ add_shortcode(
 		$clp    = function ( $n ) {
 			return '$' . number_format( (float) $n, 0, ',', '.' );
 		};
-		$out  = '<div class="ps-card ps-ahorro"><div class="ps-ahorro-tiles"><div class="ps-tile ps-tile-dark"><span>Ahorro estimado en ' . (int) $years . ' años</span><strong>' . esc_html( $clp( $saving ) ) . '</strong><span>' . ( $corr > 0 && $saving > 0 ? esc_html( round( $saving / $corr * 100 ) . '% menos que tratar después' ) : 'Ajusta los valores en Prevsoul → Ajustes' ) . '</span></div>';
-		$out .= '<div class="ps-tile"><span>Con plan preventivo</span><strong>' . esc_html( $clp( $prev ) ) . '</strong></div><div class="ps-tile"><span>Sin prevención</span><strong>' . esc_html( $clp( $corr ) ) . '</strong></div></div>';
-		$out .= '<div class="ps-legend"><span><i class="ps-sw ps-sw-a"></i>Con plan preventivo (acumulado)</span><span><i class="ps-sw ps-sw-b"></i>Sin prevención (acumulado)</span></div><div class="ps-bars" role="img" aria-label="' . esc_attr( 'Costo acumulado por año, con y sin prevención' ) . '">';
-		for ( $y = 1; $y <= $years; $y++ ) {
-			$a    = $monthly * 12 * $y;
-			$b    = $corr * $y / $years;
-			$out .= '<div class="ps-bar-group"><div class="ps-bar-pair"><span class="ps-bar ps-bar-a" style="height:' . esc_attr( round( $a / $max * 100, 2 ) ) . '%" title="' . esc_attr( 'Año ' . $y . ' con plan: ' . $clp( $a ) ) . '"></span><span class="ps-bar ps-bar-b" style="height:' . esc_attr( round( $b / $max * 100, 2 ) ) . '%" title="' . esc_attr( 'Año ' . $y . ' sin prevención: ' . $clp( $b ) ) . '"></span></div><span class="ps-muted ps-small">Año ' . (int) $y . '</span></div>';
-		}
+		$pa   = $corr > 0 ? max( 8, min( 100, round( $prev / $corr * 100, 1 ) ) ) : 100;
+		$out  = '<div class="ps-card ps-ahorro ps-ahorro2"><div class="ps-tile ps-tile-dark"><span>Ahorro estimado en ' . (int) $years . ' años</span><strong>' . esc_html( $clp( $saving ) ) . '</strong><span>' . ( $corr > 0 && $saving > 0 ? esc_html( round( $saving / $corr * 100 ) . '% menos que tratar después' ) : 'Ajusta los valores en Prevsoul → Ajustes' ) . '</span></div>';
+		$out .= '<div class="ps-ab" role="img" aria-label="' . esc_attr( 'En ' . $years . ' años: con plan preventivo ' . $clp( $prev ) . ', sin prevención ' . $clp( $corr ) . '. Ahorras ' . $clp( $saving ) . '.' ) . '">';
+		$out .= '<div class="ps-ab-row"><span class="ps-ab-lbl">Con tu plan</span><div class="ps-ab-track"><span class="ps-ab-bar ps-ab-a" style="width:' . esc_attr( $pa ) . '%" title="' . esc_attr( 'Con plan preventivo: ' . $clp( $prev ) ) . '">' . esc_html( $clp( $prev ) ) . '</span>';
+		$out .= $saving > 0 ? '<span class="ps-ab-bar ps-ab-s" style="width:' . esc_attr( 100 - $pa ) . '%" title="' . esc_attr( 'Ahorras ' . $clp( $saving ) ) . '">Ahorras ' . esc_html( $clp( $saving ) ) . '</span>' : '';
+		$out .= '</div></div><div class="ps-ab-row"><span class="ps-ab-lbl">Sin prevención</span><div class="ps-ab-track"><span class="ps-ab-bar ps-ab-b" style="width:100%" title="' . esc_attr( 'Sin prevención: ' . $clp( $corr ) ) . '">' . esc_html( $clp( $corr ) ) . '</span></div></div>';
+		$out .= '<p class="ps-muted ps-small" style="margin:0">Total acumulado en ' . (int) $years . ' años · plan de ' . esc_html( $clp( $monthly ) ) . ' al mes</p>';
 		$out .= '</div><p class="ps-muted ps-small">Estimación referencial' . ( ps_get( 'example' ) ? ' con valores de ejemplo' : '' ) . '. No constituye un presupuesto ni un diagnóstico.</p></div>';
 		return $out;
 	}

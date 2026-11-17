@@ -110,7 +110,7 @@
 		}
 		x.textAlign = 'left'; x.textBaseline = 'alphabetic';
 		font(x, '700 44px Quicksand'); x.fillStyle = tc;
-		var ls = wrap(x, '“' + d.frase + '”', 560).slice(0, 3), y = 110;
+		var ls = wrap(x, '“' + d.frase + '”', 540).slice(0, 3), y = 110;
 		ls.forEach(function (l) { x.fillText(l, 90, y); y += 56; });
 		font(x, '20px "Space Mono"'); sp(x, '6px'); x.fillText(d.nombre.toLowerCase(), 92, y + 8); sp(x, '0px');
 		if (d.pincel) {
@@ -120,11 +120,11 @@
 			x.save(); x.translate(90 + (tw + 70) / 2, cy); x.rotate(-2 * Math.PI / 180);
 			x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = '#fff'; x.fillText(d.pincel, 0, 2, 520); x.restore();
 		}
-		var hs = 210, hx = W * .37;
-		hs = fit(x, d.heroe, '#px "Caveat Brush"', hs, W - hx - 330);
+		var hs = 200, hx = W * .42;
+		hs = fit(x, d.heroe, '#px "Caveat Brush"', hs, W - hx - 60);
 		font(x, hs + 'px "Caveat Brush"');
 		x.save(); x.shadowColor = 'rgba(11,26,46,.18)'; x.shadowOffsetY = 4; x.fillStyle = '#fff';
-		x.fillText(d.heroe, hx, H * .78); x.restore();
+		x.fillText(d.heroe, hx, H * .7); x.restore();
 		var bw = 250, bh = 76, bx = W - 50 - bw, by = H - 50 - bh;
 		x.fillStyle = BOTON; x.beginPath();
 		if (x.roundRect) { x.roundRect(bx, by, bw, bh, [18, 18, 0, 18]); } else { x.rect(bx, by, bw, bh); }

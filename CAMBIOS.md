@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.19.1
+- Slider y piezas: la palabra escrita a mano ya no choca con la frase ni con el botón.
+
 ## 2.19.0
 - Slider del inicio con el estilo nuevo en todos los anuncios: foto, palabra héroe escrita a mano, frase, pincelada y color por familia. El diseño anterior deja de usarse.
 - Anuncios vinculados a un producto toman la pieza del producto (palabra, frase, color y precio); los demás usan el título como frase y el texto como bajada.

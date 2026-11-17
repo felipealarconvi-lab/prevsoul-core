@@ -366,7 +366,7 @@ function ps_pz_slide_render( $d, $tag ) {
 	$o .= ! empty( $d['sub'] ) ? '<p class="ps-pz-sub">' . esc_html( $d['sub'] ) . '</p>' : '';
 	$o .= $d['nombre'] ? '<span class="ps-pz-eti">' . esc_html( mb_strtolower( $d['nombre'] ) ) . '</span>' : '';
 	$o .= $d['pincel'] ? '<span class="ps-pz-pincel">' . esc_html( $d['pincel'] ) . '</span>' : '';
-	$o .= '</div><' . $tag . ' class="ps-pz-heroe"' . ( $len > 8 ? ' style="font-size:' . ( $len > 11 ? '8.5' : '10.5' ) . 'cqw"' : '' ) . '>' . esc_html( $d['heroe'] ) . '<span class="screen-reader-text"> · ' . esc_html( $d['frase'] ) . '</span></' . $tag . '>';
+	$o .= '</div><' . $tag . ' class="ps-pz-heroe"' . ( $len > 8 ? ' style="font-size:' . ( $len > 11 ? '8' : '10' ) . 'cqw"' : '' ) . '>' . esc_html( $d['heroe'] ) . '<span class="screen-reader-text"> · ' . esc_html( $d['frase'] ) . '</span></' . $tag . '>';
 	$o .= '<a class="ps-pz-btn' . ( 'PREVSOUL' === $d['boton'] ? '' : ' ps-pz-btn-tx' ) . '" href="' . esc_url( $d['url'] ) . '">' . esc_html( $d['boton'] ) . '</a></div>';
 	static $f = false;
 	if ( ! $f ) {

@@ -64,7 +64,7 @@ add_action(
 		$n = ps_pend_faltan();
 		add_submenu_page( 'prevsoul', 'Antes de publicar', 'Antes de publicar' . ( $n ? ' <span class="awaiting-mod">' . (int) $n . '</span>' : '' ), 'manage_options', 'ps-pendientes', 'ps_pend_page' );
 	},
-	9
+	19
 );
 
 add_action(

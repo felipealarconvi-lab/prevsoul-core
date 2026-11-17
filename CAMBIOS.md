@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.26.1
+- Corrige el acceso a Prevsoul → Antes de publicar.
+
 ## 2.26.0
 - Prueba social: datos de demostración (ficticios) que solo se ven mientras el sitio está en construcción; se activan y apagan en Prevsoul → Prueba social.
 - Nueva lista Prevsoul → Antes de publicar, con aviso en el admin mientras queden pendientes.

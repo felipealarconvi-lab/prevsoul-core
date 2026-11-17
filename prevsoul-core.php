@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.19.2
+ * Version:           2.20.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.19.2' );
+define( 'PS_VERSION', '2.20.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -827,9 +827,10 @@ add_shortcode(
 function ps_product_card( $p ) {
 	$price  = $p->get_price();
 	$items  = array_filter( array_map( 'trim', explode( "\n", wp_strip_all_tags( $p->get_description() ) ) ) );
-	$out    = '<article class="ps-card ps-product"><h4 class="ps-card-title"><a href="' . esc_url( $p->get_permalink() ) . '">' . esc_html( $p->get_name() ) . '</a></h4>';
+	$pz     = function_exists( 'ps_pz_square_html' );
+	$out    = '<article class="ps-card ps-product' . ( $pz ? ' has-pz' : '' ) . '">' . ( $pz ? ps_pz_square_html( $p ) : '' ) . '<h4 class="ps-card-title"><a href="' . esc_url( $p->get_permalink() ) . '">' . esc_html( $p->get_name() ) . '</a></h4>';
 	$out   .= ps_prestador_chip( $p->get_id() );
-	$out   .= '<p class="ps-muted ps-small">' . esc_html( wp_strip_all_tags( $p->get_short_description() ) ) . '</p>';
+	$out   .= $pz ? ps_pz_frase( $p ) : '<p class="ps-muted ps-small">' . esc_html( wp_strip_all_tags( $p->get_short_description() ) ) . '</p>';
 	if ( $items ) {
 		$out .= '<ul class="ps-checks">';
 		foreach ( array_slice( $items, 0, 6 ) as $it ) {

@@ -768,3 +768,18 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
   .ps-pz .ps-pz-sub{font-size:3.6vw;margin-top:2vw;max-width:none}
   .ps-pz-btn.ps-pz-btn-tx{font-size:3.4vw}
 }
+
+/* 2.20.0 · Tarjetas de atenciones, packs y planes con el cuadrado de la marca */
+.ps-pzq{position:relative;display:block;aspect-ratio:1;container-type:inline-size;overflow:hidden;background:var(--pz);text-decoration:none!important;border-radius:12px}
+.ps-pzq img.ps-pzq-img{position:absolute;inset:0;width:100%!important;height:100%!important;object-fit:cover;object-position:50% 30%;margin:0!important;border-radius:0!important;max-width:none}
+.ps-pzq::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,26,46,0) 42%,rgba(11,26,46,.88) 72%,rgba(11,26,46,.96))}
+.ps-pzq-in{position:absolute;left:4cqw;right:4cqw;top:53%;z-index:1;text-align:center;display:flex;flex-direction:column;align-items:center}
+.ps-pzq-h{font-family:'Caveat Brush',cursive;font-size:21cqw;line-height:.95;color:#fff;white-space:nowrap}
+.ps-pzq-p{display:inline-block;margin-top:2.5cqw;padding:1cqw 6cqw;background:var(--pz);color:#0B1A2E;font-family:Quicksand,'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:6cqw;transform:rotate(-3deg);clip-path:polygon(2% 10%,35% 0,70% 5%,99% 2%,100% 45%,97% 100%,60% 93%,25% 100%,0 96%,3% 55%)}
+.ps-pz-periwinkle .ps-pzq-p{color:#fff}
+.ps-pzq-l{position:absolute;right:4cqw;bottom:3cqw;z-index:1;font-family:'Caveat Brush',cursive;font-size:5cqw;color:#fff}
+.ps-pz-cita{margin:0;font-family:Quicksand,'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:15px;line-height:1.4;color:var(--ps-ink)}
+.ps-card.ps-product.has-pz>.ps-pzq{margin:-20px -20px 4px;border-radius:16px 16px 0 0}
+.ps-plan.has-pz>.ps-pzq{margin:-22px -22px 2px;border-radius:20px 20px 0 0}
+.ps-plan.has-pz .ps-plan-top{z-index:2}
+.ps-prod ul.products li.product .ps-pzq,ul.products li.product .ps-pzq{margin-bottom:10px}

@@ -392,9 +392,10 @@ function ps_planes() {
 	foreach ( $ps as $i => $p ) {
 		$hl   = $top && $p->get_id() === $top->get_id();
 		$has  = '' !== $p->get_price();
-		$out .= '<article class="ps-plan' . ( $hl ? ' is-top' : '' ) . '">' . ( $hl ? '<span class="ps-plan-top">El más elegido</span>' : '' );
-		$out .= '<span class="ps-plan-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' . esc_attr( $icons[ min( $i, 2 ) ] ) . '"/></svg></span>';
+		$out .= '<article class="ps-plan has-pz' . ( $hl ? ' is-top' : '' ) . '">' . ( $hl ? '<span class="ps-plan-top">El más elegido</span>' : '' );
+		$out .= function_exists( 'ps_pz_square_html' ) ? ps_pz_square_html( $p ) : '';
 		$out .= '<h3>' . esc_html( preg_replace( '/^Plan( Preventivo)?\s*/u', '', $p->get_name() ) ) . '</h3>';
+		$out .= function_exists( 'ps_pz_frase' ) ? ps_pz_frase( $p ) : '';
 		$out .= $has ? '<div class="ps-plan-price">' . esc_html( ps_clp( $p->get_price() ) ) . ' <small>/ mes</small></div>' : '<div class="ps-plan-price">A tu medida</div>';
 		$lines = ps_product_lines( $p, 5 );
 		if ( $lines ) {

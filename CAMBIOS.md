@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.20.0
+- Tarjetas de atenciones, packs y planes con el estilo de la marca: arriba un cuadrado con la foto del producto, su palabra escrita a mano y el precio en la pincelada del color de su familia; debajo, la frase de la pieza entre comillas.
+- Se aplica en las páginas Atención dental, Packs dentales y Planes dentales, en la tienda y las categorías de WooCommerce y en las tarjetas de planes del inicio.
+- La ficha de cada producto mantiene solo la foto.
+- Todo sale del recuadro «Pieza Prevsoul» de cada producto.
+
 ## 2.19.2
 - Plan Familiar: el contador de la ficha parte en 2 integrantes (coincide con «desde $17.480»); precio base del producto ajustado a $17.480.
 

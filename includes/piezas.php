@@ -368,10 +368,56 @@ function ps_pz_slide_render( $d, $tag ) {
 	$o .= $d['pincel'] ? '<span class="ps-pz-pincel">' . esc_html( $d['pincel'] ) . '</span>' : '';
 	$o .= '</div><' . $tag . ' class="ps-pz-heroe"' . ( $len > 8 ? ' style="font-size:' . ( $len > 11 ? '8' : '10' ) . 'cqw"' : '' ) . '>' . esc_html( $d['heroe'] ) . '<span class="screen-reader-text"> · ' . esc_html( $d['frase'] ) . '</span></' . $tag . '>';
 	$o .= '<a class="ps-pz-btn' . ( 'PREVSOUL' === $d['boton'] ? '' : ' ps-pz-btn-tx' ) . '" href="' . esc_url( $d['url'] ) . '">' . esc_html( $d['boton'] ) . '</a></div>';
-	static $f = false;
-	if ( ! $f ) {
-		$f  = true;
-		$o .= '<link rel="stylesheet" href="' . esc_url( PS_PZ_FONTS ) . '">'; // phpcs:ignore
-	}
-	return $o;
+	return $o . ps_pz_fonts_once();
 }
+
+/** Carga las tipografías de las piezas una sola vez por página. */
+function ps_pz_fonts_once() {
+	static $f = false;
+	if ( $f ) {
+		return '';
+	}
+	$f = true;
+	return '<link rel="stylesheet" href="' . esc_url( PS_PZ_FONTS ) . '">'; // phpcs:ignore
+}
+
+/** Cuadrado con el estilo de la marca para las tarjetas de productos. */
+function ps_pz_square_html( $prod ) {
+	$d   = ps_pz_js( $prod );
+	$fam = ps_pz_familias()[ $d['familia'] ];
+	$len = mb_strlen( $d['heroe'] );
+	$o   = '<a class="ps-pzq ps-pz-' . esc_attr( $d['familia'] ) . '" href="' . esc_url( $prod->get_permalink() ) . '" style="--pz:' . esc_attr( $fam[0] ) . '" aria-label="' . esc_attr( $d['nombre'] ) . '" tabindex="-1">';
+	if ( $prod->get_image_id() ) {
+		$o .= wp_get_attachment_image( $prod->get_image_id(), 'woocommerce_single', false, array( 'alt' => '', 'loading' => 'lazy', 'class' => 'ps-pzq-img' ) );
+	}
+	$o .= '<span class="ps-pzq-in"><span class="ps-pzq-h"' . ( $len > 8 ? ' style="font-size:' . ( $len > 11 ? '14' : '17' ) . 'cqw"' : '' ) . '>' . esc_html( $d['heroe'] ) . '</span>';
+	$o .= $d['pincel'] ? '<span class="ps-pzq-p">' . esc_html( $d['pincel'] ) . '</span>' : '';
+	$o .= '</span><span class="ps-pzq-l">Prev Soul</span></a>';
+	return $o . ps_pz_fonts_once();
+}
+function ps_pz_frase( $prod ) {
+	$d = ps_pz_get( $prod );
+	return $d['frase'] ? '<p class="ps-pz-cita">“' . esc_html( $d['frase'] ) . '”</p>' : '';
+}
+
+/* Tienda y categorías de WooCommerce: el cuadrado reemplaza la foto sola. */
+add_action(
+	'init',
+	function () {
+		if ( ! function_exists( 'woocommerce_template_loop_product_thumbnail' ) ) {
+			return;
+		}
+		remove_action( 'woocommerce_before_shop_loop_item_title', 'woocommerce_template_loop_product_thumbnail', 10 );
+		add_action(
+			'woocommerce_before_shop_loop_item_title',
+			function () {
+				global $product;
+				if ( $product ) {
+					echo ps_pz_square_html( $product ); // phpcs:ignore WordPress.Security.EscapeOutput
+				}
+			},
+			10
+		);
+	},
+	20
+);

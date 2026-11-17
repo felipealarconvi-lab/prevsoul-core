@@ -163,7 +163,7 @@
 		if (/\b(el|la|los|las)\s+(m[aá]s|mejor(es)?)\b|\bgarantiz|\bcura(r|mos)?\b|100\s?%|\bsin dolor\b|\bnunca m[aá]s\b|\bel m[aá]s barato\b/i.test(all)) { out.push('Evita promesas clínicas y superlativos absolutos.'); }
 		if (/\bdem[aá]s\b/i.test(all)) { out.push('¿Quisiste decir «de más»?'); }
 		if ((d.frase || '').trim().split(/\s+/).length > 12) { out.push('La frase pasa de 12 palabras.'); }
-		if ((d.heroe || '').trim().split(/\s+/).length > 2) { out.push('La palabra héroe debe tener 1 o 2 palabras.'); }
+		if ((d.heroe || '').trim().split(/\s+/).length > 3) { out.push('La palabra héroe debe ser corta: hasta 3 palabras.'); }
 		if (!(d.heroe || '').trim()) { out.push('Falta la palabra héroe.'); }
 		if (/\s{2,}|\s$|^\s/.test(d.heroe + '|' + d.frase + '|' + d.pincel)) { out.push('Hay espacios de más.'); }
 		if (!d.img) { out.push('El producto no tiene imagen: sube una foto de personas, sin texto.'); }

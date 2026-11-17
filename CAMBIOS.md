@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.18.1
+- Auditor de piezas: acepta palabras héroe de hasta 3 palabras (como «A la vista»).
+
 ## 2.18.0
 - Máquina de piezas: cada producto arma solo su slide del inicio (1600 × 600), su cuadrado para redes (1080 × 1080) y su historia (1080 × 1920) con el estilo de la marca: foto del producto, palabra héroe escrita a mano, frase, pincelada y color por familia.
 - Recuadro «Pieza Prevsoul» en la ficha de cada producto con vista previa en vivo, botones de descarga en PNG y casilla «Mostrar en el slider del inicio».

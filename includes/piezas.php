@@ -170,7 +170,7 @@ function ps_pz_box( $post ) {
 		echo '<p class="ps-pz-hint" style="margin-top:0"><b>Sugerencia automática.</b> Ajústala si quieres; al guardar queda fija para este producto.</p>';
 	}
 	echo '<label for="ps-pz-h">Palabra héroe</label><input type="text" id="ps-pz-h" name="ps_pz[heroe]" maxlength="24" value="' . esc_attr( $d['heroe'] ) . '">';
-	echo '<p class="ps-pz-hint">1 o 2 palabras, escritas a mano en la pieza (Valientes, Alivio, Tranqui…).</p>';
+	echo '<p class="ps-pz-hint">1 a 3 palabras, escritas a mano en la pieza (Valientes, Alivio, Tranqui…).</p>';
 	echo '<label for="ps-pz-f">Frase</label><input type="text" id="ps-pz-f" name="ps_pz[frase]" maxlength="90" value="' . esc_attr( $d['frase'] ) . '">';
 	echo '<p class="ps-pz-hint">Máximo 12 palabras, voz de amigo, sin promesas clínicas.</p>';
 	echo '<label for="ps-pz-p">Pincelada</label><input type="text" id="ps-pz-p" name="ps_pz[pincel]" maxlength="40" value="' . esc_attr( $d['pincel'] ) . '">';

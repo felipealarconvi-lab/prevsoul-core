@@ -81,6 +81,113 @@ add_action(
 	}
 );
 
+
+/* ---------- Servidor de envío (SMTP) ---------- */
+
+function ps_co_smtp() {
+	$o = get_option( 'ps_correo_smtp', array() );
+	return wp_parse_args( is_array( $o ) ? $o : array(), array( 'on' => '1', 'host' => 'tralala.lineadns.com', 'port' => 465, 'sec' => 'ssl', 'user' => ps_co_buzon(), 'pass' => '' ) );
+}
+
+function ps_co_key() {
+	return hash( 'sha256', wp_salt( 'auth' ) . 'ps_correo', true );
+}
+
+function ps_co_enc( $plain ) {
+	if ( ! function_exists( 'openssl_encrypt' ) ) {
+		return 'b64:' . base64_encode( $plain );
+	}
+	$iv = random_bytes( 16 );
+	return 'v1:' . base64_encode( $iv . openssl_encrypt( $plain, 'aes-256-cbc', ps_co_key(), OPENSSL_RAW_DATA, $iv ) );
+}
+
+function ps_co_dec( $enc ) {
+	if ( 0 === strpos( (string) $enc, 'b64:' ) ) {
+		return (string) base64_decode( substr( $enc, 4 ) );
+	}
+	if ( 0 !== strpos( (string) $enc, 'v1:' ) || ! function_exists( 'openssl_decrypt' ) ) {
+		return '';
+	}
+	$raw = base64_decode( substr( $enc, 3 ) );
+	return (string) openssl_decrypt( substr( $raw, 16 ), 'aes-256-cbc', ps_co_key(), OPENSSL_RAW_DATA, substr( $raw, 0, 16 ) );
+}
+
+function ps_co_smtp_listo() {
+	$c = ps_co_smtp();
+	return '1' === (string) $c['on'] && $c['host'] && $c['user'] && $c['pass'];
+}
+
+function ps_co_smtp_aplicar( $m ) {
+	$c = ps_co_smtp();
+	$m->isSMTP();
+	$m->Host       = $c['host'];
+	$m->Port       = (int) $c['port'];
+	$m->SMTPSecure = 'none' === $c['sec'] ? '' : $c['sec'];
+	$m->SMTPAutoTLS = 'none' !== $c['sec'];
+	$m->SMTPAuth   = true;
+	$m->Username   = $c['user'];
+	$m->Password   = ps_co_dec( $c['pass'] );
+	$m->Timeout    = 15;
+}
+
+add_action(
+	'phpmailer_init',
+	function ( $m ) {
+		if ( ps_co_smtp_listo() ) {
+			ps_co_smtp_aplicar( $m );
+		}
+	}
+);
+
+add_action(
+	'admin_post_ps_correo_smtp',
+	function () {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Sin permiso' );
+		}
+		check_admin_referer( 'ps_correo_smtp' );
+		$c  = ps_co_smtp();
+		$in = wp_unslash( $_POST ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
+		$c['on']   = empty( $in['on'] ) ? '0' : '1';
+		$c['host'] = sanitize_text_field( $in['host'] ?? $c['host'] );
+		$c['port'] = max( 1, (int) ( $in['port'] ?? $c['port'] ) );
+		$c['sec']  = in_array( $in['sec'] ?? '', array( 'ssl', 'tls', 'none' ), true ) ? $in['sec'] : 'ssl';
+		$c['user'] = sanitize_text_field( $in['user'] ?? $c['user'] );
+		if ( isset( $in['pass'] ) && '' !== $in['pass'] ) {
+			$c['pass'] = ps_co_enc( (string) $in['pass'] );
+		}
+		update_option( 'ps_correo_smtp', $c, false );
+		$r = 'smtp';
+		if ( ! empty( $in['probar'] ) ) {
+			$r = ps_co_smtp_probar() ? 'conok' : 'conmal';
+		}
+		wp_safe_redirect( admin_url( 'admin.php?page=ps-correo&r=' . $r ) );
+		exit;
+	}
+);
+
+/** Prueba la conexión y el ingreso al servidor SMTP, sin enviar nada. */
+function ps_co_smtp_probar() {
+	if ( ! ps_co_smtp_listo() ) {
+		set_transient( 'ps_correo_con', 'Falta la contraseña del buzón.', 300 );
+		return false;
+	}
+	require_once ABSPATH . WPINC . '/PHPMailer/PHPMailer.php';
+	require_once ABSPATH . WPINC . '/PHPMailer/SMTP.php';
+	require_once ABSPATH . WPINC . '/PHPMailer/Exception.php';
+	$m = new PHPMailer\PHPMailer\PHPMailer( true );
+	ps_co_smtp_aplicar( $m );
+	try {
+		$ok = $m->smtpConnect();
+		$m->smtpClose();
+		delete_transient( 'ps_correo_con' );
+		return (bool) $ok;
+	} catch ( \Exception $e ) {
+		set_transient( 'ps_correo_con', mb_substr( $m->ErrorInfo ? $m->ErrorInfo : $e->getMessage(), 0, 200 ), 300 );
+		return false;
+	}
+}
+
 /** Revisa SPF, DKIM y DMARC del dominio del buzón (se guarda 12 horas). */
 function ps_co_dns( $force = false ) {
 	$c = get_transient( 'ps_correo_dns' );
@@ -168,6 +275,12 @@ function ps_co_page() {
 			<div class="notice notice-success"><p>Correo de prueba enviado. Revisa si llegó a Recibidos o a Spam.</p></div>
 		<?php elseif ( 'error' === $r ) : ?>
 			<div class="notice notice-error"><p>El servidor no pudo enviar el correo. Revisa el historial abajo.</p></div>
+		<?php elseif ( 'smtp' === $r ) : ?>
+			<div class="notice notice-success"><p>Servidor de envío guardado.</p></div>
+		<?php elseif ( 'conok' === $r ) : ?>
+			<div class="notice notice-success"><p>Conexión correcta: el sitio entró al servidor de correo con el buzón. Ahora envía un correo de prueba.</p></div>
+		<?php elseif ( 'conmal' === $r ) : ?>
+			<div class="notice notice-error"><p>No se pudo entrar al servidor de correo: <?php echo esc_html( (string) get_transient( 'ps_correo_con' ) ); ?></p></div>
 		<?php elseif ( 'mal' === $r ) : ?>
 			<div class="notice notice-warning"><p>Escribe un correo válido para la prueba.</p></div>
 		<?php endif; ?>
@@ -191,6 +304,22 @@ function ps_co_page() {
 					<button class="button button-small">Revisar de nuevo</button>
 					<span class="ps-co-m">Revisado <?php echo esc_html( human_time_diff( $d['at'] ) ); ?> atrás.</span>
 				</form>
+			</div>
+			<div class="ps-co-c">
+				<h2><span class="dashicons dashicons-admin-network"></span> Servidor de envío</h2>
+				<?php $sm = ps_co_smtp(); ?>
+				<?php echo $ok( ps_co_smtp_listo(), ps_co_smtp_listo() ? 'Activo: el sitio envía por ' . $sm['host'] : 'Sin configurar: el sitio no puede enviar correos' ); // phpcs:ignore ?>
+				<form method="post" action="<?php echo esc_url( admin_url( 'admin-post.php' ) ); ?>" autocomplete="off">
+					<input type="hidden" name="action" value="ps_correo_smtp"><?php wp_nonce_field( 'ps_correo_smtp' ); ?>
+					<p><label>Servidor<br><input type="text" name="host" value="<?php echo esc_attr( $sm['host'] ); ?>" style="width:100%"></label></p>
+					<p><label>Puerto <input type="number" name="port" value="<?php echo esc_attr( $sm['port'] ); ?>" style="width:80px"></label>
+					<select name="sec"><option value="ssl" <?php selected( $sm['sec'], 'ssl' ); ?>>SSL</option><option value="tls" <?php selected( $sm['sec'], 'tls' ); ?>>TLS</option><option value="none" <?php selected( $sm['sec'], 'none' ); ?>>Sin cifrar</option></select></p>
+					<p><label>Usuario<br><input type="text" name="user" value="<?php echo esc_attr( $sm['user'] ); ?>" style="width:100%"></label></p>
+					<p><label>Contraseña del buzón<br><input type="password" name="pass" value="" autocomplete="new-password" style="width:100%" placeholder="<?php echo $sm['pass'] ? 'Guardada (escribe solo para cambiarla)' : 'Escríbela tú'; ?>"></label></p>
+					<p><label><input type="checkbox" name="on" value="1" <?php checked( $sm['on'], '1' ); ?>> Enviar por este servidor</label></p>
+					<p><button class="button button-primary" name="probar" value="1">Guardar y probar conexión</button></p>
+				</form>
+				<p class="ps-co-m">La contraseña se guarda cifrada y no se vuelve a mostrar.</p>
 			</div>
 			<div class="ps-co-c">
 				<h2><span class="dashicons dashicons-email"></span> Correo de prueba</h2>

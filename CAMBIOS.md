@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.31.1
+- Correo: tarjeta «Servidor de envío» (SMTP) para que el sitio envíe a través del servidor de correo de Neolo con el buzón contacto@prevsoul.cl. La contraseña la escribe el usuario y se guarda cifrada. Botón «Guardar y probar conexión».
+
 ## 2.31.0
 - Nueva sección Prevsoul → Correo: botón para abrir la bandeja de contacto@prevsoul.cl, estado del envío (remitente, SPF, DKIM y DMARC), envío de un correo de prueba e historial de los correos que envía el sitio (90 días, destinos enmascarados).
 - Los correos de WordPress (contraseñas y avisos) salen desde el buzón de Prevsoul en vez de wordpress@.

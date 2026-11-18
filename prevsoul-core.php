@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.31.1
+ * Version:           2.32.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.31.1' );
+define( 'PS_VERSION', '2.32.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -43,6 +43,7 @@ require_once __DIR__ . '/includes/pendientes.php';
 require_once __DIR__ . '/includes/datos.php';
 require_once __DIR__ . '/includes/finanzas.php';
 require_once __DIR__ . '/includes/correo.php';
+require_once __DIR__ . '/includes/agenda.php';
 
 /* 1.8: nombres cortos en el menú principal (una sola vez; después se editan en Apariencia → Menús). */
 add_action(
@@ -690,8 +691,12 @@ function ps_fmt_date( $value ) {
 	if ( ! $value ) {
 		return 'fecha por confirmar';
 	}
-	$ts = strtotime( $value );
-	return $ts ? wp_date( 'l j \d\e F, H:i', $ts, wp_timezone() ) : $value;
+	try {
+		$d = new DateTimeImmutable( (string) $value, wp_timezone() );
+	} catch ( Exception $e ) {
+		return $value;
+	}
+	return wp_date( 'l j \d\e F, H:i', $d->getTimestamp(), wp_timezone() );
 }
 
 /** [ps_sala_espera] Solicitud de precita (orientación, no reemplaza la consulta). */

@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.32.0
+- Agenda Prevsoul (etapa 1): cada clínica u odontólogo define sus cupos para pacientes Prevsoul (días, dos bloques por día, duración, anticipación, días bloqueados) en su panel, sección «Mi agenda Prevsoul».
+- Después de pagar, el paciente ve «Elegir mi hora» en la página de gracias, en Mi cuenta y en el correo; elige día y hora en /agendar/ y queda confirmada al instante (orden «Agendada»).
+- Confirmación al paciente con archivo de calendario (.ics) y aviso al prestador.
+- Arreglo: las fechas de citas se muestran en la hora de Chile.
+
 ## 2.31.1
 - Correo: tarjeta «Servidor de envío» (SMTP) para que el sitio envíe a través del servidor de correo de Neolo con el buzón contacto@prevsoul.cl. La contraseña la escribe el usuario y se guarda cifrada. Botón «Guardar y probar conexión».
 

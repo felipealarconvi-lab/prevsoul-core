@@ -388,7 +388,8 @@ function ps_pasos_html( $order, $email = false ) {
 	$box = $email ? 'border:1px solid #d9e2f1;border-radius:10px;padding:16px;margin:0 0 14px' : '';
 	$btn = $email ? 'display:inline-block;background:#1D5FD1;color:#fff;padding:9px 14px;border-radius:8px;text-decoration:none;font-weight:700;margin:4px 6px 0 0' : '';
 	$out = $email ? '<h2 style="color:#0B2347">Pasos a seguir para tu tratamiento</h2>' : '<section class="ps-pasos"><h2>Pasos a seguir para tu tratamiento</h2>';
-	$out .= '<ol' . ( $email ? ' style="padding-left:20px;color:#0B2347"' : ' class="ps-pasos-list"' ) . '><li>Contacta a quien realiza tu tratamiento con los datos de abajo.</li><li>Agenda tu hora indicando tu <strong>número de pedido #' . esc_html( $num ) . '</strong>.</li><li>Asiste a tu atención. Después te pediremos que nos cuentes cómo te fue.</li></ol>';
+	$en_linea = function_exists( 'ps_ag_activa' ) && array_filter( array_keys( $groups ), 'ps_ag_activa' );
+	$out .= '<ol' . ( $email ? ' style="padding-left:20px;color:#0B2347"' : ' class="ps-pasos-list"' ) . '>' . ( $en_linea ? '<li>Elige tu hora con el botón «Elegir mi hora»: queda confirmada al instante.</li><li>Si prefieres, contacta a quien realiza tu tratamiento e indica tu <strong>número de pedido #' . esc_html( $num ) . '</strong>.</li>' : '<li>Contacta a quien realiza tu tratamiento con los datos de abajo.</li><li>Agenda tu hora indicando tu <strong>número de pedido #' . esc_html( $num ) . '</strong>.</li>' ) . '<li>Asiste a tu atención. Después te pediremos que nos cuentes cómo te fue.</li></ol>';
 	foreach ( $groups as $prov => $names ) {
 		$tel    = get_post_meta( $prov, '_ps_telefono', true );
 		$wa     = ps_wa_link( get_post_meta( $prov, '_ps_whatsapp', true ), 'Hola, compré en Prevsoul (pedido #' . $num . '): ' . implode( ', ', $names ) . '. Quiero agendar mi hora.' );
@@ -396,7 +397,10 @@ function ps_pasos_html( $order, $email = false ) {
 		$dir    = get_post_meta( $prov, '_ps_direccion', true );
 		$mapa   = get_post_meta( $prov, '_ps_mapa', true );
 		$agenda = get_post_meta( $prov, '_ps_agenda', true );
-		if ( ! $agenda ) {
+		$ag_btn = function_exists( 'ps_ag_boton' ) ? ps_ag_boton( $order, $prov, $email ) : '';
+		if ( $ag_btn ) {
+			$agenda = 'Elige el día y la hora que te acomoden en la agenda de ' . get_the_title( $prov ) . '.';
+		} elseif ( ! $agenda ) {
 			$agenda = 'Contáctate con ' . get_the_title( $prov ) . ' por cualquiera de estos medios e indica tu número de pedido #' . $num . ' para agendar tu hora.';
 		}
 		$out .= $email ? '<div style="' . $box . '">' : '<div class="ps-card ps-paso">';
@@ -407,7 +411,8 @@ function ps_pasos_html( $order, $email = false ) {
 			$out .= '<p' . ( $email ? ' style="margin:6px 0"' : ' class="ps-small"' ) . '>📍 ' . esc_html( $dir ) . '</p>';
 		}
 		$out .= $email ? '<p>' : '<div class="ps-actions">';
-		$cls  = $email ? ' style="' . $btn . '"' : ' class="ps-btn"';
+		$out .= $ag_btn;
+		$cls  = $email ? ' style="' . $btn . '"' : ' class="ps-btn' . ( $ag_btn ? ' ps-btn-ghost' : '' ) . '"';
 		$cls2 = $email ? ' style="' . $btn . '"' : ' class="ps-btn ps-btn-ghost"';
 		if ( $wa ) {
 			$out .= '<a' . $cls . ' href="' . esc_url( $wa ) . '">Escribir por WhatsApp</a>';
@@ -597,6 +602,9 @@ add_shortcode(
 		}
 		if ( ! $shown ) {
 			$out .= '<div class="ps-card"><p class="ps-muted">No hay órdenes en esta sección.</p></div>';
+		}
+		if ( function_exists( 'ps_ag_form' ) ) {
+			$out .= ps_ag_form( $prov );
 		}
 		return $out . '</div>';
 	}

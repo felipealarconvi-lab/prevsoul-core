@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.30.1
+- Antes de publicar: cuatro pendientes de Meta Ads (presupuesto mensual, comunas con red, portafolio comercial y cuenta publicitaria, y forma de instalar el píxel).
+
 ## 2.30.0
 - Marketing: campo para el archivo de verificación de Google Search Console (responde aunque el sitio esté en construcción).
 - Marketing: tarjeta «Velocidad del sitio» con enlaces a PageSpeed Insights usando una vista previa privada no indexable.

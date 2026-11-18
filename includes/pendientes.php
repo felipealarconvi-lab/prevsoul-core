@@ -18,7 +18,10 @@ function ps_pend_base() {
 		'iva'       => 'Definir el IVA en los precios.',
 		'precios'   => 'Cerrar la estructura de precios y la comisión a clínicas y odontólogos.',
 		'resenas'   => 'Juntar reseñas reales (con autorización de testimonio) para la prueba social.',
-		'meta'      => 'Definir el presupuesto de campañas en Meta.',
+		'meta'      => 'Meta Ads: definir el presupuesto mensual de campañas.',
+		'meta_zona' => 'Meta Ads: definir las comunas donde habrá red (para segmentar campañas).',
+		'meta_cta'  => 'Meta Ads: crear el portafolio comercial y la cuenta publicitaria.',
+		'meta_px'   => 'Meta Ads: elegir GTM o la extensión de Meta para WooCommerce para el píxel.',
 		'agentes'   => 'Crear los agentes pendientes: gestor de red, analista de precios, media buyer, editor de blog/SEO, analista de datos y cumplimiento.',
 		'manual'    => 'Actualizar el manual de usuario con Vista responsive, Prueba social y esta lista.',
 	);

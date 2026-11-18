@@ -14,6 +14,7 @@ const PS_ORDEN_STATES = array(
 	'recibida'  => 'Por agendar',
 	'agendada'  => 'Agendada',
 	'realizada' => 'Realizada',
+	'no_asistio' => 'No asistió',
 	'cancelada' => 'Cancelada',
 );
 
@@ -573,7 +574,7 @@ add_shortcode(
 		}
 		$out .= '<div class="ps-row ps-panel-head">' . ps_prestador_img( $prov, 64 ) . '<div><span class="ps-prest-k">' . esc_html( ps_prestador_tipo( $prov ) ) . '</span><h2 class="ps-card-title">' . esc_html( get_the_title( $prov ) ) . '</h2>' . ( current_user_can( 'manage_options' ) && ! ps_user_prestador() ? '<span class="ps-chip ps-acc">Vista de administrador</span>' : '<a class="ps-small" href="' . esc_url( wp_logout_url( ps_panel_url() ) ) . '">Cerrar sesión</a>' ) . '</div></div>';
 		$out .= '<div class="ps-tiles"><div class="ps-tile"><span>Por agendar</span><strong>' . (int) $count['recibida'] . '</strong></div><div class="ps-tile"><span>Agendadas</span><strong>' . (int) $count['agendada'] . '</strong></div><div class="ps-tile"><span>Realizadas</span><strong>' . (int) $count['realizada'] . '</strong></div><div class="ps-tile ps-tile-dark"><span>Por cobrar a Prevsoul</span><strong>' . esc_html( ps_clp( $cobrar ) ) . '</strong></div></div>';
-		$tabs = array( 'activas' => 'Pendientes', 'realizada' => 'Realizadas', 'cancelada' => 'Canceladas', 'todas' => 'Todas' );
+		$tabs = array( 'activas' => 'Pendientes', 'realizada' => 'Realizadas', 'no_asistio' => 'No asistió', 'cancelada' => 'Canceladas', 'todas' => 'Todas' );
 		$base = remove_query_arg( array( 'estado', 'ps_ok' ) );
 		$out .= '<nav class="ps-catnav">';
 		foreach ( $tabs as $k => $label ) {
@@ -590,7 +591,7 @@ add_shortcode(
 			$m    = function ( $k ) use ( $o ) {
 				return get_post_meta( $o->ID, '_ps_' . $k, true );
 			};
-			$chip = array( 'recibida' => 'ps-warn', 'agendada' => 'ps-acc', 'realizada' => 'ps-good', 'cancelada' => '' );
+			$chip = array( 'recibida' => 'ps-warn', 'agendada' => 'ps-acc', 'realizada' => 'ps-good', 'no_asistio' => 'ps-warn', 'cancelada' => '' );
 			$out .= '<article class="ps-card ps-orden"><div class="ps-orden-top"><div><h3 class="ps-card-title">' . esc_html( $m( 'producto' ) ) . ( (int) $m( 'cantidad' ) > 1 ? ' × ' . (int) $m( 'cantidad' ) : '' ) . '</h3><div class="ps-muted ps-small">Pedido #' . esc_html( $m( 'numero' ) ) . ' · vendido el ' . esc_html( get_the_date( 'j \d\e F Y', $o ) ) . '</div></div><span class="ps-chip ' . esc_attr( $chip[ $e ] ?? '' ) . '">' . esc_html( PS_ORDEN_STATES[ $e ] ?? $e ) . '</span></div>';
 			$out .= '<div class="ps-orden-grid"><div><span class="ps-prest-k">Paciente</span><strong>' . esc_html( $m( 'paciente' ) ) . '</strong><div class="ps-small">' . esc_html( $m( 'telefono' ) ) . ' · ' . esc_html( $m( 'email' ) ) . '</div></div><div><span class="ps-prest-k">Te corresponde</span><strong>' . esc_html( ps_clp( $m( 'pago' ) ) ) . '</strong>' . ( $m( 'pagada' ) ? '<div class="ps-small">Pagado el ' . esc_html( $m( 'pagada' ) ) . '</div>' : '' ) . '</div>' . ( $m( 'cita' ) ? '<div><span class="ps-prest-k">Cita</span><strong>' . esc_html( ps_fmt_date( $m( 'cita' ) ) ) . '</strong></div>' : '' ) . '</div>';
 			if ( in_array( $e, array( 'recibida', 'agendada' ), true ) ) {
@@ -599,12 +600,15 @@ add_shortcode(
 					$out .= '<p class="ps-small" style="flex-basis:100%">El paciente puede elegir su hora en línea. <a href="' . esc_url( ps_wa_link( $m( 'telefono' ), 'Hola ' . $m( 'paciente' ) . ', te escribimos por tu compra Prevsoul #' . $m( 'numero' ) . '. Elige tu hora aquí: ' . ps_ag_url( $o->ID ) ) ) . '" target="_blank" rel="noopener">Enviarle el enlace por WhatsApp</a></p>';
 				}
 				$out .= '<label class="ps-small">Fecha y hora de la cita<input type="datetime-local" name="cita" value="' . esc_attr( $m( 'cita' ) ) . '"></label>';
-				$out .= '<button class="ps-btn ps-btn-ghost" type="submit" name="estado" value="agendada">' . ( 'agendada' === $e ? 'Cambiar fecha' : 'Marcar agendada' ) . '</button><button class="ps-btn" type="submit" name="estado" value="realizada">Marcar realizada</button></form>';
+				$out .= '<button class="ps-btn ps-btn-ghost" type="submit" name="estado" value="agendada">' . ( 'agendada' === $e ? 'Cambiar fecha' : 'Marcar agendada' ) . '</button><button class="ps-btn" type="submit" name="estado" value="realizada">Marcar realizada</button>' . ( 'agendada' === $e ? '<button class="ps-btn ps-btn-ghost" type="submit" name="estado" value="no_asistio" onclick="return confirm(\'¿Marcar que el paciente no asistió?\')">No asistió</button>' : '' ) . '</form>';
 			}
 			$out .= '</article>';
 		}
 		if ( ! $shown ) {
 			$out .= '<div class="ps-card"><p class="ps-muted">No hay órdenes en esta sección.</p></div>';
+		}
+		if ( function_exists( 'ps_ag_semana' ) ) {
+			$out .= ps_ag_semana( $prov );
 		}
 		if ( function_exists( 'ps_ag_form' ) ) {
 			$out .= ps_ag_form( $prov );
@@ -628,6 +632,9 @@ function ps_handle_orden_estado() {
 	$cita   = isset( $_POST['cita'] ) ? sanitize_text_field( wp_unslash( $_POST['cita'] ) ) : '';
 	if ( $cita ) {
 		update_post_meta( $oid, '_ps_cita', $cita );
+	}
+	if ( 'no_asistio' === $estado && function_exists( 'ps_ag_no_asistio' ) && 'agendada' === get_post_meta( $oid, '_ps_estado', true ) ) {
+		ps_ag_no_asistio( $oid, wp_get_current_user()->display_name . ( $owner ? ' (' . get_the_title( $prov ) . ')' : ' (Prevsoul)' ) );
 	}
 	if ( in_array( $estado, array( 'agendada', 'realizada' ), true ) ) {
 		$before = get_post_meta( $oid, '_ps_estado', true );

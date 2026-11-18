@@ -151,11 +151,22 @@ function ps_ag_render() {
 	$css  = '<style>.ps-ag{max-width:620px;margin:0 auto}.ps-ag-d{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}.ps-ag-d a,.ps-ag-h button{border:1px solid #c9d6ea;border-radius:10px;padding:8px 12px;background:#fff;color:#0B2545;text-decoration:none;font:inherit;cursor:pointer;line-height:1.3;text-align:center}.ps-ag-d a.on,.ps-ag-h button:focus{border:2px solid #1D5FD1;color:#1D5FD1}.ps-ag-h{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin:12px 0}.ps-ag-ok{background:#E6F7F2;color:#167A64;border-radius:10px;padding:12px 14px}.ps-ag small{color:#4A5B73}</style>';
 	$head = '<p class="ps-small" style="color:#167A64;margin:0">Pedido #' . esc_html( $m( 'numero' ) ) . '</p><h2 style="margin:4px 0">' . ( 'agendada' === $st ? 'Tu hora está agendada' : 'Elige tu hora' ) . '</h2><p class="ps-muted">' . esc_html( $m( 'producto' ) ) . ' · ' . esc_html( get_the_title( $prov ) ) . ( get_post_meta( $prov, '_ps_direccion', true ) ? ' · ' . esc_html( get_post_meta( $prov, '_ps_direccion', true ) ) : '' ) . '</p>';
 	$out  = $css . '<div class="ps-ag ps-card">' . $head;
+	$cal = '<a class="ps-btn ps-btn-ghost" href="' . esc_url( add_query_arg( 'ics', 1, ps_ag_url( $oid ) ) ) . '">Agregar a mi calendario</a>';
 	if ( isset( $_GET['ok'] ) && 'agendada' === $st ) { // phpcs:ignore WordPress.Security.NonceVerification
-		return $out . '<div class="ps-ag-ok"><strong>¡Listo! Te esperamos el ' . esc_html( ps_fmt_date( $m( 'cita' ) ) ) . '.</strong><br>Te enviamos la confirmación por correo.</div><p><a class="ps-btn ps-btn-ghost" href="' . esc_url( add_query_arg( 'ics', 1, ps_ag_url( $oid ) ) ) . '">Agregar a mi calendario</a></p></div>';
+		return $out . '<div class="ps-ag-ok"><strong>¡Listo! Te esperamos el ' . esc_html( ps_fmt_date( $m( 'cita' ) ) ) . '.</strong><br>Te enviamos la confirmación por correo.</div><p>' . $cal . '</p></div>';
 	}
 	if ( 'agendada' === $st ) {
-		return $out . '<div class="ps-ag-ok">Tu hora: <strong>' . esc_html( ps_fmt_date( $m( 'cita' ) ) ) . '</strong></div><p><a class="ps-btn ps-btn-ghost" href="' . esc_url( add_query_arg( 'ics', 1, ps_ag_url( $oid ) ) ) . '">Agregar a mi calendario</a></p><small>Si necesitas cambiarla, contacta a ' . esc_html( get_the_title( $prov ) ) . ' con tu número de pedido.</small></div>';
+		$puede = ps_ag_puede_cambiar( $oid );
+		if ( $puede && isset( $_GET['cambiar'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			return $out . '<p>Tu hora actual: <strong>' . esc_html( ps_fmt_date( $m( 'cita' ) ) ) . '</strong>. Elige la nueva; la actual se libera al confirmar.</p>' . ps_ag_picker( $oid, $k, $prov, 'cambiar' ) . '</div>';
+		}
+		$out .= '<div class="ps-ag-ok">Tu hora: <strong>' . esc_html( ps_fmt_date( $m( 'cita' ) ) ) . '</strong></div><p>' . $cal . '</p>';
+		if ( $puede ) {
+			$out .= '<p><a class="ps-btn ps-btn-ghost" href="' . esc_url( add_query_arg( 'cambiar', 1, ps_ag_url( $oid ) ) ) . '">Cambiar mi hora</a></p><form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" onsubmit="return confirm(\'¿Cancelar tu hora? Tu atención sigue pagada y podrás elegir otra hora después.\')"><input type="hidden" name="action" value="ps_ag_cancelar"><input type="hidden" name="o" value="' . (int) $oid . '"><input type="hidden" name="k" value="' . esc_attr( $k ) . '"><button class="ps-btn ps-btn-ghost" type="submit">Cancelar mi hora</button></form><small>Puedes cambiar o cancelar tu hora hasta 24 horas antes.</small>';
+		} else {
+			$out .= '<small>Faltan menos de 24 horas para tu cita. Si necesitas cambiarla, contacta a ' . esc_html( get_the_title( $prov ) ) . ' con tu número de pedido.</small>';
+		}
+		return $out . '</div>';
 	}
 	if ( 'recibida' !== $st ) {
 		return $out . '<p>Esta atención ya no está pendiente de agendar (' . esc_html( PS_ORDEN_STATES[ $st ] ?? $st ) . ').</p></div>';
@@ -163,26 +174,42 @@ function ps_ag_render() {
 	if ( ! ps_ag_activa( $prov ) ) {
 		return $out . '<p>' . esc_html( get_the_title( $prov ) ) . ' agenda directamente contigo. Usa los datos de contacto que te enviamos por correo e indica tu número de pedido.</p></div>';
 	}
-	$dias = ps_ag_dias_libres( $prov, 10 );
+	if ( (int) $m( 'inasist' ) > 0 ) {
+		$out .= '<p class="ps-small" style="color:#7A5300">No alcanzaste a llegar a tu hora anterior. Puedes reagendar sin costo esta vez.</p>';
+	}
+	return $out . ps_ag_picker( $oid, $k, $prov, 'nueva' ) . '</div>';
+}
+
+/** Selector de día y hora. */
+function ps_ag_picker( $oid, $k, $prov, $modo ) {
+	$excl = 'cambiar' === $modo ? $oid : 0;
+	$dias = ps_ag_dias_libres( $prov, 10, $excl );
 	if ( ! $dias ) {
-		return $out . '<p>Por ahora no hay horas disponibles en línea. Te avisaremos y también puedes contactar a ' . esc_html( get_the_title( $prov ) ) . ' directamente.</p></div>';
+		return '<p>Por ahora no hay horas disponibles en línea. Puedes contactar a ' . esc_html( get_the_title( $prov ) ) . ' directamente.</p>';
 	}
-	$sel = isset( $_GET['d'] ) ? sanitize_text_field( wp_unslash( $_GET['d'] ) ) : $dias[0]; // phpcs:ignore WordPress.Security.NonceVerification
-	$sel = in_array( $sel, $dias, true ) ? $sel : $dias[0];
-	if ( isset( $_GET['tomada'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
-		$out .= '<p style="color:#B42318">Esa hora se acaba de ocupar. Elige otra, por favor.</p>';
-	}
+	$sel  = isset( $_GET['d'] ) ? sanitize_text_field( wp_unslash( $_GET['d'] ) ) : $dias[0]; // phpcs:ignore WordPress.Security.NonceVerification
+	$sel  = in_array( $sel, $dias, true ) ? $sel : $dias[0];
+	$base = 'cambiar' === $modo ? add_query_arg( 'cambiar', 1, ps_ag_url( $oid ) ) : ps_ag_url( $oid );
+	$out  = isset( $_GET['tomada'] ) ? '<p style="color:#B42318">Esa hora se acaba de ocupar. Elige otra, por favor.</p>' : ''; // phpcs:ignore WordPress.Security.NonceVerification
 	$out .= '<div class="ps-ag-d">';
 	foreach ( $dias as $d ) {
-		$out .= '<a class="' . ( $d === $sel ? 'on' : '' ) . '" href="' . esc_url( add_query_arg( 'd', $d, ps_ag_url( $oid ) ) ) . '">' . esc_html( ps_ag_fecha( $d, 'D' ) ) . '<br><strong>' . esc_html( ps_ag_fecha( $d, 'j M' ) ) . '</strong></a>';
+		$out .= '<a class="' . ( $d === $sel ? 'on' : '' ) . '" href="' . esc_url( add_query_arg( 'd', $d, $base ) ) . '">' . esc_html( ps_ag_fecha( $d, 'D' ) ) . '<br><strong>' . esc_html( ps_ag_fecha( $d, 'j M' ) ) . '</strong></a>';
 	}
 	$out .= '</div><p style="margin:8px 0 0"><strong>' . esc_html( ucfirst( ps_ag_fecha( $sel ) ) ) . '</strong> · elige una hora</p>';
-	$out .= '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="ps_agendar"><input type="hidden" name="o" value="' . (int) $oid . '"><input type="hidden" name="k" value="' . esc_attr( $k ) . '"><input type="hidden" name="d" value="' . esc_attr( $sel ) . '"><div class="ps-ag-h">';
-	foreach ( ps_ag_cupos( $prov, $sel ) as $h ) {
+	$out .= '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="ps_agendar"><input type="hidden" name="modo" value="' . esc_attr( $modo ) . '"><input type="hidden" name="o" value="' . (int) $oid . '"><input type="hidden" name="k" value="' . esc_attr( $k ) . '"><input type="hidden" name="d" value="' . esc_attr( $sel ) . '"><div class="ps-ag-h">';
+	foreach ( ps_ag_cupos( $prov, $sel, $excl ) as $h ) {
 		$out .= '<button type="submit" name="h" value="' . esc_attr( $h ) . '" onclick="return confirm(\'¿Confirmas tu hora el ' . esc_js( ps_ag_fecha( $sel ) ) . ' a las ' . esc_js( $h ) . '?\')">' . esc_html( $h ) . '</button>';
 	}
-	$out .= '</div></form><small>Al elegir, tu hora queda confirmada y te llega un correo con la dirección y un archivo para tu calendario.</small></div>';
-	return $out;
+	return $out . '</div></form><small>Al elegir, tu hora queda confirmada y te llega un correo con la dirección y un archivo para tu calendario.</small>';
+}
+
+/** ¿Se puede cambiar o cancelar en línea? (agendada y faltan más de 24 h). */
+function ps_ag_puede_cambiar( $oid ) {
+	if ( 'agendada' !== get_post_meta( $oid, '_ps_estado', true ) ) {
+		return false;
+	}
+	$c = DateTimeImmutable::createFromFormat( 'Y-m-d\TH:i', (string) get_post_meta( $oid, '_ps_cita', true ), wp_timezone() );
+	return $c && $c->getTimestamp() - time() > DAY_IN_SECONDS;
 }
 
 /* ---------- Reservar ---------- */
@@ -195,16 +222,20 @@ function ps_ag_reservar() {
 	if ( ! ps_ag_valida( $oid, $k ) ) {
 		wp_die( 'Enlace no válido.' );
 	}
-	$prov = (int) get_post_meta( $oid, '_ps_prestador', true );
-	$back = ps_ag_url( $oid );
-	if ( 'recibida' !== get_post_meta( $oid, '_ps_estado', true ) || ! in_array( $h, ps_ag_cupos( $prov, $d, $oid ), true ) ) {
+	$prov   = (int) get_post_meta( $oid, '_ps_prestador', true );
+	$cambia = isset( $_POST['modo'] ) && 'cambiar' === $_POST['modo'];
+	$back   = $cambia ? add_query_arg( 'cambiar', 1, ps_ag_url( $oid ) ) : ps_ag_url( $oid );
+	$ok_st  = $cambia ? ps_ag_puede_cambiar( $oid ) : 'recibida' === get_post_meta( $oid, '_ps_estado', true );
+	if ( ! $ok_st || ! in_array( $h, ps_ag_cupos( $prov, $d, $oid ), true ) ) {
 		wp_safe_redirect( add_query_arg( array( 'd' => $d, 'tomada' => 1 ), $back ) );
 		exit;
 	}
+	$antes = (string) get_post_meta( $oid, '_ps_cita', true );
 	update_post_meta( $oid, '_ps_cita', $d . 'T' . $h );
 	update_post_meta( $oid, '_ps_cita_fuente', 'agenda' );
-	ps_orden_set_estado( $oid, 'agendada', 'Paciente (Agenda Prevsoul)' );
-	ps_ag_avisar( $oid );
+	ps_orden_set_estado( $oid, 'agendada', $cambia ? 'Paciente cambió su hora (antes: ' . ps_fmt_date( $antes ) . ')' : 'Paciente (Agenda Prevsoul)' );
+	ps_ag_avisar( $oid, $cambia ? 'cambio' : 'nueva', $antes );
+	$back = ps_ag_url( $oid );
 	wp_safe_redirect( add_query_arg( 'ok', 1, $back ) );
 	exit;
 }
@@ -247,7 +278,7 @@ add_action(
 	0
 );
 
-function ps_ag_avisar( $oid ) {
+function ps_ag_avisar( $oid, $tipo = 'nueva', $antes = '' ) {
 	$prov  = (int) get_post_meta( $oid, '_ps_prestador', true );
 	$cita  = ps_fmt_date( get_post_meta( $oid, '_ps_cita', true ) );
 	$num   = get_post_meta( $oid, '_ps_numero', true );
@@ -258,23 +289,23 @@ function ps_ag_avisar( $oid ) {
 	$h     = array( 'Content-Type: text/html; charset=UTF-8' );
 	$to    = sanitize_email( (string) get_post_meta( $oid, '_ps_email', true ) );
 	if ( $to ) {
-		$inner  = '<p>Hola ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ', tu hora quedó agendada.</p>';
+		$inner  = '<p>Hola ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ', ' . ( 'cambio' === $tipo ? 'cambiamos tu hora. Esta es la nueva:' : 'tu hora quedó agendada.' ) . '</p>';
 		$inner .= '<div style="background:#E6F7F2;border-radius:10px;padding:14px 16px;margin:12px 0"><strong style="font-size:17px">' . esc_html( ucfirst( $cita ) ) . '</strong><br>' . esc_html( $prod ) . '<br>' . esc_html( get_the_title( $prov ) ) . ( $dir ? '<br>' . esc_html( $dir ) : '' ) . '</div>';
-		$inner .= ( $mapa ? '<p><a href="' . esc_url( $mapa ) . '" style="color:#1D5FD1">Ver cómo llegar</a></p>' : '' ) . '<p>Llega 10 minutos antes e indica tu pedido Prevsoul #' . esc_html( $num ) . '. Te adjuntamos un archivo para agregar la hora a tu calendario.</p><p style="color:#4A5B73;font-size:13px">Si necesitas cambiarla, avísale a ' . esc_html( get_the_title( $prov ) ) . ' con al menos 24 horas de anticipación.</p>';
+		$inner .= ( $mapa ? '<p><a href="' . esc_url( $mapa ) . '" style="color:#1D5FD1">Ver cómo llegar</a></p>' : '' ) . '<p>Llega 10 minutos antes e indica tu pedido Prevsoul #' . esc_html( $num ) . '. Te adjuntamos un archivo para agregar la hora a tu calendario.</p><p><a href="' . esc_url( ps_ag_url( $oid ) ) . '" style="color:#1D5FD1">Ver, cambiar o cancelar mi hora</a> (hasta 24 horas antes).</p>';
 		$file = '';
 		if ( $ics ) {
 			$file = trailingslashit( get_temp_dir() ) . 'cita-prevsoul-' . (int) $oid . '.ics';
 			file_put_contents( $file, $ics ); // phpcs:ignore WordPress.WP.AlternativeFunctions
 		}
-		wp_mail( $to, 'Tu hora en Prevsoul: ' . $cita, ps_mail_wrap( 'Hora confirmada', $inner ), $h, $file ? array( $file ) : array() );
+		wp_mail( $to, ( 'cambio' === $tipo ? 'Cambiamos tu hora en Prevsoul: ' : 'Tu hora en Prevsoul: ' ) . $cita, ps_mail_wrap( 'Hora confirmada', $inner ), $h, $file ? array( $file ) : array() );
 		if ( $file && file_exists( $file ) ) {
 			wp_delete_file( $file );
 		}
 	}
 	$pto = sanitize_email( (string) get_post_meta( $prov, '_ps_email', true ) );
 	if ( $pto ) {
-		$inner = '<p>Un paciente Prevsoul agendó en tus cupos:</p><p><strong>' . esc_html( ucfirst( $cita ) ) . '</strong><br>' . esc_html( $prod ) . '<br>Paciente: ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ' · ' . esc_html( get_post_meta( $oid, '_ps_telefono', true ) ) . '<br>Pedido #' . esc_html( $num ) . '</p><p>Si también usas otra agenda (por ejemplo Dentalink), anota esta hora ahí.</p><p><a href="' . esc_url( ps_panel_url() ) . '" style="display:inline-block;background:#1D5FD1;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700">Abrir mi panel</a></p>';
-		wp_mail( $pto, 'Prevsoul: nueva hora agendada · ' . $cita, ps_mail_wrap( 'Nueva hora agendada', $inner ), $h );
+		$inner = '<p>' . ( 'cambio' === $tipo ? 'Un paciente Prevsoul cambió su hora (antes: ' . esc_html( ps_fmt_date( $antes ) ) . '). La anterior quedó libre. Nueva hora:' : 'Un paciente Prevsoul agendó en tus cupos:' ) . '</p><p><strong>' . esc_html( ucfirst( $cita ) ) . '</strong><br>' . esc_html( $prod ) . '<br>Paciente: ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ' · ' . esc_html( get_post_meta( $oid, '_ps_telefono', true ) ) . '<br>Pedido #' . esc_html( $num ) . '</p><p>Si también usas otra agenda (por ejemplo Dentalink), anota esta hora ahí.</p><p><a href="' . esc_url( ps_panel_url() ) . '" style="display:inline-block;background:#1D5FD1;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;font-weight:700">Abrir mi panel</a></p>';
+		wp_mail( $pto, ( 'cambio' === $tipo ? 'Prevsoul: hora cambiada · ' : 'Prevsoul: nueva hora agendada · ' ) . $cita, ps_mail_wrap( 'Nueva hora agendada', $inner ), $h );
 	}
 }
 
@@ -409,3 +440,85 @@ add_action(
 		}
 	}
 );
+
+/* ---------- Cancelar la hora (el paciente) ---------- */
+
+function ps_ag_cancelar() {
+	$oid = isset( $_POST['o'] ) ? absint( $_POST['o'] ) : 0;
+	$k   = isset( $_POST['k'] ) ? sanitize_text_field( wp_unslash( $_POST['k'] ) ) : '';
+	if ( ! ps_ag_valida( $oid, $k ) ) {
+		wp_die( 'Enlace no válido.' );
+	}
+	if ( ps_ag_puede_cambiar( $oid ) ) {
+		$antes = (string) get_post_meta( $oid, '_ps_cita', true );
+		update_post_meta( $oid, '_ps_cita', '' );
+		ps_orden_set_estado( $oid, 'recibida', 'Paciente canceló su hora (' . ps_fmt_date( $antes ) . ')' );
+		ps_ag_mail_simple( $oid, 'prestador', 'Prevsoul: un paciente liberó su hora', '<p>El paciente ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ' canceló su hora del ' . esc_html( ps_fmt_date( $antes ) ) . ' (pedido #' . esc_html( get_post_meta( $oid, '_ps_numero', true ) ) . '). El cupo quedó libre. Si también la tenías en otra agenda, bórrala ahí.</p>' );
+		ps_ag_mail_simple( $oid, 'paciente', 'Cancelaste tu hora en Prevsoul', '<p>Cancelamos tu hora del ' . esc_html( ps_fmt_date( $antes ) ) . '. Tu atención sigue pagada: elige otra hora cuando quieras.</p><p><a href="' . esc_url( ps_ag_url( $oid ) ) . '" style="display:inline-block;background:#167A64;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:700">Elegir otra hora</a></p>' );
+	}
+	wp_safe_redirect( ps_ag_url( $oid ) );
+	exit;
+}
+add_action( 'admin_post_ps_ag_cancelar', 'ps_ag_cancelar' );
+add_action( 'admin_post_nopriv_ps_ag_cancelar', 'ps_ag_cancelar' );
+
+function ps_ag_mail_simple( $oid, $para, $asunto, $inner ) {
+	$prov = (int) get_post_meta( $oid, '_ps_prestador', true );
+	$to   = 'prestador' === $para ? get_post_meta( $prov, '_ps_email', true ) : get_post_meta( $oid, '_ps_email', true );
+	$to   = sanitize_email( (string) $to );
+	if ( $to ) {
+		wp_mail( $to, $asunto, ps_mail_wrap( $asunto, $inner ), array( 'Content-Type: text/html; charset=UTF-8' ) );
+	}
+}
+
+/* ---------- Inasistencia: la primera se reagenda gratis, la segunda se pierde ---------- */
+
+function ps_ag_no_asistio( $oid, $who ) {
+	$n     = (int) get_post_meta( $oid, '_ps_inasist', true ) + 1;
+	$antes = (string) get_post_meta( $oid, '_ps_cita', true );
+	update_post_meta( $oid, '_ps_inasist', $n );
+	if ( 1 === $n ) {
+		update_post_meta( $oid, '_ps_cita', '' );
+		ps_orden_set_estado( $oid, 'recibida', $who . ' · no asistió el ' . ps_fmt_date( $antes ) . ' (1.ª vez: reagenda sin costo)' );
+		ps_ag_mail_simple( $oid, 'paciente', 'Te esperamos y no alcanzaste a llegar', '<p>Hola ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ', te esperábamos el ' . esc_html( ps_fmt_date( $antes ) ) . '. Sabemos que a veces pasa: esta vez puedes reagendar sin costo.</p><p><a href="' . esc_url( ps_ag_url( $oid ) ) . '" style="display:inline-block;background:#167A64;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:700">Elegir una nueva hora</a></p><p style="color:#4A5B73;font-size:13px">Si vuelve a pasar, la atención se da por usada. Si no puedes llegar, cámbiala o cancélala hasta 24 horas antes.</p>' );
+	} else {
+		ps_orden_set_estado( $oid, 'no_asistio', $who . ' · no asistió el ' . ps_fmt_date( $antes ) . ' (2.ª vez: atención usada)' );
+		ps_ag_mail_simple( $oid, 'paciente', 'Tu atención se dio por usada', '<p>Hola ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ', no alcanzaste a llegar a tu hora del ' . esc_html( ps_fmt_date( $antes ) ) . ' y era la segunda vez, así que esta atención se da por usada. Si crees que es un error, responde este correo y lo revisamos.</p>' );
+	}
+}
+
+/* ---------- Panel: mi semana ---------- */
+
+function ps_ag_semana( $prov ) {
+	$off  = isset( $_GET['semana'] ) ? (int) $_GET['semana'] : 0; // phpcs:ignore WordPress.Security.NonceVerification
+	$tz   = wp_timezone();
+	$ini  = ( new DateTimeImmutable( 'monday this week', $tz ) )->modify( ( 7 * $off ) . ' days' );
+	$ids  = get_posts( array( 'post_type' => 'ps_orden', 'numberposts' => 300, 'fields' => 'ids', 'meta_query' => array( array( 'key' => '_ps_prestador', 'value' => $prov ), array( 'key' => '_ps_estado', 'value' => array( 'agendada', 'realizada', 'no_asistio' ), 'compare' => 'IN' ) ) ) );
+	$por  = array();
+	foreach ( $ids as $id ) {
+		$c = (string) get_post_meta( $id, '_ps_cita', true );
+		if ( $c ) {
+			$por[ substr( $c, 0, 10 ) ][ substr( $c, 11, 5 ) . '-' . $id ] = $id;
+		}
+	}
+	$base = remove_query_arg( array( 'semana', 'ps_ok' ) );
+	$out  = '<section class="ps-card" id="mi-semana"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 class="ps-card-title" style="margin:0">Mi semana Prevsoul</h3><span><a class="ps-chip" href="' . esc_url( add_query_arg( 'semana', $off - 1, $base ) . '#mi-semana' ) . '">← Anterior</a> <a class="ps-chip' . ( 0 === $off ? ' ps-acc' : '' ) . '" href="' . esc_url( $base . '#mi-semana' ) . '">Esta semana</a> <a class="ps-chip" href="' . esc_url( add_query_arg( 'semana', $off + 1, $base ) . '#mi-semana' ) . '">Siguiente →</a></span></div>';
+	$hay  = false;
+	for ( $i = 0; $i < 7; $i++ ) {
+		$d    = $ini->modify( "+$i days" );
+		$ymd  = $d->format( 'Y-m-d' );
+		$list = $por[ $ymd ] ?? array();
+		ksort( $list );
+		$out .= '<div style="border-top:1px solid #e3e8ef;padding:8px 0"><strong>' . esc_html( ucfirst( wp_date( 'l j \\d\\e F', $d->getTimestamp(), $tz ) ) ) . '</strong>';
+		if ( ! $list ) {
+			$out .= ' <span class="ps-muted ps-small">· sin pacientes Prevsoul</span>';
+		}
+		foreach ( $list as $key => $id ) {
+			$hay  = true;
+			$e    = get_post_meta( $id, '_ps_estado', true );
+			$out .= '<div class="ps-small" style="margin:4px 0 0 12px">' . esc_html( substr( $key, 0, 5 ) ) . ' · ' . esc_html( get_post_meta( $id, '_ps_paciente', true ) ) . ' · ' . esc_html( get_post_meta( $id, '_ps_producto', true ) ) . ' · ' . esc_html( get_post_meta( $id, '_ps_telefono', true ) ) . ( 'agendada' !== $e ? ' · <em>' . esc_html( PS_ORDEN_STATES[ $e ] ?? $e ) . '</em>' : '' ) . '</div>';
+		}
+		$out .= '</div>';
+	}
+	return $out . ( $hay ? '' : '<p class="ps-muted ps-small">No hay horas tomadas esta semana.</p>' ) . '</section>';
+}

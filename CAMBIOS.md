@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.33.0
+- Agenda Prevsoul (etapa 2): el paciente puede cambiar o cancelar su hora en línea hasta 24 horas antes (la atención sigue pagada); avisos por correo al paciente y al prestador.
+- Inasistencia: el prestador marca «No asistió». La primera vez el paciente reagenda sin costo (correo con enlace); la segunda la atención se da por usada (nuevo estado «No asistió»).
+- Panel del prestador: «Mi semana Prevsoul» con los pacientes de cada día y navegación por semanas.
+
 ## 2.32.1
 - Agenda: en cada orden (escritorio) aparece el enlace personal del paciente para agendar, y en el panel del prestador un botón para enviárselo por WhatsApp.
 

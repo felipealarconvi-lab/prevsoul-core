@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.31.0
+- Nueva sección Prevsoul → Correo: botón para abrir la bandeja de contacto@prevsoul.cl, estado del envío (remitente, SPF, DKIM y DMARC), envío de un correo de prueba e historial de los correos que envía el sitio (90 días, destinos enmascarados).
+- Los correos de WordPress (contraseñas y avisos) salen desde el buzón de Prevsoul en vez de wordpress@.
+
 ## 2.30.2
 - Logo: el escudo se corre a la izquierda y tapa por completo la caries del diente, sin cambiar su tamaño ni el del logo. Aplica en cabecera, pie, ícono, página en construcción, piezas para redes y logos de temporada.
 

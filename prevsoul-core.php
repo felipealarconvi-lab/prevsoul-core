@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.29.0
+ * Version:           2.30.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.29.0' );
+define( 'PS_VERSION', '2.30.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -980,10 +980,40 @@ function ps_log_search( $q, $need ) {
 function ps_construccion_on() {
 	return '1' === (string) get_option( 'ps_construccion', '1' );
 }
+/* Archivo de verificación de Google Search Console (responde 200 aunque el sitio esté en construcción). */
+add_action(
+	'parse_request',
+	function ( $wp ) {
+		$f = function_exists( 'ps_mk' ) ? ps_mk( 'gsc' ) : '';
+		if ( $f && trim( (string) $wp->request, '/' ) === $f ) {
+			status_header( 200 );
+			header( 'Content-Type: text/html; charset=utf-8' );
+			echo 'google-site-verification: ' . esc_html( $f );
+			exit;
+		}
+	},
+	0
+);
+/** Clave de vista previa: permite medir el sitio real (PageSpeed) mientras está en construcción. */
+function ps_preview_key() {
+	$k = (string) get_option( 'ps_preview_key', '' );
+	if ( ! $k ) {
+		$k = wp_generate_password( 20, false );
+		update_option( 'ps_preview_key', $k, false );
+	}
+	return $k;
+}
+function ps_preview_url() {
+	return add_query_arg( 'ps_preview', ps_preview_key(), home_url( '/' ) );
+}
 add_action(
 	'parse_request',
 	function ( $wp ) {
 		if ( ! ps_construccion_on() || is_admin() || wp_doing_ajax() || wp_doing_cron() ) {
+			return;
+		}
+		if ( isset( $_GET['ps_preview'] ) && hash_equals( ps_preview_key(), (string) wp_unslash( $_GET['ps_preview'] ) ) ) { // phpcs:ignore WordPress.Security.NonceVerification,WordPress.Security.ValidatedSanitizedInput
+			header( 'X-Robots-Tag: noindex, nofollow' );
 			return;
 		}
 		if ( ! empty( $wp->query_vars['rest_route'] ) || isset( $_GET['wc-ajax'] ) || in_array( trim( (string) $wp->request, '/' ), array( 'panel-prestador', 'panel-dentista' ), true ) ) { // phpcs:ignore WordPress.Security.NonceVerification

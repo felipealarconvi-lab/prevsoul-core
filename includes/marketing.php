@@ -22,6 +22,7 @@ function ps_mk_defaults() {
 		'clarity'    => 'zd380dwgxt',
 		'pixel'      => '1816388369408876',
 		'gtm'        => '',
+		'gsc'        => '',
 		'fbverif'    => 'rd4xv0kl7utj4lwf4iiysilznwfwr6',
 		'ig'         => 'https://www.instagram.com/prevsoul.chile/',
 		'fb'         => 'https://www.facebook.com/1359973617209357',
@@ -338,6 +339,7 @@ add_action(
 			'clarity'    => strtolower( preg_replace( '/[^a-z0-9]/i', '', $in['clarity'] ?? '' ) ),
 			'pixel'      => preg_replace( '/[^0-9]/', '', $in['pixel'] ?? '' ),
 			'gtm'        => strtoupper( preg_replace( '/[^A-Z0-9-]/i', '', $in['gtm'] ?? '' ) ),
+			'gsc'        => preg_match( '/(google[a-z0-9]+\.html)/i', (string) ( $in['gsc'] ?? '' ), $mm ) ? strtolower( $mm[1] ) : '',
 			'fbverif'    => strtolower( preg_replace( '/[^a-z0-9]/i', '', preg_replace( '/.*content="([^"]+)".*/s', '$1', (string) ( $in['fbverif'] ?? '' ) ) ) ),
 			'ig'         => esc_url_raw( $in['ig'] ?? '' ),
 			'fb'         => esc_url_raw( $in['fb'] ?? '' ),
@@ -406,7 +408,11 @@ function ps_mk_page() {
 			<div class="psmk-f"><label for="clarity">Microsoft Clarity</label><input type="text" id="clarity" name="clarity" value="<?php echo esc_attr( ps_mk( 'clarity' ) ); ?>"><?php echo $chip( ps_mk( 'clarity' ) ); // phpcs:ignore ?></div>
 			<div class="psmk-f"><label for="pixel">Meta Pixel</label><input type="text" id="pixel" name="pixel" value="<?php echo esc_attr( ps_mk( 'pixel' ) ); ?>"><?php echo $chip( ps_mk( 'pixel' ) ); // phpcs:ignore ?></div>
 			<div class="psmk-f"><label for="gtm">Google Tag Manager</label><input type="text" id="gtm" name="gtm" value="<?php echo esc_attr( ps_mk( 'gtm' ) ); ?>" placeholder="Opcional · GTM-XXXXXXX"><?php echo $chip( ps_mk( 'gtm' ) ); // phpcs:ignore ?></div>
+			<div class="psmk-f"><label for="gsc">Google Search Console (archivo HTML)</label><input type="text" id="gsc" name="gsc" value="<?php echo esc_attr( ps_mk( 'gsc' ) ); ?>" placeholder="google1234abcd.html"><?php echo ps_mk( 'gsc' ) ? '<span class="psmk-chip wait">En el sitio</span>' : '<span class="psmk-chip off">Vacío</span>'; // phpcs:ignore ?></div>
 			<div class="psmk-f"><label for="fbverif">Verificación de dominio Meta</label><input type="text" id="fbverif" name="fbverif" value="<?php echo esc_attr( ps_mk( 'fbverif' ) ); ?>" placeholder="Código o etiqueta completa"><?php echo ps_mk( 'fbverif' ) ? '<span class="psmk-chip wait">En el sitio</span>' : '<span class="psmk-chip off">Vacío</span>'; // phpcs:ignore ?></div>
+		</div>
+		<div class="ps-ad-c"><h2>Velocidad del sitio</h2><p class="ps-ad-note" style="margin:0 0 8px">Mide el sitio real con Google PageSpeed Insights aunque esté en construcción (enlace de vista previa privado, no indexable).</p>
+			<p><a class="button" target="_blank" rel="noopener" href="<?php echo esc_url( 'https://pagespeed.web.dev/analysis?url=' . rawurlencode( ps_preview_url() ) . '&form_factor=mobile' ); ?>">Medir en celular</a> <a class="button" target="_blank" rel="noopener" href="<?php echo esc_url( 'https://pagespeed.web.dev/analysis?url=' . rawurlencode( ps_preview_url() ) . '&form_factor=desktop' ); ?>">Medir en escritorio</a></p>
 		</div>
 		<div class="ps-ad-c"><h2>Redes sociales</h2><p class="ps-ad-note" style="margin:0 0 8px">Aparecen como íconos en el pie de página y le indican a Google cuáles son las redes oficiales (schema <code>sameAs</code>).</p>
 			<div class="psmk-f"><label for="ig">Instagram</label><input type="url" id="ig" name="ig" value="<?php echo esc_attr( ps_mk( 'ig' ) ); ?>"><?php echo $chip( ps_mk( 'ig' ), 'Visible', 'Oculto' ); // phpcs:ignore ?></div>

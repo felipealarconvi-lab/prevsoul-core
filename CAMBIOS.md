@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.30.0
+- Marketing: campo para el archivo de verificación de Google Search Console (responde aunque el sitio esté en construcción).
+- Marketing: tarjeta «Velocidad del sitio» con enlaces a PageSpeed Insights usando una vista previa privada no indexable.
+
 ## 2.29.0
 - Nueva sección Prevsoul → Finanzas: modelo a 24 meses con 3 escenarios × «red de clínicas» / «tú atiendes», supuestos editables, detalle mes a mes, real vs. presupuesto (desde Datos) y descarga del Excel con los supuestos guardados.
 

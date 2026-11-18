@@ -331,13 +331,13 @@ function ps_dt_bi_rows( $t ) {
 	if ( 'fotos' === $t ) {
 		$rows[] = array( 'fecha', 'ventas', 'monto_ventas', 'planes_individual', 'planes_familiar', 'planes_colectivo', 'planes_activos', 'mrr', 'altas', 'bajas', 'pagos_sin_completar', 'resenas' );
 		foreach ( (array) get_option( 'ps_dt_fotos', array() ) as $d => $f ) {
-			$rows[] = array( $d, $f['ventas_n'], round( $f['ventas_monto'] ), $f['activos']['Individual'], $f['activos']['Familiar'], $f['activos']['Colectivo'], array_sum( $f['activos'] ), round( $f['mrr'] ), $f['altas'], $f['bajas'], $f['sinpago_n'], $f['resenas'] );
+			$rows[] = array( str_replace( '-', '', $d ), $f['ventas_n'], round( $f['ventas_monto'] ), $f['activos']['Individual'], $f['activos']['Familiar'], $f['activos']['Colectivo'], array_sum( $f['activos'] ), round( $f['mrr'] ), $f['altas'], $f['bajas'], $f['sinpago_n'], $f['resenas'] );
 		}
 		return $rows;
 	}
 	$agg = array();
 	foreach ( ps_dt_ordenes( '2000-01-01', gmdate( 'Y-m-d', time() + DAY_IN_SECONDS ) ) as $o ) {
-		$mes = $o->get_date_paid() ? $o->get_date_paid()->date_i18n( 'Y-m-01' ) : '';
+		$mes = $o->get_date_paid() ? $o->get_date_paid()->date_i18n( 'Ym' ) : '';
 		if ( 'canales' === $t ) {
 			$k = $mes . '|' . ( $o->get_meta( '_ps_canal' ) ? $o->get_meta( '_ps_canal' ) : 'Sin dato' );
 			if ( ! isset( $agg[ $k ] ) ) {

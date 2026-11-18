@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.28.1
+- Looker Studio: fechas como AAAAMMDD y meses como AAAAMM para que se lean como fecha.
+
 ## 2.28.0
 - Datos → Looker Studio: enlaces privados con clave para Google Sheets (fotos diarias, canales y productos por mes, solo agregados).
 

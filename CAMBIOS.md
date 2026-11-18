@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.30.2
+- Logo: el escudo se corre a la izquierda y tapa por completo la caries del diente, sin cambiar su tamaño ni el del logo. Aplica en cabecera, pie, ícono, página en construcción, piezas para redes y logos de temporada.
+
 ## 2.30.1
 - Antes de publicar: cuatro pendientes de Meta Ads (presupuesto mensual, comunas con red, portafolio comercial y cuenta publicitaria, y forma de instalar el píxel).
 

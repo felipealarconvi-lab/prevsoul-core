@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.28.0
+- Datos → Looker Studio: enlaces privados con clave para Google Sheets (fotos diarias, canales y productos por mes, solo agregados).
+
 ## 2.27.0
 - Nueva pantalla Prevsoul → Datos: resumen de indicadores (MRR, planes activos, altas y bajas, ventas, pagos sin completar, atenciones), origen de ventas, diccionario de métricas editable y exportación CSV anonimizada con registro de descargas.
 - Cada pedido guarda el primer origen del paciente (UTM, gclid, fbclid, referente) y si pasó por la Consulta online.

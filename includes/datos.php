@@ -324,6 +324,93 @@ add_action(
 );
 
 /* ------------------------------------------------------------------
+ * 4b. Conexión para Google Sheets / Looker Studio (solo agregados)
+ * ---------------------------------------------------------------- */
+function ps_dt_bi_rows( $t ) {
+	$rows = array();
+	if ( 'fotos' === $t ) {
+		$rows[] = array( 'fecha', 'ventas', 'monto_ventas', 'planes_individual', 'planes_familiar', 'planes_colectivo', 'planes_activos', 'mrr', 'altas', 'bajas', 'pagos_sin_completar', 'resenas' );
+		foreach ( (array) get_option( 'ps_dt_fotos', array() ) as $d => $f ) {
+			$rows[] = array( $d, $f['ventas_n'], round( $f['ventas_monto'] ), $f['activos']['Individual'], $f['activos']['Familiar'], $f['activos']['Colectivo'], array_sum( $f['activos'] ), round( $f['mrr'] ), $f['altas'], $f['bajas'], $f['sinpago_n'], $f['resenas'] );
+		}
+		return $rows;
+	}
+	$agg = array();
+	foreach ( ps_dt_ordenes( '2000-01-01', gmdate( 'Y-m-d', time() + DAY_IN_SECONDS ) ) as $o ) {
+		$mes = $o->get_date_paid() ? $o->get_date_paid()->date_i18n( 'Y-m-01' ) : '';
+		if ( 'canales' === $t ) {
+			$k = $mes . '|' . ( $o->get_meta( '_ps_canal' ) ? $o->get_meta( '_ps_canal' ) : 'Sin dato' );
+			if ( ! isset( $agg[ $k ] ) ) {
+				$agg[ $k ] = array( 0, 0, 0 );
+			}
+			$agg[ $k ][0]++;
+			$agg[ $k ][1] += (float) $o->get_total();
+			$agg[ $k ][2] += $o->get_meta( '_ps_paso_consulta' ) ? 1 : 0;
+		} else {
+			foreach ( $o->get_items() as $it ) {
+				$pid  = $it->get_product_id();
+				$tipo = ps_dt_es_plan( $pid ) ? 'Plan' : ( has_term( 'packs-dentales', 'product_cat', $pid ) ? 'Pack' : 'Atención' );
+				$k    = $mes . '|' . $it->get_name() . '|' . $tipo;
+				if ( ! isset( $agg[ $k ] ) ) {
+					$agg[ $k ] = array( 0, 0 );
+				}
+				$agg[ $k ][0] += $it->get_quantity();
+				$agg[ $k ][1] += (float) $it->get_total() + (float) $it->get_total_tax();
+			}
+		}
+	}
+	$rows[] = 'canales' === $t ? array( 'mes', 'canal', 'pedidos', 'ingresos', 'paso_por_consulta' ) : array( 'mes', 'producto', 'tipo', 'cantidad', 'ingresos' );
+	foreach ( $agg as $k => $v ) {
+		$rows[] = array_merge( explode( '|', $k ), array_map( 'round', $v ) );
+	}
+	return $rows;
+}
+
+add_action(
+	'rest_api_init',
+	function () {
+		register_rest_route(
+			'prevsoul/v1',
+			'/bi',
+			array(
+				'methods'             => 'GET',
+				'permission_callback' => function ( $r ) {
+					$k = (string) get_option( 'ps_dt_bi_key', '' );
+					return $k && hash_equals( $k, (string) $r->get_param( 'k' ) );
+				},
+				'callback'            => function ( $r ) {
+					$t = sanitize_key( (string) $r->get_param( 't' ) );
+					if ( ! in_array( $t, array( 'fotos', 'canales', 'productos' ), true ) ) {
+						return new WP_Error( 'ps_bi', 'Tipo no válido', array( 'status' => 400 ) );
+					}
+					nocache_headers();
+					header( 'Content-Type: text/csv; charset=utf-8' );
+					$out = fopen( 'php://output', 'w' );
+					foreach ( ps_dt_bi_rows( $t ) as $row ) {
+						fputcsv( $out, $row );
+					}
+					fclose( $out ); // phpcs:ignore WordPress.WP.AlternativeFunctions
+					exit;
+				},
+			)
+		);
+	}
+);
+
+add_action(
+	'admin_post_ps_dt_bikey',
+	function () {
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Sin permiso' );
+		}
+		check_admin_referer( 'ps_dt_bikey' );
+		update_option( 'ps_dt_bi_key', wp_generate_password( 32, false ), false );
+		wp_safe_redirect( admin_url( 'admin.php?page=ps-datos&tab=looker&ok=1' ) );
+		exit;
+	}
+);
+
+/* ------------------------------------------------------------------
  * 5. Pantalla Prevsoul → Datos
  * ---------------------------------------------------------------- */
 add_action(
@@ -383,7 +470,7 @@ function ps_dt_page() {
 	$tab  = isset( $_GET['tab'] ) ? sanitize_key( $_GET['tab'] ) : 'res'; // phpcs:ignore WordPress.Security.NonceVerification
 	$dias = isset( $_GET['dias'] ) ? max( 7, min( 365, absint( $_GET['dias'] ) ) ) : 30; // phpcs:ignore WordPress.Security.NonceVerification
 	$base = admin_url( 'admin.php?page=ps-datos' );
-	$tabs = array( 'res' => 'Resumen', 'origen' => 'Origen de ventas', 'dicc' => 'Diccionario', 'exp' => 'Exportar' );
+	$tabs = array( 'res' => 'Resumen', 'origen' => 'Origen de ventas', 'dicc' => 'Diccionario', 'exp' => 'Exportar', 'looker' => 'Looker Studio' );
 	echo '<div class="wrap ps-dt"><h1>Datos</h1>';
 	if ( isset( $_GET['ok'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		echo '<div class="notice notice-success is-dismissible"><p>Guardado.</p></div>';
@@ -482,6 +569,21 @@ function ps_dt_page() {
 		echo '</table>';
 		submit_button( 'Guardar diccionario' );
 		echo '</form><p class="ps-dt-muted">Estas definiciones las usan esta pantalla, las exportaciones y los agentes de datos.</p>';
+	} elseif ( 'looker' === $tab ) {
+		$key = (string) get_option( 'ps_dt_bi_key', '' );
+		echo '<p>Enlaces privados con datos <strong>solo agregados</strong> (por día, mes, canal o producto; sin pacientes) para Google Sheets y Looker Studio. Quien tenga un enlace puede ver esos totales: no los compartas. Si se filtran, genera una clave nueva y los anteriores dejan de funcionar.</p>';
+		echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="ps_dt_bikey">';
+		wp_nonce_field( 'ps_dt_bikey' );
+		submit_button( $key ? 'Generar clave nueva' : 'Generar clave', $key ? 'secondary' : 'primary', 'submit', false );
+		echo '</form>';
+		if ( $key ) {
+			echo '<table class="widefat striped" style="max-width:980px;margin-top:14px"><thead><tr><th>Hoja</th><th>Fórmula para Google Sheets (celda A1)</th></tr></thead><tbody>';
+			foreach ( array( 'fotos' => 'Fotos diarias', 'canales' => 'Canales por mes', 'productos' => 'Productos por mes' ) as $t => $l ) {
+				$u = add_query_arg( array( 'k' => $key, 't' => $t ), rest_url( 'prevsoul/v1/bi' ) );
+				echo '<tr><td>' . esc_html( $l ) . '</td><td><input type="text" readonly onclick="this.select()" style="width:100%;font-family:monospace;font-size:12px" value="' . esc_attr( '=IMPORTDATA("' . $u . '")' ) . '"></td></tr>';
+			}
+			echo '</tbody></table><p class="ps-dt-muted">Google Sheets actualiza estas hojas cada hora aprox. Looker Studio se conecta a la planilla y a Google Analytics (sesiones y conversión).</p>';
+		}
 	} else {
 		echo '<p>Archivos CSV anonimizados (separados por punto y coma, se abren en Excel). El paciente aparece como código; no incluyen nombre, RUT, correo, teléfono ni datos clínicos.</p><p>';
 		foreach ( array( 'pedidos' => 'Pedidos', 'planes' => 'Planes', 'fotos' => 'Fotos diarias', 'atenciones' => 'Atenciones de prestadores' ) as $t => $l ) {

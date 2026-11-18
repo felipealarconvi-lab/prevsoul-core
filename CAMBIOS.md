@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.32.1
+- Agenda: en cada orden (escritorio) aparece el enlace personal del paciente para agendar, y en el panel del prestador un botón para enviárselo por WhatsApp.
+
 ## 2.32.0
 - Agenda Prevsoul (etapa 1): cada clínica u odontólogo define sus cupos para pacientes Prevsoul (días, dos bloques por día, duración, anticipación, días bloqueados) en su panel, sección «Mi agenda Prevsoul».
 - Después de pagar, el paciente ve «Elegir mi hora» en la página de gracias, en Mi cuenta y en el correo; elige día y hora en /agendar/ y queda confirmada al instante (orden «Agendada»).

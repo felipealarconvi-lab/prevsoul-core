@@ -595,6 +595,9 @@ add_shortcode(
 			$out .= '<div class="ps-orden-grid"><div><span class="ps-prest-k">Paciente</span><strong>' . esc_html( $m( 'paciente' ) ) . '</strong><div class="ps-small">' . esc_html( $m( 'telefono' ) ) . ' · ' . esc_html( $m( 'email' ) ) . '</div></div><div><span class="ps-prest-k">Te corresponde</span><strong>' . esc_html( ps_clp( $m( 'pago' ) ) ) . '</strong>' . ( $m( 'pagada' ) ? '<div class="ps-small">Pagado el ' . esc_html( $m( 'pagada' ) ) . '</div>' : '' ) . '</div>' . ( $m( 'cita' ) ? '<div><span class="ps-prest-k">Cita</span><strong>' . esc_html( ps_fmt_date( $m( 'cita' ) ) ) . '</strong></div>' : '' ) . '</div>';
 			if ( in_array( $e, array( 'recibida', 'agendada' ), true ) ) {
 				$out .= '<form class="ps-orden-form" method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">' . wp_nonce_field( 'ps_orden_' . $o->ID, '_wpnonce', true, false ) . '<input type="hidden" name="action" value="ps_orden_estado"><input type="hidden" name="orden" value="' . (int) $o->ID . '"><input type="hidden" name="back" value="' . esc_attr( $base ) . '">';
+				if ( 'recibida' === $e && function_exists( 'ps_ag_activa' ) && ps_ag_activa( $prov ) ) {
+					$out .= '<p class="ps-small" style="flex-basis:100%">El paciente puede elegir su hora en línea. <a href="' . esc_url( ps_wa_link( $m( 'telefono' ), 'Hola ' . $m( 'paciente' ) . ', te escribimos por tu compra Prevsoul #' . $m( 'numero' ) . '. Elige tu hora aquí: ' . ps_ag_url( $o->ID ) ) ) . '" target="_blank" rel="noopener">Enviarle el enlace por WhatsApp</a></p>';
+				}
 				$out .= '<label class="ps-small">Fecha y hora de la cita<input type="datetime-local" name="cita" value="' . esc_attr( $m( 'cita' ) ) . '"></label>';
 				$out .= '<button class="ps-btn ps-btn-ghost" type="submit" name="estado" value="agendada">' . ( 'agendada' === $e ? 'Cambiar fecha' : 'Marcar agendada' ) . '</button><button class="ps-btn" type="submit" name="estado" value="realizada">Marcar realizada</button></form>';
 			}
@@ -732,6 +735,9 @@ function ps_orden_box( $post ) {
 	echo '<tr><th>Paciente</th><td>' . esc_html( $m( 'paciente' ) ) . '<br>' . esc_html( $m( 'telefono' ) ) . ' · ' . esc_html( $m( 'email' ) ) . '</td></tr>';
 	echo '<tr><th>Venta / comisión / a pagar</th><td>' . esc_html( ps_clp( $m( 'monto' ) ) ) . ' / ' . esc_html( ps_clp( $m( 'comision' ) ) ) . ' / <strong>' . esc_html( ps_clp( $m( 'pago' ) ) ) . '</strong>' . ( $m( 'pagada' ) ? ' · pagado el ' . esc_html( $m( 'pagada' ) ) : '' ) . ( $m( 'regla' ) ? '<br><span class="description">Con cupón · precio de lista ' . esc_html( ps_clp( $m( 'lista' ) ) ) . ' · ' . esc_html( PS_ABSORBE[ $m( 'regla' ) ] ?? '' ) . '</span>' : '' ) . '</td></tr>';
 	echo '<tr><th>Cita</th><td>' . ( $m( 'cita' ) ? esc_html( ps_fmt_date( $m( 'cita' ) ) ) : '—' ) . '</td></tr>';
+	if ( function_exists( 'ps_ag_url' ) ) {
+		echo '<tr><th>Agenda del paciente</th><td><input type="text" readonly value="' . esc_attr( ps_ag_url( $post->ID ) ) . '" style="width:100%" onclick="this.select()"><br><small>Enlace personal del paciente para elegir o ver su hora. Se le envía solo en el correo de compra.</small></td></tr>';
+	}
 	echo '<tr><th>Estado</th><td>' . wp_nonce_field( 'ps_orden_admin', 'ps_orden_nonce', true, false ) . '<select name="ps_orden_estado">';
 	foreach ( PS_ORDEN_STATES as $k => $l ) {
 		echo '<option value="' . esc_attr( $k ) . '" ' . selected( $m( 'estado' ), $k, false ) . '>' . esc_html( $l ) . '</option>';

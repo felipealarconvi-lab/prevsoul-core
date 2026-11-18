@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.28.2
+- Datos: los productos se agrupan por su ID y muestran el nombre actual (renombrar no divide el historial). El tipo de plan se fija en la ficha del producto («Tipo de plan (datos)») y ya no depende del nombre.
+
 ## 2.28.1
 - Looker Studio: fechas como AAAAMMDD y meses como AAAAMM para que se lean como fecha.
 

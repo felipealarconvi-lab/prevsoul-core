@@ -24,7 +24,22 @@ function ps_dt_es_plan( $pid ) {
 	return $p && function_exists( 'ps_parent_slugs' ) && in_array( 'planes-dentales', ps_parent_slugs( $p ), true );
 }
 
-function ps_dt_tipo_plan( $pid, $name ) {
+/** Nombre actual del producto (si fue renombrado, unifica el historial). */
+function ps_dt_nombre( $pid, $fallback = '' ) {
+	$p = $pid ? wc_get_product( $pid ) : null;
+	return $p ? $p->get_name() : $fallback;
+}
+
+function ps_dt_tipo_plan( $pid, $name = '' ) {
+	$t = (string) get_post_meta( $pid, '_ps_tipo_plan', true );
+	if ( in_array( $t, array( 'Individual', 'Familiar', 'Colectivo' ), true ) ) {
+		return $t;
+	}
+	$fijos = array( 44 => 'Individual', 45 => 'Familiar', 46 => 'Colectivo' );
+	if ( isset( $fijos[ $pid ] ) ) {
+		return $fijos[ $pid ];
+	}
+	$name = ps_dt_nombre( $pid, $name );
 	if ( false !== mb_stripos( $name, 'familiar' ) ) {
 		return 'Familiar';
 	}
@@ -138,6 +153,35 @@ add_action(
 		$order->update_meta_data( '_ps_canal', ps_dt_canal( $d ) );
 		if ( ! empty( $_COOKIE['ps_cons'] ) ) {
 			$order->update_meta_data( '_ps_paso_consulta', 1 );
+		}
+	}
+);
+
+/* Tipo de plan fijo en la ficha del producto (no depende del nombre). */
+add_action(
+	'woocommerce_product_options_general_product_data',
+	function () {
+		global $post;
+		if ( ! $post || ! ps_dt_es_plan( $post->ID ) ) {
+			return;
+		}
+		woocommerce_wp_select(
+			array(
+				'id'          => '_ps_tipo_plan',
+				'label'       => 'Tipo de plan (datos)',
+				'options'     => array( '' => 'Automático', 'Individual' => 'Individual', 'Familiar' => 'Familiar', 'Colectivo' => 'Colectivo' ),
+				'desc_tip'    => true,
+				'description' => 'Cómo se cuenta este plan en Prevsoul → Datos. Puedes cambiar el nombre del producto sin afectar los informes.',
+			)
+		);
+	}
+);
+add_action(
+	'woocommerce_process_product_meta',
+	function ( $pid ) {
+		if ( isset( $_POST['_ps_tipo_plan'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$v = sanitize_text_field( wp_unslash( $_POST['_ps_tipo_plan'] ) ); // phpcs:ignore WordPress.Security.NonceVerification
+			update_post_meta( $pid, '_ps_tipo_plan', in_array( $v, array( 'Individual', 'Familiar', 'Colectivo' ), true ) ? $v : '' );
 		}
 	}
 );
@@ -281,7 +325,7 @@ add_action(
 						ps_dt_hash( 'o' . $o->get_id() ),
 						ps_dt_hash( $o->get_billing_email() ),
 						$o->get_billing_city(),
-						$it->get_name(),
+						ps_dt_nombre( $pid, $it->get_name() ),
 						$plan ? 'Plan ' . ps_dt_tipo_plan( $pid, $it->get_name() ) : ( has_term( 'packs-dentales', 'product_cat', $pid ) ? 'Pack' : 'Atención' ),
 						$it->get_quantity(),
 						round( (float) $it->get_total() + (float) $it->get_total_tax() ),
@@ -350,7 +394,7 @@ function ps_dt_bi_rows( $t ) {
 			foreach ( $o->get_items() as $it ) {
 				$pid  = $it->get_product_id();
 				$tipo = ps_dt_es_plan( $pid ) ? 'Plan' : ( has_term( 'packs-dentales', 'product_cat', $pid ) ? 'Pack' : 'Atención' );
-				$k    = $mes . '|' . $it->get_name() . '|' . $tipo;
+				$k    = $mes . '|' . str_replace( '|', '/', ps_dt_nombre( $pid, $it->get_name() ) ) . '|' . $tipo;
 				if ( ! isset( $agg[ $k ] ) ) {
 					$agg[ $k ] = array( 0, 0 );
 				}

@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.29.0
+- Nueva sección Prevsoul → Finanzas: modelo a 24 meses con 3 escenarios × «red de clínicas» / «tú atiendes», supuestos editables, detalle mes a mes, real vs. presupuesto (desde Datos) y descarga del Excel con los supuestos guardados.
+
 ## 2.28.2
 - Datos: los productos se agrupan por su ID y muestran el nombre actual (renombrar no divide el historial). El tipo de plan se fija en la ficha del producto («Tipo de plan (datos)») y ya no depende del nombre.
 

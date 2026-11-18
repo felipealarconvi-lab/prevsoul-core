@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.34.0
+- Agenda Prevsoul (etapa 3): recordatorios automáticos cada hora. Con hora: correo 48 h antes (qué esperar, cambiar o cancelar) y la mañana de la cita. Sin hora: correos al día 1, 3 y 7, aviso a la clínica a las 48 h y tarea para la dirección al día 5. Vigencia: avisos 30 y 7 días antes de vencer (6 meses).
+- WhatsApp: por defecto la dirección recibe la tarea «envía este WhatsApp» (correo y lista en Prevsoul → Recordatorios, con el mensaje listo). Envío automático con WhatsApp Cloud API instalado pero apagado.
+
 ## 2.33.0
 - Agenda Prevsoul (etapa 2): el paciente puede cambiar o cancelar su hora en línea hasta 24 horas antes (la atención sigue pagada); avisos por correo al paciente y al prestador.
 - Inasistencia: el prestador marca «No asistió». La primera vez el paciente reagenda sin costo (correo con enlace); la segunda la atención se da por usada (nuevo estado «No asistió»).

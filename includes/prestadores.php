@@ -487,7 +487,8 @@ function ps_user_prestador_field( $user ) {
 		}
 		echo '</optgroup>';
 	}
-	echo '</select><p class="description">Con el perfil «Prestador Prevsoul», esta persona entra a <a href="' . esc_url( ps_panel_url() ) . '">su panel</a> y ve solo las órdenes de este prestador.</p></td></tr></table>';
+	echo '</select><p class="description">Al elegir un prestador, esta persona recibe el perfil «Prestador Prevsoul», entra a <a href="' . esc_url( ps_panel_url() ) . '">su panel</a> y ve solo las órdenes de ese prestador.</p></td></tr>';
+	echo '<tr><th>Dentista de Prevsoul Live y sala de espera</th><td><label><input type="checkbox" name="ps_es_dentista" value="1" ' . checked( in_array( 'ps_dentista', (array) $user->roles, true ), true, false ) . '> También es dentista Prevsoul (panel del dentista)</label><p class="description">Una misma persona puede ser prestador (clínica u odontólogo de la red) y dentista Prevsoul a la vez; verá un acceso para cambiar entre sus dos paneles.</p></td></tr></table>';
 }
 add_action( 'show_user_profile', 'ps_user_prestador_field' );
 add_action( 'edit_user_profile', 'ps_user_prestador_field' );
@@ -497,6 +498,22 @@ function ps_user_prestador_save( $user_id ) {
 	}
 	$id = absint( $_POST['ps_prestador_id'] );
 	update_user_meta( $user_id, 'ps_prestador_id', ps_is_prestador_post( $id ) ? $id : '' );
+	$u = get_userdata( $user_id );
+	if ( $u && ! $u->has_cap( 'manage_options' ) ) {
+		if ( ps_is_prestador_post( $id ) ) {
+			$u->add_role( 'ps_prestador' );
+		} else {
+			$u->remove_role( 'ps_prestador' );
+		}
+		if ( ! empty( $_POST['ps_es_dentista'] ) && get_role( 'ps_dentista' ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$u->add_role( 'ps_dentista' );
+		} else {
+			$u->remove_role( 'ps_dentista' );
+		}
+		if ( ! $u->roles ) {
+			$u->add_role( 'customer' );
+		}
+	}
 }
 add_action( 'personal_options_update', 'ps_user_prestador_save' );
 add_action( 'edit_user_profile_update', 'ps_user_prestador_save' );
@@ -846,4 +863,22 @@ add_action(
 	function () {
 		echo '<style>.wp-list-table .column-ps_prestador{width:150px}.wp-list-table .column-ps_prest{width:160px}</style>';
 	}
+);
+
+/* Quien es prestador y dentista a la vez ve un acceso para cambiar de panel. */
+add_filter(
+	'the_content',
+	function ( $c ) {
+		if ( ! is_user_logged_in() || ! is_page( array( 'panel-prestador', 'panel-dentista' ) ) ) {
+			return $c;
+		}
+		$u = wp_get_current_user();
+		if ( ! in_array( 'ps_prestador', (array) $u->roles, true ) || ! in_array( 'ps_dentista', (array) $u->roles, true ) ) {
+			return $c;
+		}
+		$pd  = get_page_by_path( 'panel-dentista' );
+		$nav = '<nav class="ps-catnav" style="margin-bottom:12px"><a class="ps-chip' . ( is_page( 'panel-prestador' ) ? ' ps-acc' : '' ) . '" href="' . esc_url( ps_panel_url() ) . '">Mi panel de prestador</a> <a class="ps-chip' . ( is_page( 'panel-dentista' ) ? ' ps-acc' : '' ) . '" href="' . esc_url( $pd ? get_permalink( $pd ) : home_url( '/panel-dentista/' ) ) . '">Mi panel de dentista</a></nav>';
+		return $nav . $c;
+	},
+	5
 );

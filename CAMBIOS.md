@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.36.0
+- Agenda: para elegir, cambiar o cancelar una hora el paciente debe entrar a su cuenta (con el correo de su compra). Si no ha entrado, ve un acceso con enlace para crear o recuperar su contraseña.
+- Tienda: la cuenta del paciente se crea al comprar (sin compra como invitado; usuario y contraseña generados y enviados por correo).
+- Usuarios: al vincular un prestador se asigna solo el perfil «Prestador Prevsoul»; casilla «También es dentista Prevsoul». Quien tiene ambos perfiles ve un acceso para cambiar entre sus dos paneles.
+
 ## 2.35.0
 - Controles de los planes en la Agenda Prevsoul: botón «Agendar control» por integrante en Mi plan y en el correo mensual; crea la orden «Control preventivo» con la clínica del plan y abre la agenda. Al marcarse «Realizada» se actualiza el último control del integrante.
 - Inasistencia: en la segunda, la clínica recibe una compensación (50 % por defecto, editable en Recordatorios) que entra a la Liquidación.

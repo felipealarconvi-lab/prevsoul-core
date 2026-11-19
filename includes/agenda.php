@@ -135,6 +135,40 @@ function ps_ag_fecha( $ymd, $fmt = 'l j \d\e F' ) {
 	return $d ? wp_date( $fmt, $d->getTimestamp(), wp_timezone() ) : $ymd;
 }
 
+
+/** ¿El usuario conectado puede ver y agendar esta orden? (paciente dueño, su prestador o administración). */
+function ps_ag_puede_ver( $oid ) {
+	if ( ! is_user_logged_in() ) {
+		return false;
+	}
+	if ( current_user_can( 'manage_options' ) ) {
+		return true;
+	}
+	$u = wp_get_current_user();
+	if ( function_exists( 'ps_user_prestador' ) && ps_user_prestador() === (int) get_post_meta( $oid, '_ps_prestador', true ) ) {
+		return true;
+	}
+	if ( strtolower( (string) $u->user_email ) === strtolower( (string) get_post_meta( $oid, '_ps_email', true ) ) ) {
+		return true;
+	}
+	$o = function_exists( 'wc_get_order' ) ? wc_get_order( (int) get_post_meta( $oid, '_ps_pedido', true ) ) : null;
+	return $o && (int) $o->get_customer_id() === (int) $u->ID;
+}
+
+function ps_ag_login_box( $oid ) {
+	$mail = (string) get_post_meta( $oid, '_ps_email', true );
+	$mask = function_exists( 'ps_co_mask' ) ? ps_co_mask( $mail ) : '';
+	$here = ( is_ssl() ? 'https://' : 'http://' ) . sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ?? '' ) ) . esc_url_raw( wp_unslash( $_SERVER['REQUEST_URI'] ?? '' ) );
+	$acc  = function_exists( 'wc_get_page_permalink' ) ? wc_get_page_permalink( 'myaccount' ) : wp_registration_url();
+	$out  = '<div class="ps-ag ps-card"><h2 style="margin:0 0 6px">Entra a tu cuenta para agendar</h2><p class="ps-muted">Usa el correo de tu compra' . ( $mask ? ' (' . esc_html( $mask ) . ')' : '' ) . '. Así protegemos tu hora y tus datos.</p>';
+	if ( is_user_logged_in() ) {
+		return $out . '<p>Esta atención pertenece a otra cuenta. <a href="' . esc_url( wp_logout_url( $here ) ) . '">Cerrar sesión y entrar con el correo de la compra</a>.</p></div>';
+	}
+	$out .= wp_login_form( array( 'echo' => false, 'redirect' => $here, 'label_username' => 'Correo', 'label_log_in' => 'Entrar y agendar' ) );
+	$out .= '<p class="ps-small"><a href="' . esc_url( wp_lostpassword_url( $here ) ) . '">¿No recuerdas tu contraseña o es tu primera vez?</a> Te enviamos un enlace para crearla. · <a href="' . esc_url( $acc ) . '">Crear mi cuenta</a></p></div>';
+	return $out;
+}
+
 /* ---------- Página del paciente: [ps_agenda] ---------- */
 
 function ps_ag_render() {
@@ -142,6 +176,9 @@ function ps_ag_render() {
 	$k   = isset( $_GET['k'] ) ? sanitize_text_field( wp_unslash( $_GET['k'] ) ) : ''; // phpcs:ignore WordPress.Security.NonceVerification
 	if ( ! ps_ag_valida( $oid, $k ) ) {
 		return '<div class="ps-card"><p>Este enlace para agendar no es válido. Usa el botón que te enviamos por correo después de tu compra, o escríbenos a ' . esc_html( function_exists( 'ps_co_buzon' ) ? ps_co_buzon() : get_option( 'admin_email' ) ) . '.</p></div>';
+	}
+	if ( ! ps_ag_puede_ver( $oid ) ) {
+		return ps_ag_login_box( $oid );
 	}
 	$m    = function ( $x ) use ( $oid ) {
 		return get_post_meta( $oid, '_ps_' . $x, true );
@@ -222,6 +259,10 @@ function ps_ag_reservar() {
 	if ( ! ps_ag_valida( $oid, $k ) ) {
 		wp_die( 'Enlace no válido.' );
 	}
+	if ( ! ps_ag_puede_ver( $oid ) ) {
+		wp_safe_redirect( ps_ag_url( $oid ) );
+		exit;
+	}
 	$prov   = (int) get_post_meta( $oid, '_ps_prestador', true );
 	$cambia = isset( $_POST['modo'] ) && 'cambiar' === $_POST['modo'];
 	$back   = $cambia ? add_query_arg( 'cambiar', 1, ps_ag_url( $oid ) ) : ps_ag_url( $oid );
@@ -240,7 +281,7 @@ function ps_ag_reservar() {
 	exit;
 }
 add_action( 'admin_post_ps_agendar', 'ps_ag_reservar' );
-add_action( 'admin_post_nopriv_ps_agendar', 'ps_ag_reservar' );
+add_action( 'admin_post_nopriv_ps_agendar', function () { wp_safe_redirect( wp_login_url( wp_get_referer() ? wp_get_referer() : home_url( '/' ) ) ); exit; } );
 
 /** Archivo .ics de la cita. */
 function ps_ag_ics( $oid ) {
@@ -266,7 +307,7 @@ add_action(
 			return;
 		}
 		$oid = absint( $_GET['o'] ); // phpcs:ignore WordPress.Security.NonceVerification
-		if ( ! ps_ag_valida( $oid, sanitize_text_field( wp_unslash( $_GET['k'] ) ) ) || ! ( $ics = ps_ag_ics( $oid ) ) ) { // phpcs:ignore
+		if ( ! ps_ag_valida( $oid, sanitize_text_field( wp_unslash( $_GET['k'] ) ) ) || ! ps_ag_puede_ver( $oid ) || ! ( $ics = ps_ag_ics( $oid ) ) ) { // phpcs:ignore
 			return;
 		}
 		nocache_headers();
@@ -449,7 +490,7 @@ function ps_ag_cancelar() {
 	if ( ! ps_ag_valida( $oid, $k ) ) {
 		wp_die( 'Enlace no válido.' );
 	}
-	if ( ps_ag_puede_cambiar( $oid ) ) {
+	if ( ps_ag_puede_ver( $oid ) && ps_ag_puede_cambiar( $oid ) ) {
 		$antes = (string) get_post_meta( $oid, '_ps_cita', true );
 		update_post_meta( $oid, '_ps_cita', '' );
 		ps_orden_set_estado( $oid, 'recibida', 'Paciente canceló su hora (' . ps_fmt_date( $antes ) . ')' );
@@ -460,7 +501,7 @@ function ps_ag_cancelar() {
 	exit;
 }
 add_action( 'admin_post_ps_ag_cancelar', 'ps_ag_cancelar' );
-add_action( 'admin_post_nopriv_ps_ag_cancelar', 'ps_ag_cancelar' );
+add_action( 'admin_post_nopriv_ps_ag_cancelar', function () { wp_safe_redirect( wp_login_url( wp_get_referer() ? wp_get_referer() : home_url( '/' ) ) ); exit; } );
 
 function ps_ag_mail_simple( $oid, $para, $asunto, $inner ) {
 	$prov = (int) get_post_meta( $oid, '_ps_prestador', true );
@@ -526,3 +567,20 @@ function ps_ag_semana( $prov ) {
 	}
 	return $out . ( $hay ? '' : '<p class="ps-muted ps-small">No hay horas tomadas esta semana.</p>' ) . '</section>';
 }
+
+/* Cuenta obligatoria para agendar: la tienda crea la cuenta del paciente al comprar (una sola vez). */
+add_action(
+	'init',
+	function () {
+		if ( '1' === get_option( 'ps_wc_cuentas_v1' ) || ! class_exists( 'WooCommerce' ) ) {
+			return;
+		}
+		update_option( 'woocommerce_enable_guest_checkout', 'no' );
+		update_option( 'woocommerce_enable_signup_and_login_from_checkout', 'yes' );
+		update_option( 'woocommerce_enable_myaccount_registration', 'yes' );
+		update_option( 'woocommerce_registration_generate_username', 'yes' );
+		update_option( 'woocommerce_registration_generate_password', 'yes' );
+		update_option( 'ps_wc_cuentas_v1', '1' );
+	},
+	30
+);

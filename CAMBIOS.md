@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.38.0
+- Prevsoul → Dirección del sitio: botón para mostrar el sitio en prevsoul.cl (sin /wp/) sin mover archivos, y botón para volver atrás. Los enlaces antiguos con /wp/ redirigen solos.
+
 ## 2.37.0
 - Contacto: página /contacto/ con formulario (enlazada en el pie de página), número de caso, copia al paciente y aviso al buzón contacto@prevsoul.cl.
 - Horario: se recibe 24/7 y se responde en horario hábil (lunes a viernes, 9 a 18 h), en un plazo de hasta 3 días hábiles.

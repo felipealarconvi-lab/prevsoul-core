@@ -346,6 +346,9 @@ add_action(
 		if ( isset( $_GET['ok'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			$out .= '<div class="woocommerce-message">Guardado.</div>';
 		}
+		if ( isset( $_GET['ctrl'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$out .= '<div class="woocommerce-info">Tu plan aún no tiene clínica asignada para agendar en línea. Escríbenos y te damos hora.</div>';
+		}
 		$out .= '<span class="ps-mp-chip">' . ( $fam ? 'Plan Familiar · ' . count( $m ) . ' integrantes' : 'Plan Individual' ) . '</span>';
 		$out .= '<p class="ps-mp-lead">' . ( $fam ? 'Así va la salud dental de tu casa. Nosotros te avisamos cuando le toque a alguien.' : 'Tu plan y tu meta. Nosotros te avisamos cuando te toque.' ) . '</p>';
 		$out .= '<div class="ps-mp-sum"><div><strong>' . (int) $al . ' de ' . count( $m ) . '</strong><span>al día con su control</span></div><div><strong>' . (int) ( count( $m ) - $al ) . '</strong><span>por agendar o pronto</span></div></div>';
@@ -363,7 +366,7 @@ add_action(
 			$out .= '<input name="m[' . $i . '][edad]" value="' . esc_attr( $x['edad'] ) . '" placeholder="Edad" maxlength="3" inputmode="numeric" class="ps-mp-edad" aria-label="Edad"></div>';
 			$out .= '<label class="ps-mp-meta"><span>' . ( 0 === $i ? 'Mi meta' : 'Su meta' ) . '</span><input name="m[' . $i . '][meta]" value="' . esc_attr( $x['meta'] ) . '" placeholder="Ej: comer de todo sin molestias" maxlength="120"></label>';
 			$out .= '<span class="ps-mp-ult">' . ( $x['ultimo'] ? 'Último control: ' . esc_html( date_i18n( 'j M Y', strtotime( $x['ultimo'] ) ) ) : 'Sin control registrado aún' ) . '</span></div>';
-			$out .= '<span class="ps-mp-st ' . esc_attr( $e ) . '">' . esc_html( ps_plan_estado_txt( $e ) ) . '</span></div>';
+			$out .= '<span class="ps-mp-st ' . esc_attr( $e ) . '">' . esc_html( ps_plan_estado_txt( $e ) ) . '</span>' . ( 'al-dia' !== $e && function_exists( 'ps_ctrl_url' ) ? '<a class="ps-btn ps-btn-ghost ps-mp-ag" href="' . esc_url( ps_ctrl_url( $o, $i ) ) . '">Agendar control</a>' : '' ) . '</div>';
 		}
 		if ( $fam ) {
 			$r2 = is_array( $r2 ) ? $r2 : array();
@@ -519,7 +522,7 @@ function ps_plan_cron_run() {
 			foreach ( $m as $i => $x ) {
 				$e     = ps_plan_estado( $x['ultimo'] );
 				$c     = array( 'al-dia' => '#157347', 'pronto' => '#7A5300', 'agendar' => '#B42318' )[ $e ];
-				$rows .= '<tr><td style="padding:8px 10px;border-top:1px solid #D7E1EE"><b>' . esc_html( $x['nombre'] ? $x['nombre'] : 'Integrante ' . ( $i + 1 ) ) . '</b>' . ( 0 === $i ? ' (tú)' : '' ) . '</td><td style="padding:8px 10px;border-top:1px solid #D7E1EE;color:' . $c . ';font-weight:700;text-align:right">' . esc_html( ps_plan_estado_txt( $e ) ) . '</td></tr>';
+				$rows .= '<tr><td style="padding:8px 10px;border-top:1px solid #D7E1EE"><b>' . esc_html( $x['nombre'] ? $x['nombre'] : 'Integrante ' . ( $i + 1 ) ) . '</b>' . ( 0 === $i ? ' (tú)' : '' ) . '</td><td style="padding:8px 10px;border-top:1px solid #D7E1EE;color:' . $c . ';font-weight:700;text-align:right">' . esc_html( ps_plan_estado_txt( $e ) ) . ( 'agendar' === $e && function_exists( 'ps_ctrl_url' ) ? '<br><a href="' . esc_url( ps_ctrl_url( $o, $i ) ) . '" style="color:#1D5FD1;font-weight:700">Agendar control</a>' : '' ) . '</td></tr>';
 			}
 			$body = '<p>' . esc_html( $name ) . ', te escribimos para que no tengas que acordarte tú. Así va tu plan:</p><table style="width:100%;border-collapse:collapse;border:1px solid #D7E1EE;border-radius:10px">' . $rows . '</table>' . ps_mail_btn( wc_get_account_endpoint_url( 'mi-plan' ), 'Ver Mi plan' ) . '<p style="font-size:13px;color:#4A5B73">Un aviso al mes como máximo.</p>';
 			wp_mail( $to, count( $pend ) > 1 ? 'Este mes les toca control a ' . count( $pend ) . ' integrantes' : 'Este mes toca un control en tu plan', ps_mail_html( 'Nosotros nos acordamos por ti', $body ), $headers );

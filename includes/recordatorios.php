@@ -277,6 +277,8 @@ add_action(
 				$c['wa_token'] = sanitize_text_field( $in['wa_token'] );
 			}
 			update_option( 'ps_rec_cfg', $c, false );
+			update_option( 'ps_ag_comp_pct', max( 0, min( 100, (int) ( $in['comp'] ?? 50 ) ) ) );
+			update_option( 'ps_ctrl_pago', max( 0, (int) ( $in['ctrl_pago'] ?? 6000 ) ) );
 		}
 		wp_safe_redirect( admin_url( 'admin.php?page=ps-recordatorios&ok=1' ) );
 		exit;
@@ -312,6 +314,8 @@ function ps_rec_page() {
 	echo '<tr><th>Identificador del número (Phone number ID)</th><td><input type="text" name="wa_phone" value="' . esc_attr( $c['wa_phone'] ) . '" class="regular-text"></td></tr>';
 	echo '<tr><th>Token de acceso</th><td><input type="password" name="wa_token" value="" autocomplete="new-password" class="regular-text" placeholder="' . ( $c['wa_token'] ? 'Guardado (escribe solo para cambiarlo)' : 'Lo pegas tú' ) . '"></td></tr>';
 	echo '<tr><th>Plantilla y idioma</th><td><input type="text" name="wa_tpl" value="' . esc_attr( $c['wa_tpl'] ) . '"> <input type="text" name="wa_lang" value="' . esc_attr( $c['wa_lang'] ) . '" size="6"></td></tr>';
+	echo '<tr><th>Compensación a la clínica en la 2.ª inasistencia</th><td><input type="number" name="comp" min="0" max="100" value="' . (int) get_option( 'ps_ag_comp_pct', 50 ) . '" style="width:80px"> % de lo que le correspondía <p class="description">Según el estudio de inasistencia (Método Mochi): 50 %.</p></td></tr>';
+	echo '<tr><th>Pago a la clínica por control de plan</th><td>$ <input type="number" name="ctrl_pago" min="0" value="' . (int) get_option( 'ps_ctrl_pago', 6000 ) . '" style="width:110px"> <p class="description">Se paga cuando el control queda «Realizado». Supuesto inicial: valor lista × % de pago del modelo financiero.</p></td></tr>';
 	echo '</table><p><button class="button button-primary">Guardar</button></p></form>';
 	echo '<form method="post" action="' . $act . '">' . $nonce . '<input type="hidden" name="action" value="ps_rec"><input type="hidden" name="correr" value="1"><p><button class="button">Revisar ahora</button> <span class="description">Próxima revisión automática: ' . esc_html( wp_next_scheduled( 'ps_rec_cron' ) ? wp_date( 'j M H:i', wp_next_scheduled( 'ps_rec_cron' ) ) : '—' ) . '</span></p></form></div>'; // phpcs:ignore WordPress.Security.EscapeOutput
 }

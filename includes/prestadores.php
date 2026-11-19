@@ -564,7 +564,7 @@ add_shortcode(
 			if ( isset( $count[ $e ] ) ) {
 				$count[ $e ]++;
 			}
-			if ( 'realizada' === $e && ! get_post_meta( $o->ID, '_ps_pagada', true ) ) {
+			if ( in_array( $e, array( 'realizada', 'no_asistio' ), true ) && ! get_post_meta( $o->ID, '_ps_pagada', true ) ) {
 				$cobrar += (float) get_post_meta( $o->ID, '_ps_pago', true );
 			}
 		}
@@ -783,7 +783,7 @@ add_action(
 );
 function ps_liquidacion_page() {
 	$rows = array();
-	foreach ( get_posts( array( 'post_type' => 'ps_orden', 'numberposts' => -1, 'meta_key' => '_ps_estado', 'meta_value' => 'realizada' ) ) as $o ) {
+	foreach ( get_posts( array( 'post_type' => 'ps_orden', 'numberposts' => -1, 'meta_query' => array( array( 'key' => '_ps_estado', 'value' => array( 'realizada', 'no_asistio' ), 'compare' => 'IN' ) ) ) ) as $o ) {
 		if ( get_post_meta( $o->ID, '_ps_pagada', true ) ) {
 			continue;
 		}
@@ -800,7 +800,7 @@ function ps_liquidacion_page() {
 	if ( isset( $_GET['pagado'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 		echo '<div class="notice notice-success"><p>Órdenes marcadas como pagadas.</p></div>';
 	}
-	echo '<p>Atenciones <strong>realizadas</strong> que todavía no le pagas a cada prestador. Cuando hagas la transferencia, pulsa «Marcar pagadas».</p>';
+	echo '<p>Atenciones <strong>realizadas</strong> (y compensaciones por segunda inasistencia) que todavía no le pagas a cada prestador. Cuando hagas la transferencia, pulsa «Marcar pagadas».</p>';
 	echo '<table class="widefat striped" style="max-width:900px"><thead><tr><th>Prestador</th><th>Atenciones</th><th>Venta</th><th>Comisión Prevsoul</th><th>A pagar</th><th></th></tr></thead><tbody>';
 	if ( ! $rows ) {
 		echo '<tr><td colspan="6">No hay pagos pendientes.</td></tr>';
@@ -819,7 +819,7 @@ add_action(
 		if ( ! current_user_can( 'manage_options' ) || ! check_admin_referer( 'ps_pagar_' . $p ) ) {
 			wp_die( 'No permitido.' );
 		}
-		foreach ( get_posts( array( 'post_type' => 'ps_orden', 'numberposts' => -1, 'fields' => 'ids', 'meta_query' => array( array( 'key' => '_ps_prestador', 'value' => $p ), array( 'key' => '_ps_estado', 'value' => 'realizada' ) ) ) ) as $oid ) {
+		foreach ( get_posts( array( 'post_type' => 'ps_orden', 'numberposts' => -1, 'fields' => 'ids', 'meta_query' => array( array( 'key' => '_ps_prestador', 'value' => $p ), array( 'key' => '_ps_estado', 'value' => array( 'realizada', 'no_asistio' ), 'compare' => 'IN' ) ) ) ) as $oid ) {
 			if ( ! get_post_meta( $oid, '_ps_pagada', true ) ) {
 				update_post_meta( $oid, '_ps_pagada', wp_date( 'Y-m-d' ) );
 			}

@@ -482,7 +482,11 @@ function ps_ag_no_asistio( $oid, $who ) {
 		ps_orden_set_estado( $oid, 'recibida', $who . ' · no asistió el ' . ps_fmt_date( $antes ) . ' (1.ª vez: reagenda sin costo)' );
 		ps_ag_mail_simple( $oid, 'paciente', 'Te esperamos y no alcanzaste a llegar', '<p>Hola ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ', te esperábamos el ' . esc_html( ps_fmt_date( $antes ) ) . '. Sabemos que a veces pasa: esta vez puedes reagendar sin costo.</p><p><a href="' . esc_url( ps_ag_url( $oid ) ) . '" style="display:inline-block;background:#167A64;color:#fff;padding:12px 18px;border-radius:8px;text-decoration:none;font-weight:700">Elegir una nueva hora</a></p><p style="color:#4A5B73;font-size:13px">Si vuelve a pasar, la atención se da por usada. Si no puedes llegar, cámbiala o cancélala hasta 24 horas antes.</p>' );
 	} else {
-		ps_orden_set_estado( $oid, 'no_asistio', $who . ' · no asistió el ' . ps_fmt_date( $antes ) . ' (2.ª vez: atención usada)' );
+		$pct  = max( 0, min( 100, (int) get_option( 'ps_ag_comp_pct', 50 ) ) );
+		$orig = (float) get_post_meta( $oid, '_ps_pago', true );
+		update_post_meta( $oid, '_ps_pago_orig', $orig );
+		update_post_meta( $oid, '_ps_pago', round( $orig * $pct / 100 ) );
+		ps_orden_set_estado( $oid, 'no_asistio', $who . ' · no asistió el ' . ps_fmt_date( $antes ) . ' (2.ª vez: atención usada; la clínica recibe ' . $pct . ' % como compensación)' );
 		ps_ag_mail_simple( $oid, 'paciente', 'Tu atención se dio por usada', '<p>Hola ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ', no alcanzaste a llegar a tu hora del ' . esc_html( ps_fmt_date( $antes ) ) . ' y era la segunda vez, así que esta atención se da por usada. Si crees que es un error, responde este correo y lo revisamos.</p>' );
 	}
 }

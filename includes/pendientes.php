@@ -14,6 +14,7 @@ function ps_pend_base() {
 		'soul'      => 'Elegir el color de «soul» en el logo y generar los archivos definitivos del logo.',
 		'media'     => 'Revisar y borrar las imágenes de prueba del logo en la biblioteca de medios.',
 		'red'       => 'Cargar odontólogos y clínicas reales de la red.',
+		'red_ver'   => 'Verificar a todos los prestadores publicados (Prevsoul → Red: verificación).',
 		'legal'     => 'Revisión legal: «plan» y no «seguro» en todo el sitio y documentos.',
 		'iva'       => 'Definir el IVA en los precios.',
 		'precios'   => 'Cerrar la estructura de precios y la comisión a clínicas y odontólogos.',
@@ -39,6 +40,9 @@ function ps_pend_auto( $k ) {
 	}
 	if ( 'datos' === $k ) {
 		return ! get_option( 'ps_demo' );
+	}
+	if ( 'red_ver' === $k ) {
+		return function_exists( 'ps_ver_red_lista' ) && ps_ver_red_lista();
 	}
 	return null;
 }

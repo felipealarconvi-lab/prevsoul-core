@@ -151,7 +151,7 @@ function ps_product_box( $post ) {
 		if ( $items ) {
 			echo '<optgroup label="' . esc_attr( $label ) . '">';
 			foreach ( $items as $it ) {
-				echo '<option value="' . (int) $it->ID . '" ' . selected( $cur, $it->ID, false ) . '>' . esc_html( $it->post_title ) . '</option>';
+				echo '<option value="' . (int) $it->ID . '" ' . selected( $cur, $it->ID, false ) . '>' . esc_html( $it->post_title . ( function_exists( 'ps_ver_ok' ) && ! ps_ver_ok( $it->ID ) ? ' (sin verificar)' : '' ) ) . '</option>';
 			}
 			echo '</optgroup>';
 		}

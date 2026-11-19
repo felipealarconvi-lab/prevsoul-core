@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.39.0
+- Verificación interna de prestadores (no visible para el paciente): odontólogos con el Registro Nacional de Prestadores Individuales; clínicas con resolución sanitaria SEREMI y director técnico verificado. Vence a los 12 meses, con aviso un mes antes.
+- Con el sitio publicado, un prestador sin verificar no aparece en el sitio y sus atenciones no se pueden comprar.
+- Prevsoul → Red: verificación (lista de estados). Nuevo ítem automático en Antes de publicar.
+
 ## 2.38.0
 - Prevsoul → Dirección del sitio: botón para mostrar el sitio en prevsoul.cl (sin /wp/) sin mover archivos, y botón para volver atrás. Los enlaces antiguos con /wp/ redirigen solos.
 

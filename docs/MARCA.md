@@ -72,3 +72,10 @@ Todas usan tarjeta blanca (azul bruma en Blanco) con checks en menta profunda. S
 - Post para el feed: 1080×1080 (o 1080×1350 en «Versión para redes»)
 - Historia: 1080×1920
 - Banner para Meta o la web: 1200×628
+
+## Logo definitivo (19-nov-2026, versión 2.40.0)
+
+- Símbolo: diente de contorno azul profundo (#164BA8) con el escudo de prevención en menta (#1F9D74 sobre claro, #5FD3B8 sobre oscuro) que cubre la caries, con check blanco.
+- Palabra: «prev» en Plus Jakarta Sans 800 y «soul» en Quicksand 700, ambas en azul profundo (en blanco sobre fondos oscuros).
+- Unión (opción A): la palabra se acerca al escudo hasta casi tocarlo. En el archivo maestro el texto empieza en x = 23,6 de un lienzo de 116,4 × 30.
+- Archivos: logo a color, una tinta (azul noche) y blanco; símbolo solo en las mismas tres versiones.

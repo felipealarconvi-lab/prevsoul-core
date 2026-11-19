@@ -73,7 +73,7 @@
 	/* Logo nuevo: diente con escudo + «prevsoul». (x,y) = esquina inferior izquierda; h = alto del diente. */
 	var TOOTH = 'M7 3c-2.5 0-4 2-4 4.5 0 2 .8 3.4 1.5 5 .8 2 1 4.5 1.6 6.6.4 1.5 1.9 1.6 2.3 0l.9-3.6c.3-1 1.1-1.5 1.7-1.5s1.4.5 1.7 1.5l.9 3.6c.4 1.6 1.9 1.5 2.3 0 .6-2.1.8-4.6 1.6-6.6.3-.7.6-1.4.8-2.1C17.2 11 16 10.6 15.8 9.8 15.6 8.9 14.4 9.6 13.9 8.6 13.4 7.7 12.1 7.9 12.3 6.6 12.4 5.6 11.9 4.6 11.6 3.9C10.5 3.8 9.2 3 7 3z';
 	var SHIELD = 'M15.4 2.4c1.3.7 2.6 1.1 4 1.2.2 0 .3.1.3.3v3c0 2.6-1.7 4.6-4.1 5.6-.1.1-.3.1-.4 0-2.4-1-4.1-3-4.1-5.6v-3c0-.2.1-.3.3-.3 1.4-.1 2.7-.5 4-1.2z';
-	function logoWidth(x, h) { var fs = h * .62; font(x, '800 ' + fs + 'px "Plus Jakarta Sans"'); var a = x.measureText('prev').width; font(x, '700 ' + fs * 1.04 + 'px Quicksand'); return h * .94 + a + fs * .02 + x.measureText('soul').width; }
+	function logoWidth(x, h) { var fs = h * .62; font(x, '800 ' + fs + 'px "Plus Jakarta Sans"'); var a = x.measureText('prev').width; font(x, '700 ' + fs * 1.04 + 'px Quicksand'); return h * .866 + a + fs * .02 + x.measureText('soul').width; }
 	function logo(x, X, Y, h, color, ring) {
 		var light = color === '#fff', k = h / 21.4;
 		x.save(); x.translate(X, Y - h); x.scale(k, k); x.translate(-2, -1.2);
@@ -86,7 +86,7 @@
 			x.strokeStyle = light ? ring : '#fff'; x.lineWidth = 1.15; x.stroke(new Path2D('M13.5 7.3l1.3 1.3 2.4-2.6'));
 		}
 		x.restore();
-		var fs = h * .62, tx = X + h * .94;
+		var fs = h * .62, tx = X + h * .866;
 		x.save(); x.textAlign = 'left'; x.textBaseline = 'alphabetic'; x.fillStyle = color;
 		font(x, '800 ' + fs + 'px "Plus Jakarta Sans"'); x.fillText('prev', tx, Y - h * .2);
 		var a = x.measureText('prev').width;

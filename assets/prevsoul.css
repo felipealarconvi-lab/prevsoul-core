@@ -824,3 +824,7 @@ button.ps-car-btn:hover{border-color:var(--ps-accent);color:var(--ps-accent);bac
 .ps-logo .ps-wm{margin-left:0}
 .ps-foot-brand{gap:1px}
 .ps-pz-firma{gap:.08em}
+/* Logo definitivo (2.40.0): la palabra se acerca al escudo del diente (opción A). */
+.ps-logo .ps-logo-base+.ps-wm{margin-left:-.13em}
+.ps-foot-brand .ps-logo-base+.ps-wm{margin-left:-.36em}
+.ps-pz-firma .ps-logo-base+.ps-wm{margin-left:-.1em}

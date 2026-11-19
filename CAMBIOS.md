@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.40.0
+- Logo definitivo: «prevsoul» se une levemente con el diente (opción A) en el encabezado, el pie, la página en construcción, la firma de las piezas y la máquina de piezas para redes.
+- docs/MARCA.md: reglas del logo definitivo.
+
 ## 2.39.0
 - Verificación interna de prestadores (no visible para el paciente): odontólogos con el Registro Nacional de Prestadores Individuales; clínicas con resolución sanitaria SEREMI y director técnico verificado. Vence a los 12 meses, con aviso un mes antes.
 - Con el sitio publicado, un prestador sin verificar no aparece en el sitio y sus atenciones no se pueden comprar.

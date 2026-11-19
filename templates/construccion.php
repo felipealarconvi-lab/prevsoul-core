@@ -21,13 +21,13 @@ if ( '56912345678' === $ps_wa ) {
 <?php echo function_exists( 'ps_mk_verif_tag' ) ? ps_mk_verif_tag() : ''; // phpcs:ignore ?>
 <title>Estamos restaurando · Prevsoul</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Quicksand:wght@700&display=swap">
 <style>
 :root{--navy:#0B2347;--blue:#1D5FD1;--soft:#E8F0FC;--muted:#5A6B85}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{font-family:'Plus Jakarta Sans','Segoe UI',system-ui,sans-serif;color:var(--navy);background:#fff;display:flex;flex-direction:column;min-height:100vh}
-.top{padding:22px 28px;display:flex;align-items:center;gap:4px;font-weight:800;font-size:22px;letter-spacing:-.02em}
+.top{padding:22px 28px;display:flex;align-items:center;gap:0;font-weight:800;font-size:22px;letter-spacing:-.02em;color:#164BA8}.top .wm{display:inline-flex;align-items:baseline;margin-left:-.13em}.top .ws{font-family:Quicksand,'Plus Jakarta Sans',sans-serif;font-weight:700;font-size:1.04em;letter-spacing:-.2px;margin-left:.02em}
 .top svg{width:28px;height:28px}.top .ps-logo-svg{width:auto;height:28px}.top .ps-logo-svg:not(.ps-logo-base){height:40px;margin:-6px 0}
 main{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px 24px 40px}
 .art{width:min(300px,72vw);height:auto;margin-bottom:8px}
@@ -55,8 +55,7 @@ footer{padding:20px;text-align:center;font-size:13px;color:var(--muted)}
 </head>
 <body>
 <header class="top">
-	<?php echo function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'header' ) : ''; // phpcs:ignore ?>
-	prevsoul
+	<?php echo function_exists( 'ps_logo_svg' ) ? ps_logo_svg( 'header' ) : ''; // phpcs:ignore ?><span class="wm"><span>prev</span><span class="ws">soul</span></span>
 </header>
 <main>
 	<svg class="art" viewBox="0 0 260 240" role="img" aria-labelledby="ps-art-t">

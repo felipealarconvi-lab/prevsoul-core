@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.37.0
+- Contacto: página /contacto/ con formulario (enlazada en el pie de página), número de caso, copia al paciente y aviso al buzón contacto@prevsoul.cl.
+- Horario: se recibe 24/7 y se responde en horario hábil (lunes a viernes, 9 a 18 h), en un plazo de hasta 3 días hábiles.
+- Prevsoul → Contacto: bandeja con estados (nuevo, en curso, resuelto), plazo de respuesta, reclamos destacados y botón Responder.
+- Protección contra spam (campo trampa, tiempo mínimo y límite por conexión) y aviso de no escribir datos de salud; el formulario se oculta en Clarity.
+
 ## 2.36.0
 - Agenda: para elegir, cambiar o cancelar una hora el paciente debe entrar a su cuenta (con el correo de su compra). Si no ha entrado, ve un acceso con enlace para crear o recuperar su contraseña.
 - Tienda: la cuenta del paciente se crea al comprar (sin compra como invitado; usuario y contraseña generados y enviados por correo).

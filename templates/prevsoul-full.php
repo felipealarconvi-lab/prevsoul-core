@@ -121,7 +121,7 @@ $ps_icon = function ( $d, $size = 22 ) {
 			?>
 		</nav>
 		<?php echo function_exists( 'ps_blog_footer' ) ? ps_blog_footer() : ''; // phpcs:ignore ?>
-		<p class="ps-foot-note">Las precitas entregan orientación informativa y no reemplazan la consulta odontológica presencial.<?php if ( get_privacy_policy_url() ) : ?> · <a href="<?php echo esc_url( get_privacy_policy_url() ); ?>">Política de privacidad</a><?php endif; ?> · <a href="#ps-cookies" data-ps-ck-open>Preferencias de cookies</a><br>© <?php echo esc_html( wp_date( 'Y' ) ); ?> Prevsoul</p>
+		<p class="ps-foot-note">Las precitas entregan orientación informativa y no reemplazan la consulta odontológica presencial. · <a href="<?php echo esc_url( function_exists( 'ps_ct_url' ) ? ps_ct_url() : home_url( '/contacto/' ) ); ?>">Contacto</a><?php if ( get_privacy_policy_url() ) : ?> · <a href="<?php echo esc_url( get_privacy_policy_url() ); ?>">Política de privacidad</a><?php endif; ?> · <a href="#ps-cookies" data-ps-ck-open>Preferencias de cookies</a><br>© <?php echo esc_html( wp_date( 'Y' ) ); ?> Prevsoul</p>
 	</div>
 </footer>
 

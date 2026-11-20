@@ -680,7 +680,7 @@ function ps_invitar_valorar( $oid ) {
 		return;
 	}
 	$inner  = '<p>Hola ' . esc_html( get_post_meta( $oid, '_ps_paciente', true ) ) . ', ' . esc_html( get_the_title( $prov ) ) . ' nos informó que ya realizaste tu atención: <strong>' . esc_html( get_post_meta( $oid, '_ps_producto', true ) ) . '</strong>.</p>';
-	$inner .= '<p>¿Nos cuentas cómo te fue? Tu opinión ayuda a otros pacientes y a mantener la calidad de nuestra red.</p><p><a href="' . esc_url( get_permalink( $pid ) . '#reviews' ) . '" style="display:inline-block;background:#1D5FD1;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700">Valorar mi atención</a></p>';
+	$inner .= '<p>¿Nos cuentas cómo te fue? Tu opinión ayuda a otros pacientes y a mantener la calidad de nuestra red.</p><p><a href="' . esc_url( function_exists( 'ps_val_url' ) ? ps_val_url() : get_permalink( $pid ) . '#reviews' ) . '" style="display:inline-block;background:#1D5FD1;color:#fff;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:700">Valorar mi atención</a></p>';
 	wp_mail( $to, '¿Cómo te fue con tu atención Prevsoul?', ps_mail_wrap( '¿Cómo te fue?', $inner ), array( 'Content-Type: text/html; charset=UTF-8' ) );
 }
 

@@ -1,5 +1,12 @@
 # Cambios de Prevsoul Core
 
+## 2.44.0
+- Tarjetas de producto: se quita «Ver y valorar». Tocar la tarjeta abre el producto; Comprar sigue funcionando aparte.
+- Página del producto: pestaña «Valoraciones» de solo lectura (estrellas, comentarios, sello «Atención verificada», respuestas de Prevsoul). Sin formulario.
+- Mi cuenta → Mis atenciones: lista de atenciones del paciente. «Valorar» aparece solo en atenciones realizadas y sin valorar (estrellas, comentario opcional y autorización de testimonio).
+- Solo se aceptan valoraciones de producto que vienen desde Mis atenciones.
+- El correo «¿Cómo te fue?» lleva a Mis atenciones.
+
 ## 2.43.0
 - Cupos con siluetas de personas junto al botón Comprar: blancas con borde azul = disponibles, rellenas de azul = vendidas (ventas reales de los últimos 14 días). Máximo 5 siluetas.
 - Texto bajo las siluetas solo con lo disponible: «Quedan N cupos», «Cupos disponibles» (más de 5) o «Agotado por ahora».

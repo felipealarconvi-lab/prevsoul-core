@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.42.2
+- Producto: casilla «Usar cupos de agenda» (marcada por defecto). Desmarcada, el producto se vende sin límite y no muestra etiqueta de cupos.
+
 ## 2.42.1
 - Cupos: el número se muestra solo cuando quedan 5 o menos («Quedan 3 cupos»); sobre eso, la etiqueta dice «Cupos disponibles».
 

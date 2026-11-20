@@ -43,6 +43,9 @@ function ps_cupos_aplica( $pid ) {
 	if ( function_exists( 'ps_es_plan_pid' ) && ps_es_plan_pid( $pid ) ) {
 		return 0;
 	}
+	if ( 'no' === get_post_meta( $pid, '_ps_usa_cupos', true ) ) {
+		return 0;
+	}
 	$prov = ps_product_prestador( $pid );
 	return ( $prov && ps_ag_activa( $prov ) ) ? $prov : 0;
 }
@@ -235,6 +238,16 @@ add_action(
 add_action(
 	'woocommerce_product_options_general_product_data',
 	function () {
+		$pid = get_the_ID();
+		woocommerce_wp_checkbox(
+			array(
+				'id'          => '_ps_usa_cupos',
+				'label'       => 'Usar cupos de agenda',
+				'value'       => 'no' === get_post_meta( $pid, '_ps_usa_cupos', true ) ? 'no' : 'yes',
+				'cbvalue'     => 'yes',
+				'description' => 'Marcado: se vende según los cupos que libera la agenda del prestador (muestra «Cupos disponibles», «Quedan N» o «Agotado por ahora»). Desmarcado: se vende sin límite.',
+			)
+		);
 		woocommerce_wp_text_input(
 			array(
 				'id'                => '_ps_horas_uco',
@@ -251,6 +264,10 @@ add_action(
 add_action(
 	'woocommerce_process_product_meta',
 	function ( $pid ) {
+		update_post_meta( $pid, '_ps_usa_cupos', empty( $_POST['_ps_usa_cupos'] ) ? 'no' : 'yes' ); // phpcs:ignore WordPress.Security.NonceVerification
+		foreach ( (array) get_post_meta( $pid, '_ps_prestador', false ) as $prov ) {
+			ps_cupos_limpiar( (int) $prov );
+		}
 		if ( isset( $_POST['_ps_horas_uco'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			update_post_meta( $pid, '_ps_horas_uco', max( 1, min( 12, absint( $_POST['_ps_horas_uco'] ) ) ) ); // phpcs:ignore WordPress.Security.NonceVerification
 		}

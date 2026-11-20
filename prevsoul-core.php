@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.46.0
+ * Version:           2.47.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.46.0' );
+define( 'PS_VERSION', '2.47.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -48,6 +48,7 @@ require_once __DIR__ . '/includes/agenda-inicio.php';
 require_once __DIR__ . '/includes/cupos.php';
 require_once __DIR__ . '/includes/valorar.php';
 require_once __DIR__ . '/includes/cuenta.php';
+require_once __DIR__ . '/includes/espera.php';
 require_once __DIR__ . '/includes/recordatorios.php';
 require_once __DIR__ . '/includes/agenda-planes.php';
 require_once __DIR__ . '/includes/contacto.php';
@@ -591,7 +592,7 @@ add_shortcode(
 			$out   .= $cl ? '<div class="ps-muted ps-small">' . esc_html( get_the_title( $cl ) ) . '</div>' : '';
 			$out   .= '</div></div><div class="ps-chips"><span class="ps-chip ps-rank-' . (int) $rank . '">' . esc_html( PS_RANKS[ $rank ] ?? '' ) . '</span>' . ( $active ? '<span class="ps-chip ps-good">En la sala de espera</span>' : '' ) . '</div>';
 			$out   .= '<p class="ps-small">' . esc_html( $desc ) . '</p><div>' . ps_stars_html( $r['avg'], $r['count'] ) . '</div>';
-			$out   .= '<a class="ps-btn ps-btn-ghost" href="' . esc_url( get_permalink( $d ) ) . '#comments">Ver perfil y valorar</a></article>';
+			$out   .= '<a class="ps-btn ps-btn-ghost" href="' . esc_url( get_permalink( $d ) ) . '">Ver perfil</a></article>';
 		}
 		return $out . '</div>';
 	}
@@ -864,7 +865,7 @@ function ps_product_card( $p ) {
 	if ( '' !== $price && null !== $price ) {
 		$monthly = has_term( 'planes-dentales', 'product_cat', $p->get_id() ) || in_array( 'planes-dentales', ps_parent_slugs( $p ), true );
 		$out    .= '<div class="ps-price">' . wp_kses_post( $p->get_price_html() ) . ( $monthly ? ' <span class="ps-muted ps-small">/ mes</span>' : '' ) . '</div>';
-		$out    .= '<div class="ps-actions"' . ( $badge ? ' style="align-items:center"' : '' ) . '>' . $badge . ( 0 === $cupos ? '<span class="ps-btn ps-btn-ghost" aria-disabled="true" style="opacity:.6;cursor:default">Agotado por ahora</span>' : '<a class="ps-btn" href="' . esc_url( $p->add_to_cart_url() ) . '" data-quantity="1" data-product_id="' . (int) $p->get_id() . '" rel="nofollow">' . ( $monthly ? 'Contratar' : 'Comprar' ) . '</a>' ) . '</div>';
+		$out    .= '<div class="ps-actions"' . ( $badge ? ' style="align-items:center"' : '' ) . '>' . $badge . ( 0 === $cupos ? ( function_exists( 'ps_esp_form' ) ? ps_esp_form( $p->get_id() ) : '' ) : '<a class="ps-btn" href="' . esc_url( $p->add_to_cart_url() ) . '" data-quantity="1" data-product_id="' . (int) $p->get_id() . '" rel="nofollow">' . ( $monthly ? 'Contratar' : 'Comprar' ) . '</a>' ) . '</div>';
 	} else {
 		$out .= '<div class="ps-price">Cotizar</div><div class="ps-actions"><a class="ps-btn" href="' . esc_url( add_query_arg( 'ps_motivo', 'Plan para organización', ps_get( 'sala_url' ) ) ) . '">Solicitar cotización</a></div>';
 	}

@@ -182,6 +182,7 @@ add_action(
 				}
 				$form = '<form class="ps-ma-f" id="psv' . (int) $oid . '" method="post" action="' . esc_url( site_url( '/wp-comments-post.php' ) ) . '">'
 					. '<div class="ps-ma-st">' . $stars . '</div>'
+					. ps_val_doc_estrellas( $oid )
 					. '<p><textarea name="comment" placeholder="¿Cómo te fue? (opcional)"></textarea></p>'
 					. '<p class="ps-ma-m"><label><input type="checkbox" name="ps_testimonio_ok" value="1"> Autorizo a Prevsoul a mostrar mi reseña como testimonio, con mi nombre y la inicial de mi apellido.</label></p>'
 					. '<input type="hidden" name="comment_post_ID" value="' . (int) $pid . '"><input type="hidden" name="ps_orden" value="' . (int) $oid . '">'
@@ -246,6 +247,24 @@ add_action(
 		update_comment_meta( $cid, 'verified', 1 );
 		update_comment_meta( $cid, 'ps_orden', $oid );
 		update_post_meta( $oid, '_ps_valorada', $cid );
+		$doc = (int) get_post_meta( $oid, '_ps_prestador', true );
+		if ( 'ps_odontologo' === get_post_type( $doc ) && ! empty( $_POST['ps_rating_doc'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
+			$dc = wp_insert_comment(
+				array(
+					'comment_post_ID'      => $doc,
+					'comment_author'       => $c->comment_author,
+					'comment_author_email' => $c->comment_author_email,
+					'comment_content'      => $c->comment_content,
+					'user_id'              => $c->user_id,
+					'comment_approved'     => 0,
+				)
+			);
+			if ( $dc ) {
+				add_comment_meta( $dc, 'ps_rating', max( 1, min( 5, absint( $_POST['ps_rating_doc'] ) ) ), true ); // phpcs:ignore WordPress.Security.NonceVerification
+				add_comment_meta( $dc, 'ps_orden', $oid, true );
+				add_comment_meta( $dc, 'verified', 1, true );
+			}
+		}
 		if ( class_exists( 'WC_Comments' ) ) {
 			WC_Comments::clear_transients( $c->comment_post_ID );
 		}
@@ -304,3 +323,45 @@ function ps_val_lista() {
 	}
 	echo '<p style="background:#EAF1FC;border-radius:10px;padding:10px 12px;font-size:13px;color:#164BA8;margin-top:8px">Solo pueden valorar quienes compraron y se atendieron, desde <a href="' . esc_url( ps_val_url() ) . '">Mi cuenta → Mis atenciones</a>.</p></div>';
 }
+
+/* -------------------------------------------------------------------------
+ * Odontólogos: también se valoran solo desde Mis atenciones.
+ * ---------------------------------------------------------------------- */
+function ps_val_doc_estrellas( $oid ) {
+	$doc = (int) get_post_meta( $oid, '_ps_prestador', true );
+	if ( 'ps_odontologo' !== get_post_type( $doc ) ) {
+		return '';
+	}
+	$h = '';
+	for ( $i = 5; $i >= 1; $i-- ) {
+		$h .= '<input type="radio" id="psd' . (int) $oid . 's' . $i . '" name="ps_rating_doc" value="' . $i . '"><label for="psd' . (int) $oid . 's' . $i . '" title="' . $i . '">★</label>';
+	}
+	return '<p class="ps-ma-m" style="margin:10px 0 2px">¿Y cómo te atendió ' . esc_html( get_the_title( $doc ) ) . '? (opcional)</p><div class="ps-ma-st">' . $h . '</div>';
+}
+add_filter(
+	'comments_open',
+	function ( $open, $post_id ) {
+		return ( ! is_admin() && is_singular( 'ps_odontologo' ) && 'ps_odontologo' === get_post_type( $post_id ) ) ? false : $open;
+	},
+	20,
+	2
+);
+add_action(
+	'comment_form_comments_closed',
+	function () {
+		if ( is_singular( 'ps_odontologo' ) ) {
+			echo '<p style="background:#EAF1FC;border-radius:10px;padding:10px 12px;font-size:13px;color:#164BA8">Solo pueden valorar quienes se atendieron, desde <a href="' . esc_url( ps_val_url() ) . '">Mi cuenta → Mis atenciones</a>.</p>';
+		}
+	}
+);
+add_filter(
+	'preprocess_comment',
+	function ( $data ) {
+		$pid = (int) ( $data['comment_post_ID'] ?? 0 );
+		if ( 'ps_odontologo' === get_post_type( $pid ) && ! is_admin() && ! current_user_can( 'moderate_comments' ) ) {
+			wp_die( 'Solo pueden valorar quienes se atendieron, desde Mi cuenta → Mis atenciones.', 'Prevsoul', array( 'response' => 403, 'back_link' => true ) );
+		}
+		return $data;
+	},
+	1
+);

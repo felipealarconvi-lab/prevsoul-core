@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.47.0
+- «Avísame cuando haya cupo»: en productos agotados, el paciente deja correo o WhatsApp (con autorización). Cuando vuelve a haber cupo se avisa una sola vez a todos: correo automático; los WhatsApp quedan en Recordatorios para enviarlos con un clic.
+- Panel del prestador: aviso de cuántas personas esperan cupo y para qué.
+- Odontólogos: se quita «Ver perfil y valorar» (ahora «Ver perfil»). El perfil muestra las valoraciones sin formulario; se valora al odontólogo desde Mis atenciones, junto con la atención, si él fue quien atendió.
+
 ## 2.46.0
 - Inicio: Planes dentales pasa justo debajo de Atención dental, y el calendario «Las horas se están tomando» queda debajo de Packs dentales.
 - El enlace del ahorro preventivo ahora apunta hacia arriba: «↑ Elige tu plan y empieza a ahorrar».

@@ -363,5 +363,6 @@ function ps_cupos_panel_html( $prov ) {
 	if ( $lis ) {
 		$out .= '<p class="ps-small" style="margin:8px 0 0"><strong>Cupos de tus productos</strong></p><ul class="ps-small" style="margin:4px 0 0 18px;padding:0">' . $lis . '</ul>';
 	}
+	$out .= function_exists( 'ps_esp_panel_html' ) ? ps_esp_panel_html( $prov ) : '';
 	return $out . '</section>';
 }

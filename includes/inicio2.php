@@ -450,13 +450,13 @@ function ps_tags_card() {
 function ps_inicio2_content() {
 	return ps_sc( '[ps_hero titulo="Habla ahora con un odontólogo real" bajada="Orientación dental gratuita y planes preventivos con odontólogo de cabecera." boton="Entrar a la sala de espera" boton_url="#sala" boton2="Ver Prevsoul Live" boton2_url="/prevsoul-live/"]' )
 		. ps_sc( '[ps_seccion fondo="blanco"][ps_buscador][/ps_seccion]' )
-		. ps_sc( '[ps_seccion fondo="blanco"][ps_agenda_semana][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="claro" titulo="Atención dental" bajada="Las mejor valoradas por nuestros pacientes."][ps_carrusel tipo="atencion" ver_todo="/atencion-dental/"][/ps_seccion]' )
+		. ps_sc( '[ps_seccion id="planes" fondo="blanco" titulo="Planes dentales" bajada="Tu odontólogo de cabecera todo el año. Elige el plan para ti."][ps_planes][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="blanco"][ps_consulta_aviso][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="claro" titulo="Packs dentales" bajada="Todo lo que necesitas, en un solo pack."][ps_carrusel tipo="packs" ver_todo="/packs-dentales/"][/ps_seccion]' )
+		. ps_sc( '[ps_seccion fondo="blanco"][ps_agenda_semana][/ps_seccion]' )
 		. ps_sc( '[ps_live_cine]' )
-		. ps_sc( '[ps_seccion fondo="claro" titulo="Con prevención, tu boca y tu bolsillo ganan" bajada="Compara lo que inviertes en un plan preventivo con lo que podría costarte tratar después."][ps_ahorro][ps_puente texto="Elige tu plan y empieza a ahorrar" url="#planes"][/ps_seccion]' )
-		. ps_sc( '[ps_seccion id="planes" fondo="blanco" titulo="Planes dentales" bajada="Tu odontólogo de cabecera todo el año. Elige el plan para ti."][ps_planes][/ps_seccion]' )
+		. ps_sc( '[ps_seccion fondo="claro" titulo="Con prevención, tu boca y tu bolsillo ganan" bajada="Compara lo que inviertes en un plan preventivo con lo que podría costarte tratar después."][ps_ahorro][ps_puente texto="Elige tu plan y empieza a ahorrar" url="#planes" flecha="arriba"][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="blanco" titulo="Tus odontólogos de cabecera" bajada="Profesionales reales, valorados por pacientes."][ps_odontologos limite="6"][/ps_seccion]' )
 		. ps_sc( '[ps_cta titulo="Empieza a prevenir hoy" bajada="Tu primera precita es gratis." boton="Hablar con un odontólogo" url="#sala"]' );
 }
@@ -485,8 +485,8 @@ add_action(
 add_shortcode(
 	'ps_puente',
 	function ( $atts ) {
-		$a = shortcode_atts( array( 'texto' => '', 'url' => '' ), $atts );
-		return $a['texto'] ? '<p class="ps-puente"><a href="' . esc_url( $a['url'] ? $a['url'] : '#' ) . '"><span aria-hidden="true">↓</span> ' . esc_html( $a['texto'] ) . '</a></p>' : '';
+		$a = shortcode_atts( array( 'texto' => '', 'url' => '', 'flecha' => 'abajo' ), $atts );
+		return $a['texto'] ? '<p class="ps-puente"><a href="' . esc_url( $a['url'] ? $a['url'] : '#' ) . '"><span aria-hidden="true">' . ( 'arriba' === $a['flecha'] ? '↑' : '↓' ) . '</span> ' . esc_html( $a['texto'] ) . '</a></p>' : '';
 	}
 );
 
@@ -520,4 +520,42 @@ add_action(
 		wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
 	},
 	75
+);
+
+/* 2.46.0: en el inicio publicado, Planes va debajo de Atención dental y el calendario debajo de Packs. */
+add_action(
+	'init',
+	function () {
+		if ( get_option( 'ps_inicio_orden_v3' ) ) {
+			return;
+		}
+		update_option( 'ps_inicio_orden_v3', 1 );
+		$page = get_page_by_path( 'inicio' );
+		if ( ! $page ) {
+			$front = (int) get_option( 'page_on_front' );
+			$page  = $front ? get_post( $front ) : null;
+		}
+		if ( ! $page ) {
+			return;
+		}
+		$c   = $page->post_content;
+		$blk = function ( $needle ) use ( &$c ) {
+			return preg_match( '#<!-- wp:shortcode -->\[ps_seccion[^\]]*\]' . $needle . '.*?<!-- /wp:shortcode -->#s', $c, $m ) ? $m[0] : '';
+		};
+		$at = $blk( '\[ps_carrusel tipo="atencion"' );
+		$pk = $blk( '\[ps_carrusel tipo="packs"' );
+		$pl = $blk( '\[ps_planes' );
+		$ag = $blk( '\[ps_agenda_semana' );
+		if ( $pl && $at ) {
+			$c = str_replace( $pl, '', $c );
+			$c = str_replace( $at, $at . $pl, $c );
+		}
+		if ( $ag && $pk ) {
+			$c = str_replace( $ag, '', $c );
+			$c = str_replace( $pk, $pk . $ag, $c );
+		}
+		$c = preg_replace( '#\[ps_puente([^\]]*url="\#planes")(?![^\]]*flecha=)([^\]]*)\]#', '[ps_puente$1$2 flecha="arriba"]', $c );
+		wp_update_post( array( 'ID' => $page->ID, 'post_content' => $c ) );
+	},
+	80
 );

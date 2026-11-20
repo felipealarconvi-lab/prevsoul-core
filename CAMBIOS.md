@@ -1,5 +1,9 @@
 # Cambios de Prevsoul Core
 
+## 2.46.0
+- Inicio: Planes dentales pasa justo debajo de Atención dental, y el calendario «Las horas se están tomando» queda debajo de Packs dentales.
+- El enlace del ahorro preventivo ahora apunta hacia arriba: «↑ Elige tu plan y empieza a ahorrar».
+
 ## 2.45.1
 - Mi cuenta: el menú queda a la izquierda y el contenido a la derecha (se anula el «clearfix» de WooCommerce que desordenaba la grilla).
 

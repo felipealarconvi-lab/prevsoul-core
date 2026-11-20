@@ -168,7 +168,9 @@ add_action(
 <style>
 .ps-cu{background:#F7FAFE;padding:28px 0 48px}
 .ps-cu .woocommerce{display:grid;grid-template-columns:230px minmax(0,1fr);gap:24px;align-items:start}
+.ps-cu .woocommerce:before,.ps-cu .woocommerce:after{display:none!important;content:none!important}
 .ps-cu .woocommerce-MyAccount-navigation,.ps-cu .woocommerce-MyAccount-content{float:none;width:auto;margin:0}
+.ps-cu .woocommerce-MyAccount-navigation{grid-column:1}.ps-cu .woocommerce-MyAccount-content{grid-column:2}
 .ps-cu .woocommerce-MyAccount-navigation ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px}
 .ps-cu .woocommerce-MyAccount-navigation a{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:12px;color:#0B2545;text-decoration:none;font-weight:600;font-size:15px}
 .ps-cu .woocommerce-MyAccount-navigation a:before{content:"";width:18px;height:18px;flex:none;background:#4A5B73;-webkit-mask-size:contain;mask-size:contain;-webkit-mask-repeat:no-repeat;mask-repeat:no-repeat}
@@ -198,7 +200,7 @@ add_action(
 .ps-cu .woocommerce > .woocommerce-notices-wrapper{grid-column:1/-1}
 .ps-cu .woocommerce:not(:has(.woocommerce-MyAccount-navigation)){display:block;max-width:520px}
 @media(max-width:760px){
-.ps-cu .woocommerce{grid-template-columns:1fr;gap:14px}
+.ps-cu .woocommerce{grid-template-columns:1fr;gap:14px}.ps-cu .woocommerce-MyAccount-navigation,.ps-cu .woocommerce-MyAccount-content{grid-column:1}
 .ps-cu .woocommerce-MyAccount-navigation ul{flex-direction:row;overflow-x:auto;gap:6px;padding-bottom:4px}
 .ps-cu .woocommerce-MyAccount-navigation a{white-space:nowrap;background:#fff;border:1px solid #D9E3F2;padding:8px 12px;font-size:14px}
 .ps-cu .woocommerce-MyAccount-navigation-link--customer-logout{margin:0;padding:0;border:0}

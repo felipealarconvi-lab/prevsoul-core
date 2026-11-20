@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.45.1
+- Mi cuenta: el menú queda a la izquierda y el contenido a la derecha (se anula el «clearfix» de WooCommerce que desordenaba la grilla).
+
 ## 2.45.0
 - Mi cuenta con el diseño Prevsoul: cabecera y pie del sitio, franja «Hola, nombre» y menú con íconos (en el celular, fila horizontal).
 - Menú simple: Inicio, Mis atenciones, Mi plan, Mis compras, Mis datos y Salir. Se ocultan Descargas y Dirección.

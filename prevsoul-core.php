@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Prevsoul Core
  * Description:       Odontólogos, clínicas, Prevsoul Live, sala de espera (solicitud de precitas), catálogo por categorías, gráfico de ahorro y buscador de necesidades para prevsoul.cl.
- * Version:           2.42.2
+ * Version:           2.43.0
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * Author:            Prevsoul
@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'PS_VERSION', '2.42.2' );
+define( 'PS_VERSION', '2.43.0' );
 define( 'PS_FILE', __FILE__ );
 define( 'PS_URL', plugin_dir_url( __FILE__ ) );
 require_once __DIR__ . '/includes/updater.php';
@@ -858,11 +858,11 @@ function ps_product_card( $p ) {
 	}
 	$out .= function_exists( 'ps_ps_linea' ) ? ps_ps_linea( $p, 15 ) : '';
 	$cupos = function_exists( 'ps_cupos_producto' ) ? ps_cupos_producto( $p->get_id() ) : null;
-	$out  .= function_exists( 'ps_cupos_badge' ) ? ps_cupos_badge( $p->get_id() ) : '';
+	$badge = function_exists( 'ps_cupos_badge' ) ? ps_cupos_badge( $p->get_id() ) : '';
 	if ( '' !== $price && null !== $price ) {
 		$monthly = has_term( 'planes-dentales', 'product_cat', $p->get_id() ) || in_array( 'planes-dentales', ps_parent_slugs( $p ), true );
 		$out    .= '<div class="ps-price">' . wp_kses_post( $p->get_price_html() ) . ( $monthly ? ' <span class="ps-muted ps-small">/ mes</span>' : '' ) . '</div>';
-		$out    .= '<div class="ps-actions">' . ( 0 === $cupos ? '<span class="ps-btn ps-btn-ghost" aria-disabled="true" style="opacity:.6;cursor:default">Agotado por ahora</span>' : '<a class="ps-btn" href="' . esc_url( $p->add_to_cart_url() ) . '" data-quantity="1" data-product_id="' . (int) $p->get_id() . '" rel="nofollow">' . ( $monthly ? 'Contratar' : 'Comprar' ) . '</a>' ) . '<a class="ps-btn ps-btn-ghost" href="' . esc_url( $p->get_permalink() ) . '#reviews">Ver y valorar</a></div>';
+		$out    .= '<div class="ps-actions"' . ( $badge ? ' style="align-items:center"' : '' ) . '>' . $badge . ( 0 === $cupos ? '<span class="ps-btn ps-btn-ghost" aria-disabled="true" style="opacity:.6;cursor:default">Agotado por ahora</span>' : '<a class="ps-btn" href="' . esc_url( $p->add_to_cart_url() ) . '" data-quantity="1" data-product_id="' . (int) $p->get_id() . '" rel="nofollow">' . ( $monthly ? 'Contratar' : 'Comprar' ) . '</a>' ) . '<a class="ps-btn ps-btn-ghost" href="' . esc_url( $p->get_permalink() ) . '#reviews">Ver y valorar</a></div>';
 	} else {
 		$out .= '<div class="ps-price">Cotizar</div><div class="ps-actions"><a class="ps-btn" href="' . esc_url( add_query_arg( 'ps_motivo', 'Plan para organización', ps_get( 'sala_url' ) ) ) . '">Solicitar cotización</a></div>';
 	}

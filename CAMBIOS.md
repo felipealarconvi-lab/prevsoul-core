@@ -1,5 +1,10 @@
 # Cambios de Prevsoul Core
 
+## 2.43.0
+- Cupos con siluetas de personas junto al botón Comprar: blancas con borde azul = disponibles, rellenas de azul = vendidas (ventas reales de los últimos 14 días). Máximo 5 siluetas.
+- Texto bajo las siluetas solo con lo disponible: «Quedan N cupos», «Cupos disponibles» (más de 5) o «Agotado por ahora».
+- En la página del producto, las siluetas van justo antes del botón de compra.
+
 ## 2.42.2
 - Producto: casilla «Usar cupos de agenda» (marcada por defecto). Desmarcada, el producto se vende sin límite y no muestra etiqueta de cupos.
 

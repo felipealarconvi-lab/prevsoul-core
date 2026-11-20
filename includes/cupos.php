@@ -169,18 +169,61 @@ function ps_cupos_producto( $pid ) {
 	return (int) floor( ps_cupos_bolsa( $prov )['bolsa'] / ps_cupos_horas( $pid ) );
 }
 
-/** Etiqueta «Quedan N cupos» / «Agotado por ahora» (vacía si el producto no usa cupos). */
+/** Cupos vendidos de un producto en el período (ventas reales: órdenes recibidas, agendadas o realizadas). */
+function ps_cupos_vendidos( $pid ) {
+	$key = 'ps_vend_' . (int) $pid;
+	$c   = get_transient( $key );
+	if ( false !== $c ) {
+		return (int) $c;
+	}
+	$n   = 0;
+	$ids = get_posts(
+		array(
+			'post_type'   => 'ps_orden',
+			'numberposts' => 300,
+			'fields'      => 'ids',
+			'date_query'  => array( array( 'after' => PS_CUPOS_DIAS . ' days ago' ) ),
+			'meta_query'  => array(
+				array( 'key' => '_ps_product_id', 'value' => (int) $pid ),
+				array( 'key' => '_ps_estado', 'value' => array( 'recibida', 'agendada', 'realizada' ), 'compare' => 'IN' ),
+			),
+		)
+	);
+	foreach ( $ids as $oid ) {
+		if ( ! get_post_meta( $oid, '_ps_ctrl', true ) ) {
+			$n += max( 1, (int) get_post_meta( $oid, '_ps_cantidad', true ) );
+		}
+	}
+	set_transient( $key, $n, 10 * MINUTE_IN_SECONDS );
+	return $n;
+}
+
+/** Silueta de persona: rellena = vendido, blanca con borde = disponible. */
+function ps_cupos_persona( $lleno ) {
+	$f = $lleno ? '#1D5FD1' : '#fff';
+	return '<svg width="14" height="17" viewBox="0 0 22 26" aria-hidden="true" focusable="false"><circle cx="11" cy="7" r="4.6" fill="' . $f . '" stroke="#1D5FD1" stroke-width="2"/><path d="M2.5 24.2c0-5.2 3.8-9 8.5-9s8.5 3.8 8.5 9z" fill="' . $f . '" stroke="#1D5FD1" stroke-width="2" stroke-linejoin="round"/></svg>';
+}
+
+/** Siluetas + «Quedan N cupos» / «Cupos disponibles» / «Agotado por ahora» (vacío si el producto no usa cupos). */
 function ps_cupos_badge( $pid ) {
 	$c = ps_cupos_producto( $pid );
 	if ( null === $c ) {
 		return '';
 	}
+	$disp = min( $c, 5 );
+	$llen = min( ps_cupos_vendidos( $pid ), 5 - $disp );
 	if ( 0 === $c ) {
-		return '<p class="ps-cupos" style="margin:0;font-size:13px;font-weight:700;color:#4A5B73;background:#F0F4FA;border-radius:999px;padding:4px 12px;align-self:flex-start">Agotado por ahora</p>';
+		$texto = 'Agotado por ahora';
+		$col   = '#4A5B73';
+	} elseif ( $c > ps_cupos_umbral() ) {
+		$texto = 'Cupos disponibles';
+		$col   = '#167A64';
+	} else {
+		$texto = 1 === $c ? 'Queda 1 cupo' : 'Quedan ' . (int) $c . ' cupos';
+		$col   = $c <= 2 ? '#7A5300' : '#167A64';
 	}
-	$poco  = $c <= 2;
-	$texto = $c > ps_cupos_umbral() ? 'Cupos disponibles' : 'Quedan ' . (int) $c . ' cupo' . ( 1 === $c ? '' : 's' );
-	return '<p class="ps-cupos" style="margin:0;font-size:13px;font-weight:700;color:' . ( $poco ? '#7A5300' : '#167A64' ) . ';background:' . ( $poco ? '#FFF4E0' : '#E6F7F2' ) . ';border-radius:999px;padding:4px 12px;align-self:flex-start">' . esc_html( $texto ) . '</p>';
+	$ic = str_repeat( ps_cupos_persona( true ), $llen ) . str_repeat( ps_cupos_persona( false ), $disp );
+	return '<span class="ps-cupos" style="display:inline-flex;flex-direction:column;gap:2px;margin-right:auto;align-self:center"><span role="img" aria-label="' . esc_attr( $texto ) . '" style="display:flex;gap:1px;line-height:0">' . $ic . '</span><span style="font-size:11px;font-weight:700;line-height:1.2;color:' . $col . '">' . esc_html( $texto ) . '</span></span>';
 }
 
 /* Sin cupos, no se puede comprar. */
@@ -228,10 +271,13 @@ add_action(
 	function () {
 		global $product;
 		if ( $product ) {
-			echo ps_cupos_badge( $product->get_id() ); // phpcs:ignore WordPress.Security.EscapeOutput
+			$b = ps_cupos_badge( $product->get_id() );
+			if ( $b ) {
+				echo '<div class="ps-cupos-fila" style="margin:4px 0 10px">' . $b . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
+			}
 		}
 	},
-	11
+	29
 );
 
 /* Campo «Horas UCO que usa» en el producto. */
@@ -278,8 +324,9 @@ add_action(
 $ps_cupos_meta = function ( $mid, $oid, $key ) {
 	if ( in_array( $key, array( '_ps_ag', '_ps_ag_ocup' ), true ) ) {
 		ps_cupos_limpiar( $oid );
-	} elseif ( in_array( $key, array( '_ps_estado', '_ps_cita', '_ps_prestador' ), true ) && 'ps_orden' === get_post_type( $oid ) ) {
+	} elseif ( in_array( $key, array( '_ps_estado', '_ps_cita', '_ps_prestador', '_ps_product_id', '_ps_cantidad' ), true ) && 'ps_orden' === get_post_type( $oid ) ) {
 		ps_cupos_limpiar( (int) get_post_meta( $oid, '_ps_prestador', true ) );
+		delete_transient( 'ps_vend_' . (int) get_post_meta( $oid, '_ps_product_id', true ) );
 	}
 };
 add_action( 'updated_post_meta', $ps_cupos_meta, 10, 3 );

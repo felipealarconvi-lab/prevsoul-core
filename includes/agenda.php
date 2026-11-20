@@ -15,9 +15,53 @@ defined( 'ABSPATH' ) || exit;
 
 const PS_AG_DIAS = array( 1 => 'Lunes', 2 => 'Martes', 3 => 'Miércoles', 4 => 'Jueves', 5 => 'Viernes', 6 => 'Sábado', 7 => 'Domingo' );
 
+/** Hora UCO: 45 minutos de atención + 15 de limpieza (las horas parten siempre en punto). */
+const PS_AG_DUR  = 45;
+const PS_AG_LIMP = 15;
+
 function ps_ag_cfg( $prov ) {
 	$c = get_post_meta( $prov, '_ps_ag', true );
-	return wp_parse_args( is_array( $c ) ? $c : array(), array( 'on' => '0', 'dur' => 30, 'dias' => array(), 'bloq' => array(), 'ant' => 24, 'max' => 30 ) );
+	$c = wp_parse_args( is_array( $c ) ? $c : array(), array( 'on' => '0', 'dur' => PS_AG_DUR, 'dias' => array(), 'bloq' => array(), 'ant' => 24, 'max' => 30 ) );
+	$c['dur']  = PS_AG_DUR;
+	$c['limp'] = PS_AG_LIMP;
+	return $c;
+}
+
+/** Cuántas horas se muestran abiertas por día (liberación por tandas). */
+function ps_ag_tanda() {
+	return max( 1, (int) get_option( 'ps_ag_tanda', 3 ) );
+}
+
+/** Horas que el prestador ocupó con pacientes de fuera de Prevsoul: array 'Y-m-d H:i' => 1. */
+function ps_ag_bloqueos( $prov ) {
+	$b = get_post_meta( $prov, '_ps_ag_ocup', true );
+	return is_array( $b ) ? $b : array();
+}
+
+/** Todas las horas de inicio del día según los bloques del prestador (45 + 15 min), sin descontar nada. */
+function ps_ag_slots_dia( $prov, $ymd ) {
+	$c  = ps_ag_cfg( $prov );
+	$tz = wp_timezone();
+	$d  = DateTimeImmutable::createFromFormat( '!Y-m-d', $ymd, $tz );
+	if ( ! $d || in_array( $ymd, (array) $c['bloq'], true ) ) {
+		return array();
+	}
+	$paso = PS_AG_DUR + PS_AG_LIMP;
+	$out  = array();
+	foreach ( (array) ( $c['dias'][ (int) $d->format( 'N' ) ] ?? array() ) as $r ) {
+		if ( empty( $r[0] ) || empty( $r[1] ) ) {
+			continue;
+		}
+		$t   = DateTimeImmutable::createFromFormat( 'Y-m-d H:i', $ymd . ' ' . $r[0], $tz );
+		$fin = DateTimeImmutable::createFromFormat( 'Y-m-d H:i', $ymd . ' ' . $r[1], $tz );
+		while ( $t && $fin && $t->modify( '+' . PS_AG_DUR . ' minutes' ) <= $fin ) {
+			$out[] = $t->format( 'H:i' );
+			$t     = $t->modify( '+' . $paso . ' minutes' );
+		}
+	}
+	$out = array_values( array_unique( $out ) );
+	sort( $out );
+	return $out;
 }
 
 function ps_ag_activa( $prov ) {
@@ -85,34 +129,26 @@ function ps_ag_ocupadas( $prov, $ymd, $excluir = 0 ) {
 	return $out;
 }
 
-/** Cupos libres de un día: lista de 'H:i'. */
+/** Cupos libres de un día: lista de 'H:i' (sin las tomadas, las ocupadas por el prestador ni las que no cumplen la anticipación). */
 function ps_ag_cupos( $prov, $ymd, $excluir = 0 ) {
-	$c  = ps_ag_cfg( $prov );
-	$tz = wp_timezone();
-	$d  = DateTimeImmutable::createFromFormat( '!Y-m-d', $ymd, $tz );
-	if ( ! $d || in_array( $ymd, (array) $c['bloq'], true ) ) {
-		return array();
-	}
-	$rangos = $c['dias'][ (int) $d->format( 'N' ) ] ?? array();
-	$dur    = max( 10, (int) $c['dur'] );
-	$min    = ( new DateTimeImmutable( 'now', $tz ) )->getTimestamp() + max( 0, (int) $c['ant'] ) * HOUR_IN_SECONDS;
-	$tom    = ps_ag_ocupadas( $prov, $ymd, $excluir );
-	$out    = array();
-	foreach ( (array) $rangos as $r ) {
-		if ( empty( $r[0] ) || empty( $r[1] ) ) {
-			continue;
-		}
-		$t   = DateTimeImmutable::createFromFormat( 'Y-m-d H:i', $ymd . ' ' . $r[0], $tz );
-		$fin = DateTimeImmutable::createFromFormat( 'Y-m-d H:i', $ymd . ' ' . $r[1], $tz );
-		while ( $t && $fin && $t->modify( '+' . $dur . ' minutes' ) <= $fin ) {
-			$h = $t->format( 'H:i' );
-			if ( $t->getTimestamp() >= $min && ! in_array( $h, $tom, true ) ) {
-				$out[] = $h;
-			}
-			$t = $t->modify( '+' . $dur . ' minutes' );
+	$c   = ps_ag_cfg( $prov );
+	$tz  = wp_timezone();
+	$min = ( new DateTimeImmutable( 'now', $tz ) )->getTimestamp() + max( 0, (int) $c['ant'] ) * HOUR_IN_SECONDS;
+	$tom = ps_ag_ocupadas( $prov, $ymd, $excluir );
+	$blq = ps_ag_bloqueos( $prov );
+	$out = array();
+	foreach ( ps_ag_slots_dia( $prov, $ymd ) as $h ) {
+		$t = DateTimeImmutable::createFromFormat( 'Y-m-d H:i', $ymd . ' ' . $h, $tz );
+		if ( $t && $t->getTimestamp() >= $min && ! in_array( $h, $tom, true ) && empty( $blq[ $ymd . ' ' . $h ] ) ) {
+			$out[] = $h;
 		}
 	}
-	return array_values( array_unique( $out ) );
+	return $out;
+}
+
+/** Horas que el paciente ve abiertas: las primeras libres del día, de a una tanda (3 por defecto). */
+function ps_ag_abiertas( $prov, $ymd, $excluir = 0 ) {
+	return array_slice( ps_ag_cupos( $prov, $ymd, $excluir ), 0, ps_ag_tanda() );
 }
 
 /** Próximos días con cupos (hasta $n). */
@@ -234,7 +270,7 @@ function ps_ag_picker( $oid, $k, $prov, $modo ) {
 	}
 	$out .= '</div><p style="margin:8px 0 0"><strong>' . esc_html( ucfirst( ps_ag_fecha( $sel ) ) ) . '</strong> · elige una hora</p>';
 	$out .= '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '"><input type="hidden" name="action" value="ps_agendar"><input type="hidden" name="modo" value="' . esc_attr( $modo ) . '"><input type="hidden" name="o" value="' . (int) $oid . '"><input type="hidden" name="k" value="' . esc_attr( $k ) . '"><input type="hidden" name="d" value="' . esc_attr( $sel ) . '"><div class="ps-ag-h">';
-	foreach ( ps_ag_cupos( $prov, $sel, $excl ) as $h ) {
+	foreach ( ps_ag_abiertas( $prov, $sel, $excl ) as $h ) {
 		$out .= '<button type="submit" name="h" value="' . esc_attr( $h ) . '" onclick="return confirm(\'¿Confirmas tu hora el ' . esc_js( ps_ag_fecha( $sel ) ) . ' a las ' . esc_js( $h ) . '?\')">' . esc_html( $h ) . '</button>';
 	}
 	return $out . '</div></form><small>Al elegir, tu hora queda confirmada y te llega un correo con la dirección y un archivo para tu calendario.</small>';
@@ -267,7 +303,7 @@ function ps_ag_reservar() {
 	$cambia = isset( $_POST['modo'] ) && 'cambiar' === $_POST['modo'];
 	$back   = $cambia ? add_query_arg( 'cambiar', 1, ps_ag_url( $oid ) ) : ps_ag_url( $oid );
 	$ok_st  = $cambia ? ps_ag_puede_cambiar( $oid ) : 'recibida' === get_post_meta( $oid, '_ps_estado', true );
-	if ( ! $ok_st || ! in_array( $h, ps_ag_cupos( $prov, $d, $oid ), true ) ) {
+	if ( ! $ok_st || ! in_array( $h, ps_ag_abiertas( $prov, $d, $oid ), true ) ) {
 		wp_safe_redirect( add_query_arg( array( 'd' => $d, 'tomada' => 1 ), $back ) );
 		exit;
 	}
@@ -386,11 +422,8 @@ function ps_ag_form( $prov ) {
 	$out  = '<section class="ps-card ps-ag-cfg" id="mi-agenda"><h3 class="ps-card-title">Mi agenda Prevsoul</h3><p class="ps-muted ps-small">Define los cupos que reservas para pacientes Prevsoul. Solo estos horarios se ofrecen en línea, así no chocan con tu otra agenda. Las horas tomadas te llegan por correo y aparecen en tus órdenes.</p>';
 	$out .= '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '">' . wp_nonce_field( 'ps_ag_cfg_' . $prov, '_wpnonce', true, false ) . '<input type="hidden" name="action" value="ps_ag_cfg"><input type="hidden" name="prov" value="' . (int) $prov . '"><input type="hidden" name="back" value="' . esc_attr( remove_query_arg( 'ps_ok' ) ) . '">';
 	$out .= '<p><label><input type="checkbox" name="on" value="1" ' . checked( $c['on'], '1', false ) . '> <strong>Recibir reservas en línea</strong></label></p>';
-	$out .= '<p><label>Duración de cada cita <select name="dur">';
-	foreach ( array( 15, 20, 30, 40, 45, 60, 90 ) as $v ) {
-		$out .= '<option value="' . $v . '" ' . selected( (int) $c['dur'], $v, false ) . '>' . $v . ' min</option>';
-	}
-	$out .= '</select></label> &nbsp; <label>Anticipación mínima <select name="ant">';
+	$out .= '<p class="ps-small"><strong>Cada hora:</strong> 45 min de atención + 15 min de limpieza (hora UCO). Las horas parten en punto: 9:00, 10:00, 11:00…</p>';
+	$out .= '<p><label>Anticipación mínima <select name="ant">';
 	foreach ( array( 2, 4, 12, 24, 48 ) as $v ) {
 		$out .= '<option value="' . $v . '" ' . selected( (int) $c['ant'], $v, false ) . '>' . $v . ' h</option>';
 	}
@@ -446,7 +479,7 @@ add_action(
 			'_ps_ag',
 			array(
 				'on'   => empty( $in['on'] ) ? '0' : '1',
-				'dur'  => in_array( (int) ( $in['dur'] ?? 30 ), array( 15, 20, 30, 40, 45, 60, 90 ), true ) ? (int) $in['dur'] : 30,
+				'dur'  => PS_AG_DUR,
 				'ant'  => in_array( (int) ( $in['ant'] ?? 24 ), array( 2, 4, 12, 24, 48 ), true ) ? (int) $in['ant'] : 24,
 				'max'  => in_array( (int) ( $in['max'] ?? 30 ), array( 14, 30, 45, 60 ), true ) ? (int) $in['max'] : 30,
 				'dias' => $dias,

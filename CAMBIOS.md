@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.41.0
+- Agenda con hora UCO: cada hora es de 45 minutos de atención + 15 de limpieza y parte en punto (9:00, 10:00…). Se aplica a todos los prestadores.
+- Liberación por tandas: el paciente ve abiertas solo las primeras 3 horas libres de cada día; cuando se toma una, se abre la siguiente.
+- Inicio: nuevo bloque «Las horas se están tomando» ([ps_agenda_semana]) después del buscador. Muestra los próximos días del prestador con agenda activa: tomada en Prevsoul (azul, «PS»), disponible (blanco, hora en azul) y no disponible (gris). Solo datos reales.
+- Panel del prestador: «Ocupar horas». Toca una hora para ocuparla con un paciente propio de fuera de Prevsoul (gris con candado) o para liberarla. El paciente la ve como no disponible.
+
 ## 2.40.0
 - Logo definitivo: «prevsoul» se une levemente con el diente (opción A) en el encabezado, el pie, la página en construcción, la firma de las piezas y la máquina de piezas para redes.
 - docs/MARCA.md: reglas del logo definitivo.

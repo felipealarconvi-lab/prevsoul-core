@@ -450,6 +450,7 @@ function ps_tags_card() {
 function ps_inicio2_content() {
 	return ps_sc( '[ps_hero titulo="Habla ahora con un odontólogo real" bajada="Orientación dental gratuita y planes preventivos con odontólogo de cabecera." boton="Entrar a la sala de espera" boton_url="#sala" boton2="Ver Prevsoul Live" boton2_url="/prevsoul-live/"]' )
 		. ps_sc( '[ps_seccion fondo="blanco"][ps_buscador][/ps_seccion]' )
+		. ps_sc( '[ps_seccion fondo="blanco"][ps_agenda_semana][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="claro" titulo="Atención dental" bajada="Las mejor valoradas por nuestros pacientes."][ps_carrusel tipo="atencion" ver_todo="/atencion-dental/"][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="blanco"][ps_consulta_aviso][/ps_seccion]' )
 		. ps_sc( '[ps_seccion fondo="claro" titulo="Packs dentales" bajada="Todo lo que necesitas, en un solo pack."][ps_carrusel tipo="packs" ver_todo="/packs-dentales/"][/ps_seccion]' )

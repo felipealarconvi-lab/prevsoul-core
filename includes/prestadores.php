@@ -627,6 +627,9 @@ add_shortcode(
 		if ( function_exists( 'ps_ag_semana' ) ) {
 			$out .= ps_ag_semana( $prov );
 		}
+		if ( function_exists( 'ps_ag_ocupar_html' ) ) {
+			$out .= ps_ag_ocupar_html( $prov );
+		}
 		if ( function_exists( 'ps_ag_form' ) ) {
 			$out .= ps_ag_form( $prov );
 		}

@@ -81,6 +81,29 @@ function ps_dom_volver() {
 	update_option( 'ps_dom_flush', '1', false );
 }
 
+/*
+ * 2.41.1: quien inició sesión cuando el sitio estaba en /wp/ tiene la sesión guardada solo para /wp/,
+ * así que en la raíz ve «Estamos restaurando». Al abrir el escritorio se renueva su sesión para todo
+ * el dominio (una vez por usuario y dirección), sin pedir la contraseña.
+ */
+add_action(
+	'admin_init',
+	function () {
+		if ( wp_doing_ajax() || ! ps_dom_activo() || ! is_user_logged_in() || headers_sent() ) {
+			return;
+		}
+		$uid  = get_current_user_id();
+		$sello = untrailingslashit( home_url() );
+		if ( get_user_meta( $uid, '_ps_dom_cookie', true ) === $sello ) {
+			return;
+		}
+		$c        = wp_parse_auth_cookie( '', 'logged_in' );
+		$recordar = $c && ( (int) $c['expiration'] - time() ) > 2 * DAY_IN_SECONDS;
+		wp_set_auth_cookie( $uid, $recordar, is_ssl() );
+		update_user_meta( $uid, '_ps_dom_cookie', $sello );
+	}
+);
+
 /* Tras cambiar la dirección, regenerar los enlaces permanentes en la siguiente carga. */
 add_action(
 	'init',

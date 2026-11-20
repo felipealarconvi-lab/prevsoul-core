@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.41.1
+- Dirección del sitio: si iniciaste sesión cuando el sitio estaba en /wp/, al abrir el escritorio tu sesión se renueva sola para todo el dominio. Así ves el sitio completo en prevsoul.cl y no «Estamos restaurando».
+
 ## 2.41.0
 - Agenda con hora UCO: cada hora es de 45 minutos de atención + 15 de limpieza y parte en punto (9:00, 10:00…). Se aplica a todos los prestadores.
 - Liberación por tandas: el paciente ve abiertas solo las primeras 3 horas libres de cada día; cuando se toma una, se abre la siguiente.

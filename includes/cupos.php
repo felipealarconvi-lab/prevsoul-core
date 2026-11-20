@@ -25,6 +25,11 @@ function ps_cupos_pct() {
 	return max( 10, min( 100, (int) get_option( 'ps_cupos_pct', 60 ) ) );
 }
 
+/** Desde cuántos cupos se muestra el número («Quedan N»); sobre eso, «Cupos disponibles». */
+function ps_cupos_umbral() {
+	return max( 1, (int) get_option( 'ps_cupos_umbral', 5 ) );
+}
+
 /** Horas UCO que usa un producto (sus sesiones). Mínimo 1. */
 function ps_cupos_horas( $pid ) {
 	return max( 1, (int) get_post_meta( $pid, '_ps_horas_uco', true ) );
@@ -170,8 +175,9 @@ function ps_cupos_badge( $pid ) {
 	if ( 0 === $c ) {
 		return '<p class="ps-cupos" style="margin:0;font-size:13px;font-weight:700;color:#4A5B73;background:#F0F4FA;border-radius:999px;padding:4px 12px;align-self:flex-start">Agotado por ahora</p>';
 	}
-	$poco = $c <= 2;
-	return '<p class="ps-cupos" style="margin:0;font-size:13px;font-weight:700;color:' . ( $poco ? '#7A5300' : '#167A64' ) . ';background:' . ( $poco ? '#FFF4E0' : '#E6F7F2' ) . ';border-radius:999px;padding:4px 12px;align-self:flex-start">Quedan ' . (int) $c . ' cupo' . ( 1 === $c ? '' : 's' ) . ' · próximos ' . PS_CUPOS_DIAS . ' días</p>';
+	$poco  = $c <= 2;
+	$texto = $c > ps_cupos_umbral() ? 'Cupos disponibles' : 'Quedan ' . (int) $c . ' cupo' . ( 1 === $c ? '' : 's' );
+	return '<p class="ps-cupos" style="margin:0;font-size:13px;font-weight:700;color:' . ( $poco ? '#7A5300' : '#167A64' ) . ';background:' . ( $poco ? '#FFF4E0' : '#E6F7F2' ) . ';border-radius:999px;padding:4px 12px;align-self:flex-start">' . esc_html( $texto ) . '</p>';
 }
 
 /* Sin cupos, no se puede comprar. */

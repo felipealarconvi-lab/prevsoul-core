@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.42.1
+- Cupos: el número se muestra solo cuando quedan 5 o menos («Quedan 3 cupos»); sobre eso, la etiqueta dice «Cupos disponibles».
+
 ## 2.42.0
 - Cupos de productos desde la agenda real: para cada prestador se calcula una bolsa de horas de los próximos 14 días = horas libres (sin presenciales ni reservas Prevsoul) × 60 % − controles de planes que vencen (1 hora cada uno) − horas vendidas por agendar (todas las sesiones de cada pack).
 - Cada atención y pack muestra «Quedan N cupos» en su tarjeta y su ficha; sin cupos dice «Agotado por ahora» y no se puede comprar. Los planes no usan cupos.

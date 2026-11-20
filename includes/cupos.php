@@ -366,3 +366,21 @@ function ps_cupos_panel_html( $prov ) {
 	$out .= function_exists( 'ps_esp_panel_html' ) ? ps_esp_panel_html( $prov ) : '';
 	return $out . '</section>';
 }
+
+/** Cupos en simple, para el prestador: un número, quién espera y cupos por producto. */
+function ps_cupos_panel_simple( $prov ) {
+	if ( ! ps_ag_activa( $prov ) ) {
+		return '<div class="ps-card"><p class="ps-muted" style="margin:0">Activa tu horario en «Mi horario» para empezar a vender cupos.</p></div>';
+	}
+	$b   = ps_cupos_bolsa( $prov, true );
+	$out = '<section class="ps-card"><span class="ps-muted ps-small">Próximos ' . PS_CUPOS_DIAS . ' días</span><div class="ps-pn-big">' . (int) $b['bolsa'] . ' ' . ( 1 === (int) $b['bolsa'] ? 'hora' : 'horas' ) . '</div><span class="ps-muted">disponibles para vender en Prevsoul</span><p class="ps-small" style="margin:10px 0 0">Para tener más cupos, libera horas en «Ocupar horas». Cada vez que ocupas o liberas una hora, se recalculan solos.</p></section>';
+	$out .= function_exists( 'ps_esp_panel_html' ) ? ps_esp_panel_html( $prov ) : '';
+	$lis  = '';
+	foreach ( get_posts( array( 'post_type' => 'product', 'numberposts' => 100, 'fields' => 'ids', 'meta_key' => '_ps_prestador', 'meta_value' => $prov ) ) as $pid ) { // phpcs:ignore WordPress.DB.SlowDBQuery
+		$c = ps_cupos_producto( $pid );
+		if ( null !== $c ) {
+			$lis .= '<div class="ps-pn-row" style="padding:6px 0;border-top:1px solid #EEF2F8"><span>' . esc_html( get_the_title( $pid ) ) . '</span><strong>' . ( $c ? (int) $c . ' cupo' . ( 1 === $c ? '' : 's' ) : 'agotado' ) . '</strong></div>';
+		}
+	}
+	return $out . ( $lis ? '<section class="ps-card"><h3 class="ps-card-title">Cupos por atención</h3>' . $lis . '</section>' : '' );
+}

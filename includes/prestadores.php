@@ -590,7 +590,9 @@ add_shortcode(
 			$out .= '<div class="ps-card ps-ok"><strong>Listo, quedó actualizado.</strong></div>';
 		}
 		$out .= '<div class="ps-row ps-panel-head">' . ps_prestador_img( $prov, 64 ) . '<div><span class="ps-prest-k">' . esc_html( ps_prestador_tipo( $prov ) ) . '</span><h2 class="ps-card-title">' . esc_html( get_the_title( $prov ) ) . '</h2>' . ( current_user_can( 'manage_options' ) && ! ps_user_prestador() ? '<span class="ps-chip ps-acc">Vista de administrador</span>' : '<a class="ps-small" href="' . esc_url( wp_logout_url( ps_panel_url() ) ) . '">Cerrar sesión</a>' ) . '</div></div>';
-		$out .= '<div class="ps-tiles"><div class="ps-tile"><span>Por agendar</span><strong>' . (int) $count['recibida'] . '</strong></div><div class="ps-tile"><span>Agendadas</span><strong>' . (int) $count['agendada'] . '</strong></div><div class="ps-tile"><span>Realizadas</span><strong>' . (int) $count['realizada'] . '</strong></div><div class="ps-tile ps-tile-dark"><span>Por cobrar a Prevsoul</span><strong>' . esc_html( ps_clp( $cobrar ) ) . '</strong></div></div>';
+		$pre  = $out;
+		$out  = '';
+		$tiles = '<div class="ps-tiles"><div class="ps-tile"><span>Por agendar</span><strong>' . (int) $count['recibida'] . '</strong></div><div class="ps-tile"><span>Agendadas</span><strong>' . (int) $count['agendada'] . '</strong></div><div class="ps-tile"><span>Realizadas</span><strong>' . (int) $count['realizada'] . '</strong></div><div class="ps-tile ps-tile-dark"><span>Por cobrar a Prevsoul</span><strong>' . esc_html( ps_clp( $cobrar ) ) . '</strong></div></div>';
 		$tabs = array( 'activas' => 'Pendientes', 'realizada' => 'Realizadas', 'no_asistio' => 'No asistió', 'cancelada' => 'Canceladas', 'todas' => 'Todas' );
 		$base = remove_query_arg( array( 'estado', 'ps_ok' ) );
 		$out .= '<nav class="ps-catnav">';
@@ -624,19 +626,7 @@ add_shortcode(
 		if ( ! $shown ) {
 			$out .= '<div class="ps-card"><p class="ps-muted">No hay órdenes en esta sección.</p></div>';
 		}
-		if ( function_exists( 'ps_ag_semana' ) ) {
-			$out .= ps_ag_semana( $prov );
-		}
-		if ( function_exists( 'ps_cupos_panel_html' ) ) {
-			$out .= ps_cupos_panel_html( $prov );
-		}
-		if ( function_exists( 'ps_ag_ocupar_html' ) ) {
-			$out .= ps_ag_ocupar_html( $prov );
-		}
-		if ( function_exists( 'ps_ag_form' ) ) {
-			$out .= ps_ag_form( $prov );
-		}
-		return $out . '</div>';
+		return ps_panel_armar( $prov, $pre, $tiles, $out, $all, $count, $cobrar );
 	}
 );
 
@@ -888,3 +878,121 @@ add_filter(
 	},
 	5
 );
+
+/* -------------------------------------------------------------------------
+ * Panel del prestador con menú lateral (2.48.0).
+ * ---------------------------------------------------------------------- */
+function ps_panel_secciones( $prov ) {
+	$s = array(
+		'ini' => array( 'Inicio', 'M3 11l9-8 9 8v10h-6v-6H9v6H3z' ),
+		'ord' => array( 'Órdenes', 'M9 3h6v3H9zM6 5h12v16H6zM9 11h6M9 15h4' ),
+		'sem' => array( 'Mi semana', 'M4 5h16v15H4zM4 10h16M8 3v4M16 3v4' ),
+		'ocu' => array( 'Ocupar horas', 'M6 11h12v10H6zM8 11V7a4 4 0 0 1 8 0v4' ),
+		'cup' => array( 'Cupos', 'M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21c0-4 3-7 7-7s7 3 7 7M17 3a4 4 0 0 1 0 8M22 21c0-3-1.5-5.5-4-6.5' ),
+		'hor' => array( 'Mi horario', 'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM12 7v5l3 2' ),
+		'pag' => array( 'Pagos', 'M3 6h18v12H3zM3 10h18M7 15h3' ),
+	);
+	$doc = 'ps_odontologo' === get_post_type( $prov ) ? $prov : 0;
+	if ( ( function_exists( 'ps_user_dentista' ) && ps_user_dentista() ) || ( $doc && current_user_can( 'manage_options' ) ) ) {
+		$s['live'] = array( 'Live', 'M2 7h20v12H2zM7 3l5 4 5-4' );
+	}
+	return $s;
+}
+
+function ps_panel_armar( $prov, $pre, $tiles, $ordenes, $all, $count, $cobrar ) {
+	$secs = ps_panel_secciones( $prov );
+	$sec  = isset( $_GET['sec'] ) ? sanitize_key( $_GET['sec'] ) : 'ini'; // phpcs:ignore WordPress.Security.NonceVerification
+	$sec  = isset( $secs[ $sec ] ) ? $sec : 'ini';
+	$base = remove_query_arg( array( 'sec', 'estado', 'osem', 'ps_ok', 'sem' ) );
+	$esp  = function_exists( 'ps_esp_resumen' ) ? ps_esp_resumen( $prov ) : array();
+	$nesp = array_sum( $esp );
+	$bdg  = array( 'ord' => (int) $count['recibida'], 'cup' => $nesp );
+	$nav  = '<nav class="ps-pn-nav" aria-label="Secciones del panel"><ul>';
+	foreach ( $secs as $k => $v ) {
+		$svg  = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' . esc_attr( $v[1] ) . '"/></svg>';
+		$nav .= '<li><a class="' . ( $k === $sec ? 'on' : '' ) . '"' . ( $k === $sec ? ' aria-current="page"' : '' ) . ' href="' . esc_url( add_query_arg( 'sec', $k, $base ) ) . '">' . $svg . esc_html( $v[0] ) . ( ! empty( $bdg[ $k ] ) ? '<span class="ps-pn-b">' . (int) $bdg[ $k ] . '</span>' : '' ) . '</a></li>';
+	}
+	$nav .= '</ul></nav>';
+
+	switch ( $sec ) {
+		case 'ord':
+			$body = $tiles . $ordenes;
+			break;
+		case 'sem':
+			$body = function_exists( 'ps_ag_semana' ) ? ps_ag_semana( $prov ) : '';
+			break;
+		case 'ocu':
+			$body = function_exists( 'ps_ag_ocupar_html' ) ? ps_ag_ocupar_html( $prov ) : '';
+			break;
+		case 'cup':
+			$body = current_user_can( 'manage_options' ) && function_exists( 'ps_cupos_panel_html' ) ? ps_cupos_panel_html( $prov ) : ( function_exists( 'ps_cupos_panel_simple' ) ? ps_cupos_panel_simple( $prov ) : '' );
+			break;
+		case 'hor':
+			$body = function_exists( 'ps_ag_form' ) ? ps_ag_form( $prov ) : '';
+			break;
+		case 'pag':
+			$body = ps_panel_pagos( $all, $cobrar );
+			break;
+		case 'live':
+			$body = do_shortcode( '[ps_panel_dentista]' );
+			break;
+		default:
+			$body  = $tiles;
+			$body .= function_exists( 'ps_esp_panel_html' ) ? ps_esp_panel_html( $prov ) : '';
+			$pend  = array_filter(
+				$all,
+				function ( $o ) {
+					return in_array( get_post_meta( $o->ID, '_ps_estado', true ), array( 'recibida', 'agendada' ), true );
+				}
+			);
+			if ( $pend ) {
+				$body .= '<h3 class="ps-card-title" style="margin:8px 0 0">Lo próximo</h3>';
+				foreach ( array_slice( $pend, 0, 3 ) as $o ) {
+					$e     = get_post_meta( $o->ID, '_ps_estado', true );
+					$cita  = get_post_meta( $o->ID, '_ps_cita', true );
+					$body .= '<div class="ps-card ps-pn-row"><div><strong>' . esc_html( get_post_meta( $o->ID, '_ps_producto', true ) ) . '</strong><div class="ps-muted ps-small">' . esc_html( get_post_meta( $o->ID, '_ps_paciente', true ) ) . ' · ' . esc_html( 'agendada' === $e && $cita ? ps_fmt_date( $cita ) : 'por agendar' ) . '</div></div><a class="ps-btn ps-btn-ghost" href="' . esc_url( add_query_arg( 'sec', 'ord', $base ) ) . '">Ver orden</a></div>';
+				}
+			} else {
+				$body .= '<div class="ps-card"><p class="ps-muted" style="margin:0">No tienes órdenes pendientes. Cuando alguien compre, te llega un correo y aparece aquí.</p></div>';
+			}
+	}
+	return '<div class="ps-panel ps-pn">' . $pre . '<div class="ps-pn-grid">' . $nav . '<div class="ps-pn-body">' . $body . '</div></div></div>' . ps_panel_css();
+}
+
+function ps_panel_pagos( $all, $cobrar ) {
+	$pag = 0;
+	$mes = wp_date( 'Y-m' );
+	$rows = '';
+	foreach ( $all as $o ) {
+		$e = get_post_meta( $o->ID, '_ps_estado', true );
+		if ( ! in_array( $e, array( 'realizada', 'no_asistio' ), true ) ) {
+			continue;
+		}
+		$p  = (float) get_post_meta( $o->ID, '_ps_pago', true );
+		$pd = (string) get_post_meta( $o->ID, '_ps_pagada', true );
+		if ( $pd && 0 === strpos( gmdate( 'Y-m', strtotime( $pd ) ), $mes ) ) {
+			$pag += $p;
+		}
+		$rows .= '<div class="ps-card ps-pn-row"><div><strong>' . esc_html( get_post_meta( $o->ID, '_ps_producto', true ) ) . '</strong><div class="ps-muted ps-small">Pedido #' . esc_html( get_post_meta( $o->ID, '_ps_numero', true ) ) . ' · ' . esc_html( 'no_asistio' === $e ? 'no asistió (compensación)' : 'realizada' ) . '</div></div><div style="text-align:right"><strong>' . esc_html( ps_clp( $p ) ) . '</strong><div class="ps-small ' . ( $pd ? 'ps-muted' : '' ) . '">' . esc_html( $pd ? 'Pagado el ' . $pd : 'Por cobrar' ) . '</div></div></div>';
+	}
+	$h  = '<div class="ps-tiles"><div class="ps-tile ps-tile-dark"><span>Por cobrar a Prevsoul</span><strong>' . esc_html( ps_clp( $cobrar ) ) . '</strong></div><div class="ps-tile"><span>Pagado este mes</span><strong>' . esc_html( ps_clp( $pag ) ) . '</strong></div></div>';
+	$h .= '<p class="ps-muted ps-small" style="margin:0">Se liquida cuando la atención queda «Realizada».</p>';
+	return $h . ( $rows ? $rows : '<div class="ps-card"><p class="ps-muted" style="margin:0">Aún no tienes atenciones realizadas.</p></div>' );
+}
+
+function ps_panel_css() {
+	return '<style>
+.ps-pn-grid{display:grid;grid-template-columns:220px minmax(0,1fr);gap:24px;align-items:start;margin-top:18px}
+.ps-pn-nav ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:4px;position:sticky;top:90px}
+.ps-pn-nav a{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;color:#0B2545;text-decoration:none;font-weight:600;font-size:15px}
+.ps-pn-nav a svg{color:#4A5B73;flex:none}
+.ps-pn-nav a:hover{background:#F0F4FA}
+.ps-pn-nav a.on{background:#EAF1FC;color:#164BA8}.ps-pn-nav a.on svg{color:#1D5FD1}
+.ps-pn-b{margin-left:auto;font-size:11px;background:#FFF4E0;color:#7A5300;border-radius:999px;padding:1px 8px}
+.ps-pn-body{display:flex;flex-direction:column;gap:12px;min-width:0}
+.ps-pn-body>.ps-card,.ps-pn-body>section{margin:0}
+.ps-pn-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ps-pn-big{font-size:40px;font-weight:800;color:#164BA8;line-height:1.1}
+@media(max-width:760px){.ps-pn-grid{grid-template-columns:1fr;gap:12px}.ps-pn-nav ul{flex-direction:row;overflow-x:auto;position:static;padding-bottom:4px}.ps-pn-nav a{white-space:nowrap;border:1px solid #D9E3F2;background:#fff;padding:8px 12px;font-size:14px}}
+</style>';
+}

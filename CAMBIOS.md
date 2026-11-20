@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.48.0
+- Panel del prestador con menú lateral: Inicio, Órdenes, Mi semana, Ocupar horas, Cupos, Mi horario, Pagos y Live (si es odontólogo). En el celular, el menú es una fila horizontal.
+- Inicio: resumen, quiénes esperan cupo y lo próximo.
+- Cupos en simple para el prestador (horas disponibles para vender y cupos por atención); el detalle del cálculo solo lo ve el administrador.
+- Pagos: por cobrar, pagado este mes y detalle por atención.
+
 ## 2.47.0
 - «Avísame cuando haya cupo»: en productos agotados, el paciente deja correo o WhatsApp (con autorización). Cuando vuelve a haber cupo se avisa una sola vez a todos: correo automático; los WhatsApp quedan en Recordatorios para enviarlos con un clic.
 - Panel del prestador: aviso de cuántas personas esperan cupo y para qué.

@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.42.0
+- Cupos de productos desde la agenda real: para cada prestador se calcula una bolsa de horas de los próximos 14 días = horas libres (sin presenciales ni reservas Prevsoul) × 60 % − controles de planes que vencen (1 hora cada uno) − horas vendidas por agendar (todas las sesiones de cada pack).
+- Cada atención y pack muestra «Quedan N cupos» en su tarjeta y su ficha; sin cupos dice «Agotado por ahora» y no se puede comprar. Los planes no usan cupos.
+- Producto: nuevo campo «Horas UCO que usa» (sus sesiones; 1 por defecto).
+- Panel del prestador: «Mis cupos Prevsoul» con el detalle del cálculo y los cupos de cada producto.
+
 ## 2.41.1
 - Dirección del sitio: si iniciaste sesión cuando el sitio estaba en /wp/, al abrir el escritorio tu sesión se renueva sola para todo el dominio. Así ves el sitio completo en prevsoul.cl y no «Estamos restaurando».
 

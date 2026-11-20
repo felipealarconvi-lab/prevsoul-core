@@ -991,7 +991,7 @@ function ps_panel_css() {
 .ps-pn-b{margin-left:auto;font-size:11px;background:#FFF4E0;color:#7A5300;border-radius:999px;padding:1px 8px}
 .ps-pn-body{display:flex;flex-direction:column;gap:12px;min-width:0}
 .ps-pn-body>.ps-card,.ps-pn-body>section{margin:0}
-.ps-pn-row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.ps-pn .ps-pn-row{display:flex;flex-direction:row;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;text-align:left}.ps-pn .ps-pn-row>div{text-align:left}
 .ps-pn-big{font-size:40px;font-weight:800;color:#164BA8;line-height:1.1}
 @media(max-width:760px){.ps-pn-grid{grid-template-columns:1fr;gap:12px}.ps-pn-nav ul{flex-direction:row;overflow-x:auto;position:static;padding-bottom:4px}.ps-pn-nav a{white-space:nowrap;border:1px solid #D9E3F2;background:#fff;padding:8px 12px;font-size:14px}}
 </style>';

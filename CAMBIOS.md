@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## 2.48.1
+- Panel del prestador: las filas (Lo próximo, Pagos, Cupos por atención) quedan alineadas a la izquierda con el botón a la derecha.
+
 ## 2.48.0
 - Panel del prestador con menú lateral: Inicio, Órdenes, Mi semana, Ocupar horas, Cupos, Mi horario, Pagos y Live (si es odontólogo). En el celular, el menú es una fila horizontal.
 - Inicio: resumen, quiénes esperan cupo y lo próximo.

@@ -1,5 +1,11 @@
 # Cambios de Prevsoul Core
 
+## 2.45.0
+- Mi cuenta con el diseño Prevsoul: cabecera y pie del sitio, franja «Hola, nombre» y menú con íconos (en el celular, fila horizontal).
+- Menú simple: Inicio, Mis atenciones, Mi plan, Mis compras, Mis datos y Salir. Se ocultan Descargas y Dirección.
+- Inicio: resumen (por agendar, próxima hora, por valorar) y un acceso directo a la acción pendiente.
+- Mis atenciones en tarjetas con estado y botón: «Elegir hora», «Ver o cambiar hora» o «Valorar».
+
 ## 2.44.0
 - Tarjetas de producto: se quita «Ver y valorar». Tocar la tarjeta abre el producto; Comprar sigue funcionando aparte.
 - Página del producto: pestaña «Valoraciones» de solo lectura (estrellas, comentarios, sello «Atención verificada», respuestas de Prevsoul). Sin formulario.

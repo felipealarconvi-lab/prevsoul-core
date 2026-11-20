@@ -140,12 +140,12 @@ add_action(
 	'woocommerce_account_mis-atenciones_endpoint',
 	function () {
 		$ids = ps_val_mis_ordenes();
-		echo '<style>.ps-ma{border:1px solid #D9E3F2;border-radius:14px;overflow:hidden;background:#fff}.ps-ma-r{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid #EEF2F8}.ps-ma-r:first-child{border-top:0}.ps-ma-m{font-size:13px;color:#4A5B73}.ps-ma-ok{font-size:12px;background:#E6F7F2;color:#167A64;border-radius:999px;padding:3px 10px;white-space:nowrap}.ps-ma-f{padding:0 14px 14px;display:none}.ps-ma-f.on{display:block}.ps-ma-st{display:flex;gap:2px;flex-direction:row-reverse;justify-content:flex-end}.ps-ma-st input{display:none}.ps-ma-st label{font-size:28px;color:#D9E3F2;cursor:pointer;line-height:1}.ps-ma-st input:checked~label,.ps-ma-st label:hover,.ps-ma-st label:hover~label{color:#E8A317}.ps-ma-f textarea{width:100%;min-height:70px;border:1px solid #D9E3F2;border-radius:8px;padding:8px;font:inherit}</style>';
+		echo '<style>.ps-ma{border:1px solid #D9E3F2;border-radius:14px;overflow:hidden;background:#fff}.ps-ma-r{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 14px;border-top:1px solid #EEF2F8}.ps-ma-r:first-child{border-top:0}.ps-ma-m{font-size:13px;color:#4A5B73}.ps-ma-ok{font-size:12px;background:#E6F7F2;color:#167A64;border-radius:999px;padding:3px 10px;white-space:nowrap}.ps-ma-f{padding:12px 0 0;display:none}.ps-ma-f.on{display:block}.ps-ma-st{display:flex;gap:2px;flex-direction:row-reverse;justify-content:flex-end}.ps-ma-st input{display:none}.ps-ma-st label{font-size:28px;color:#D9E3F2;cursor:pointer;line-height:1}.ps-ma-st input:checked~label,.ps-ma-st label:hover,.ps-ma-st label:hover~label{color:#E8A317}.ps-ma-f textarea{width:100%;min-height:70px;border:1px solid #D9E3F2;border-radius:8px;padding:8px;font:inherit}</style>';
 		if ( isset( $_GET['ps_val'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification
 			echo '<p class="ps-ma-ok" style="display:inline-block;margin-bottom:12px">¡Gracias por tu valoración!</p>';
 		}
 		if ( ! $ids ) {
-			echo '<p>Aún no tienes atenciones Prevsoul.</p><p><a class="ps-btn" href="' . esc_url( home_url( '/atencion-dental/' ) ) . '">Ver atenciones</a></p>';
+			echo '<div class="ps-cu-card ps-cu-at"><span>Aún no tienes atenciones Prevsoul.</span><a class="ps-btn" href="' . esc_url( home_url( '/atencion-dental/' ) ) . '">Ver atenciones</a></div>';
 			return;
 		}
 		$est = array(
@@ -155,19 +155,27 @@ add_action(
 			'no_asistio' => 'No asististe',
 			'cancelada'  => 'Cancelada',
 		);
-		echo '<div class="ps-ma">';
+		$chips = array(
+			'recibida'   => array( '#FFF4E0', '#7A5300' ),
+			'agendada'   => array( '#EAF1FC', '#164BA8' ),
+			'realizada'  => array( '#E6F7F2', '#167A64' ),
+			'no_asistio' => array( '#F0F4FA', '#4A5B73' ),
+			'cancelada'  => array( '#F0F4FA', '#4A5B73' ),
+		);
 		foreach ( $ids as $oid ) {
 			$e    = (string) get_post_meta( $oid, '_ps_estado', true );
 			$pid  = (int) get_post_meta( $oid, '_ps_product_id', true );
 			$cita = (string) get_post_meta( $oid, '_ps_cita', true );
-			$fec  = $cita ? ps_fmt_date( $cita ) : get_the_date( 'j M Y', $oid );
-			$der  = '';
+			$fec  = 'recibida' === $e || ! $cita ? 'Compra del ' . get_the_date( 'j M Y', $oid ) : ucfirst( ps_fmt_date( $cita ) );
+			$cc   = $chips[ $e ] ?? $chips['cancelada'];
+			$chip = '<span class="ps-cu-chip" style="background:' . $cc[0] . ';color:' . $cc[1] . '">' . esc_html( $est[ $e ] ?? ucfirst( $e ) ) . '</span>';
+			$btn  = '';
 			$form = '';
 			$vid  = (int) get_post_meta( $oid, '_ps_valorada', true );
 			if ( $vid ) {
-				$der = '<span class="ps-ma-ok">Valorada ' . ps_val_estrellas( get_comment_meta( $vid, 'rating', true ) ) . '</span>';
+				$btn = '<span class="ps-cu-mu">Valorada ' . ps_val_estrellas( get_comment_meta( $vid, 'rating', true ) ) . '</span>';
 			} elseif ( ps_val_puede( $oid ) ) {
-				$der   = '<button type="button" class="ps-btn" onclick="this.style.display=\'none\';document.getElementById(\'psv' . (int) $oid . '\').classList.add(\'on\')">Valorar</button>';
+				$btn   = '<button type="button" class="ps-btn ps-btn-ghost" onclick="this.style.display=\'none\';document.getElementById(\'psv' . (int) $oid . '\').classList.add(\'on\')">Valorar</button>';
 				$stars = '';
 				for ( $i = 5; $i >= 1; $i-- ) {
 					$stars .= '<input type="radio" id="psv' . (int) $oid . 's' . $i . '" name="rating" value="' . $i . '" required><label for="psv' . (int) $oid . 's' . $i . '" title="' . $i . '">★</label>';
@@ -179,12 +187,12 @@ add_action(
 					. '<input type="hidden" name="comment_post_ID" value="' . (int) $pid . '"><input type="hidden" name="ps_orden" value="' . (int) $oid . '">'
 					. wp_nonce_field( 'ps_val_' . $oid, 'ps_val_nonce', true, false )
 					. '<button class="ps-btn" type="submit">Enviar valoración</button></form>';
-			} elseif ( in_array( $e, array( 'recibida', 'agendada' ), true ) ) {
-				$der = '<span class="ps-ma-m">Podrás valorar después de tu atención</span>';
+			} elseif ( in_array( $e, array( 'recibida', 'agendada' ), true ) && function_exists( 'ps_ag_url' ) ) {
+				$btn = '<a class="ps-btn' . ( 'agendada' === $e ? ' ps-btn-ghost' : '' ) . '" href="' . esc_url( ps_ag_url( $oid ) ) . '">' . ( 'agendada' === $e ? 'Ver o cambiar hora' : 'Elegir hora' ) . '</a>';
 			}
-			echo '<div class="ps-ma-r"><div><strong>' . esc_html( get_post_meta( $oid, '_ps_producto', true ) ) . '</strong><br><span class="ps-ma-m">' . esc_html( ( $est[ $e ] ?? ucfirst( $e ) ) . ' · ' . $fec ) . '</span></div>' . $der . '</div>' . $form; // phpcs:ignore WordPress.Security.EscapeOutput
+			$ico = function_exists( 'ps_cu_svg' ) ? '<span class="ps-cu-ico' . ( 'realizada' === $e ? '' : ' az' ) . '">' . ps_cu_svg( 'realizada' === $e ? 'check' : ( 'recibida' === $e ? 'cal' : 'tooth' ) ) . '</span>' : '';
+			echo '<div class="ps-cu-card"><div class="ps-cu-at"><div class="ps-cu-l">' . $ico . '<div><strong>' . esc_html( get_post_meta( $oid, '_ps_producto', true ) ) . '</strong><br><span class="ps-cu-mu">' . esc_html( $fec ) . '</span></div></div><div class="ps-cu-der">' . $chip . $btn . '</div></div>' . $form . '</div>'; // phpcs:ignore WordPress.Security.EscapeOutput
 		}
-		echo '</div>';
 	}
 );
 

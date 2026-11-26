@@ -1,5 +1,8 @@
 # Cambios de Prevsoul Core
 
+## Sin publicar
+- Página «Estamos restaurando»: debajo del texto se agrega «Mientras tanto, juega Acid Attack», con el juego insertado desde /juego/?embed=1 y un enlace para abrirlo en pantalla completa.
+  
 ## 2.48.1
 - Panel del prestador: las filas (Lo próximo, Pagos, Cupos por atención) quedan alineadas a la izquierda con el botón a la derecha.
 

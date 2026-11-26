@@ -14,8 +14,8 @@ if ( '56912345678' === $ps_wa ) {
 }
 ?><!DOCTYPE html>
 <html lang="es-CL">
-<head>
-<meta charset="utf-8">
+<head><meta charset="utf-8">
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <?php echo function_exists( 'ps_mk_verif_tag' ) ? ps_mk_verif_tag() : ''; // phpcs:ignore ?>
@@ -51,6 +51,10 @@ footer{padding:20px;text-align:center;font-size:13px;color:var(--muted)}
 @keyframes twinkle{0%,100%{transform:scale(.4);opacity:0}50%{transform:scale(1);opacity:1}}
 @keyframes load{0%{width:28%}60%,92%{width:86%}100%{width:28%}}
 @media (prefers-reduced-motion:reduce){.filling,.drill,.bur,.spark,.bar span{animation:none}.filling{transform:scaleX(.6)}.spark{opacity:1;transform:none}}
+.ps-juego{margin-top:44px;width:100%;display:flex;flex-direction:column;align-items:center;gap:8px}
+.ps-juego h2{font-size:clamp(24px,4vw,32px);line-height:1.1;letter-spacing:-.02em;margin:0;font-weight:800}
+.ps-juego iframe{width:min(400px,92vw);aspect-ratio:9/16;height:auto;border:0;border-radius:14px;box-shadow:0 18px 50px rgba(11,35,71,.22);background:#f7cfc5;margin-top:10px}
+.ps-juego .full{font-size:14px;font-weight:700;color:var(--blue)}
 </style>
 </head>
 <body>
@@ -93,6 +97,12 @@ footer{padding:20px;text-align:center;font-size:13px;color:var(--muted)}
 	<?php if ( $ps_wa ) : ?>
 		<a class="wa" href="<?php echo esc_url( 'https://wa.me/' . $ps_wa ); ?>">Escríbenos por WhatsApp</a>
 	<?php endif; ?>
+	<section class="ps-juego" id="juego">
+		<h2>Mientras tanto, juega Acid Attack</h2>
+		<p>¿Cuánto aguantas defendiendo un diente del ácido?</p>
+		<iframe src="/juego/?embed=1" title="Juego Acid Attack" loading="lazy"></iframe>
+		<a class="full" href="/juego/">Abrir en pantalla completa</a>
+	</section>
 </main>
 <footer>© <?php echo esc_html( gmdate( 'Y' ) ); ?> Prevsoul</footer>
 </body>
